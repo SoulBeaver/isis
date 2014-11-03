@@ -55,13 +55,20 @@ var Isis;
         InGame.prototype.create = function () {
             this.game.stage.backgroundColor = "#ffffff";
 
+            /*
             this.map = this.game.add.tilemap("oryx_tilemap");
             this.map.addTilesetImage("oryx_world", "oryx_world");
             this.map.addTilesetImage("oryx_creatures", "oryx_creatures");
             this.map.addTilesetImage("oryx_items", "oryx_items");
             this.map.addTilesetImage("oryx_world2", "oryx_world2");
+            */
+            this.map = this.game.add.tilemap("desert_tilemap");
+            this.map.addTilesetImage("Desert", "desert");
 
+            /*
             this.layer = this.map.createLayer("background");
+            */
+            this.layer = this.map.createLayer("Ground");
             this.layer.resizeWorld();
         };
         return InGame;
@@ -116,6 +123,9 @@ var Isis;
             this.load.image("oryx_tiles", "assets/tilemaps/tiles/oryx_tiles.png");
             this.load.image("oryx_world", "assets/tilemaps/tiles/oryx_world.png");
             this.load.image("oryx_world2", "assets/tilemaps/tiles/oryx_world2.png");
+
+            this.load.tilemap("desert_tilemap", "assets/tilemaps/maps/desert.json", null, Phaser.Tilemap.TILED_JSON);
+            this.load.image("desert", "assets/tilemaps/tiles/tmw_desert_spacing.png");
         };
 
         Preloader.prototype.create = function () {

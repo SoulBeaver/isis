@@ -16,6 +16,9 @@
             this.load.image("oryx_tiles", "assets/tilemaps/tiles/oryx_tiles.png");
             this.load.image("oryx_world", "assets/tilemaps/tiles/oryx_world.png");
             this.load.image("oryx_world2", "assets/tilemaps/tiles/oryx_world2.png");
+
+            this.load.tilemap("desert_tilemap", "assets/tilemaps/maps/desert.json", null, Phaser.Tilemap.TILED_JSON);
+            this.load.image("desert", "assets/tilemaps/tiles/tmw_desert_spacing.png");
         }
 
         create() {
