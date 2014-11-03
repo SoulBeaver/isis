@@ -10,15 +10,14 @@
         }
 
         loadAssets() {
-            this.load.tilemap("oryx_tilemap", "assets/tilemaps/maps/oryx_test.json", null, Phaser.Tilemap.TILED_JSON);
-            this.load.image("oryx_creatures", "assets/tilemaps/tiles/oryx_creatures.png");
-            this.load.image("oryx_items", "assets/tilemaps/tiles/oryx_items.png");
-            this.load.image("oryx_tiles", "assets/tilemaps/tiles/oryx_tiles.png");
-            this.load.image("oryx_world", "assets/tilemaps/tiles/oryx_world.png");
-            this.load.image("oryx_world2", "assets/tilemaps/tiles/oryx_world2.png");
+            this.load.tilemap("maze", "assets/tilemaps/maps/Maze.json", null, Phaser.Tilemap.TILED_JSON);
 
-            this.load.tilemap("desert_tilemap", "assets/tilemaps/maps/desert.json", null, Phaser.Tilemap.TILED_JSON);
-            this.load.image("desert", "assets/tilemaps/tiles/tmw_desert_spacing.png");
+            this.load.image("creatures_tileset", "assets/tilemaps/tiles/Creatures.png");
+            this.load.image("items_tileset", "assets/tilemaps/tiles/Items.png");
+            this.load.image("world_tileset", "assets/tilemaps/tiles/World.png");
+            this.load.image("fx_tileset", "assets/tilemaps/tiles/FX.png");
+            this.load.image("tiles_tileset", "assets/tilemaps/tiles/Tiles.png");
+            this.load.image("classes_tileset", "assets/tilemaps/tiles/Classes.png");
         }
 
         create() {
@@ -28,7 +27,7 @@
         }
 
         startMainMenu() {
-            this.game.state.start("MainMenu", true, false);
+            this.game.state.start("InGame", true, false);
         }
     }
 }  

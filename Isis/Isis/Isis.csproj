@@ -19,12 +19,6 @@
   <ItemGroup>
     <Content Include="app.css" />
     <Content Include="assets\preloadBar.png" />
-    <Content Include="assets\tilemaps\tiles\oryx_creatures.png" />
-    <Content Include="assets\tilemaps\tiles\oryx_fx.png" />
-    <Content Include="assets\tilemaps\tiles\oryx_items.png" />
-    <Content Include="assets\tilemaps\tiles\oryx_tiles.png" />
-    <Content Include="assets\tilemaps\tiles\oryx_world.png" />
-    <Content Include="assets\tilemaps\tiles\oryx_world2.png" />
     <Content Include="index.html" />
     <Content Include="libs\phaser.js" />
     <Content Include="libs\phaser.min.js" />
@@ -49,7 +43,9 @@
       <DependentUpon>web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="assets\tilemaps\tiles\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

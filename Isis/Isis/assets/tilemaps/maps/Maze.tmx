@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="12" height="8" tilewidth="24" tileheight="24">
+ <tileset firstgid="1" name="Creatures" tilewidth="24" tileheight="24">
+  <tileoffset x="0" y="-4"/>
+  <image source="../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/oryx_16bit_fantasy_creatures_trans.png" width="480" height="648"/>
+ </tileset>
+ <tileset firstgid="541" name="Items" tilewidth="16" tileheight="16">
+  <tileoffset x="4" y="-4"/>
+  <image source="../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/oryx_16bit_fantasy_items_trans.png" width="384" height="304"/>
+ </tileset>
+ <tileset firstgid="997" name="World" tilewidth="24" tileheight="24">
+  <image source="../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/oryx_16bit_fantasy_world_trans.png" width="1366" height="1007"/>
+ </tileset>
+ <tileset firstgid="3293" name="Tiles" tilewidth="24" tileheight="24">
+  <image source="../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/oryx_16bit_fantasy_tiles.png" width="408" height="288"/>
+ </tileset>
+ <layer name="Background" width="12" height="8">
+  <data encoding="base64" compression="zlib">
+   eJyzY2dgsAJiI14GBgsgbQnEzlAaHdsDsQ0Qd7KhYmxiIGwLFHdF0m/FjqreAmoXTHweEeajs2F8OyR73KBuRVYPkndBUm/LjulWZPUOaOph2Jodv9sc0MLMDQ/fEYgBw4gklw==
+  </data>
+ </layer>
+ <layer name="Objects" width="12" height="8">
+  <data encoding="base64" compression="zlib">
+   eJxjYICARywMZIECJuzixTjEi3CIg8BjPG7oYSXeTdQGhXjcDAK9FLgNAIaKBL8=
+  </data>
+ </layer>
+ <layer name="Creatures" width="12" height="8">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAu2MhIuRnLKTdiyAAAbuIBWg==
+  </data>
+ </layer>
+</map>
