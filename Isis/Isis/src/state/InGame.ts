@@ -15,7 +15,10 @@
             this.initializeMap();
             this.game.physics.p2.convertTilemap(this.map, this.backgroundLayer);
 
-            this.player = this.game.add.sprite(48, 24, "hero");
+            this.player = this.game.add.sprite(48, 24, "creature_atlas");
+            this.player.animations.add("idle", [ "blue_knight_1.png", "blue_knight_2.png" ], 2, true);
+            this.player.animations.play("idle");
+
             this.game.physics.p2.enable(this.player);
             this.game.camera.follow(this.player);
 
@@ -43,8 +46,10 @@
 
         update() {
             if (this.cursors.left.isDown) {
+                this.player.scale.x = 1;
                 this.player.body.moveLeft(200);
             } else if (this.cursors.right.isDown) {
+                this.player.scale.x = -1;
                 this.player.body.moveRight(200);
             } else if (this.cursors.up.isDown) {
                 this.player.body.moveUp(200);

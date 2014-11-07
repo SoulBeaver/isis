@@ -1,0 +1,66 @@
+{"frames": [
+
+{
+	"filename": "blue_blob_man_1.png",
+	"frame": {"x":2,"y":2,"w":23,"h":23},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":1,"w":23,"h":23},
+	"sourceSize": {"w":24,"h":24},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "blue_blob_man_2.png",
+	"frame": {"x":27,"y":2,"w":23,"h":23},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":1,"w":23,"h":23},
+	"sourceSize": {"w":24,"h":24},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "blue_knight_1.png",
+	"frame": {"x":52,"y":2,"w":22,"h":24},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":0,"w":22,"h":24},
+	"sourceSize": {"w":24,"h":24},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "blue_knight_2.png",
+	"frame": {"x":76,"y":2,"w":22,"h":23},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":1,"w":22,"h":23},
+	"sourceSize": {"w":24,"h":24},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "robed_drow_1.png",
+	"frame": {"x":100,"y":2,"w":23,"h":23},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":1,"w":23,"h":23},
+	"sourceSize": {"w":24,"h":24},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "robed_drow_2.png",
+	"frame": {"x":125,"y":2,"w":23,"h":22},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":2,"w":23,"h":22},
+	"sourceSize": {"w":24,"h":24},
+	"pivot": {"x":0.5,"y":0.5}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "creatures_animated.png",
+	"format": "RGBA8888",
+	"size": {"w":150,"h":28},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:d320bd4028d37e0a6ed6fea45643597f:0b5660166e0d29049d89dcd2a19bac70:6b96aa5f1c2449a6da0a8f7830fc788e$"
+}
+}
