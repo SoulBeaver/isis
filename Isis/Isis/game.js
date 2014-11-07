@@ -9,6 +9,24 @@ var __extends = this.__extends || function (d, b) {
 };
 var Isis;
 (function (Isis) {
+    var Game = (function (_super) {
+        __extends(Game, _super);
+        function Game() {
+            _super.call(this, 800, 600, Phaser.AUTO, "content", null);
+
+            this.state.add("Boot", Isis.Boot, false);
+            this.state.add("Preloader", Isis.Preloader, false);
+            this.state.add("MainMenu", Isis.MainMenu, false);
+            this.state.add("InGame", Isis.InGame, false);
+
+            this.state.start("Boot");
+        }
+        return Game;
+    })(Phaser.Game);
+    Isis.Game = Game;
+})(Isis || (Isis = {}));
+var Isis;
+(function (Isis) {
     var Boot = (function (_super) {
         __extends(Boot, _super);
         function Boot() {
@@ -29,24 +47,6 @@ var Isis;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
-    var Game = (function (_super) {
-        __extends(Game, _super);
-        function Game() {
-            _super.call(this, 800, 600, Phaser.AUTO, "content", null);
-
-            this.state.add("Boot", Isis.Boot, false);
-            this.state.add("Preloader", Isis.Preloader, false);
-            this.state.add("MainMenu", Isis.MainMenu, false);
-            this.state.add("InGame", Isis.InGame, false);
-
-            this.state.start("Boot");
-        }
-        return Game;
-    })(Phaser.Game);
-    Isis.Game = Game;
-})(Isis || (Isis = {}));
-var Isis;
-(function (Isis) {
     var InGame = (function (_super) {
         __extends(InGame, _super);
         function InGame() {
@@ -57,10 +57,10 @@ var Isis;
 
             this.map = this.game.add.tilemap("maze");
 
-            this.map.addTilesetImage("World", "world_tileset");
+            this.map.addTilesetImage("World_Tiles", "world_tileset");
             this.map.addTilesetImage("Creatures", "creatures_tileset");
             this.map.addTilesetImage("Items", "items_tileset");
-            this.map.addTilesetImage("Tiles", "tiles_tileset");
+            this.map.addTilesetImage("World_Objects", "world_objects_tileset");
 
             this.backgroundLayer = this.map.createLayer("Background");
             this.itemLayer = this.map.createLayer("Objects");
@@ -118,10 +118,8 @@ var Isis;
 
             this.load.image("creatures_tileset", "assets/tilemaps/tiles/Creatures.png");
             this.load.image("items_tileset", "assets/tilemaps/tiles/Items.png");
-            this.load.image("world_tileset", "assets/tilemaps/tiles/World.png");
-            this.load.image("fx_tileset", "assets/tilemaps/tiles/FX.png");
-            this.load.image("tiles_tileset", "assets/tilemaps/tiles/Tiles.png");
-            this.load.image("classes_tileset", "assets/tilemaps/tiles/Classes.png");
+            this.load.image("world_tileset", "assets/tilemaps/tiles/World_Tiles.png");
+            this.load.image("world_objects_tileset", "assets/tilemaps/tiles/World_Objects.png");
         };
 
         Preloader.prototype.create = function () {

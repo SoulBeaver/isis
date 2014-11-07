@@ -10,10 +10,10 @@
 
             this.map = this.game.add.tilemap("maze");
 
-            this.map.addTilesetImage("World", "world_tileset");
+            this.map.addTilesetImage("World_Tiles", "world_tileset");
             this.map.addTilesetImage("Creatures", "creatures_tileset");
             this.map.addTilesetImage("Items", "items_tileset");
-            this.map.addTilesetImage("Tiles", "tiles_tileset");
+            this.map.addTilesetImage("World_Objects", "world_objects_tileset");
 
             this.backgroundLayer = this.map.createLayer("Background");
             this.itemLayer = this.map.createLayer("Objects");
