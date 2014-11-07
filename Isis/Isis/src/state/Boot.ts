@@ -13,9 +13,17 @@
         }
 
         configureGame() {
-            this.game.physics.startSystem(Phaser.Physics.P2JS);
-            this.game.physics.p2.restitution = 0;
-            this.game.physics.p2.gravity.y = 0;
+            this.game.physics.startSystem(Phaser.Physics.ARCADE);
+
+            //scaling options
+            this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+
+            //have the game centered horizontally
+            this.scale.pageAlignHorizontally = true;
+            this.scale.pageAlignVertically = true;
+
+            //screen size will be set automatically
+            this.scale.setScreenSize(true);
         }
     }
 } 
