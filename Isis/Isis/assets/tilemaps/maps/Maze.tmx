@@ -13,6 +13,11 @@
  <tileset firstgid="1650" name="Creatures" tilewidth="24" tileheight="24">
   <tileoffset x="0" y="-4"/>
   <image source="../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/oryx_16bit_fantasy_creatures_trans.png" width="480" height="648"/>
+  <tile id="21">
+   <properties>
+    <property name="atlas_name" value="blue_knight"/>
+   </properties>
+  </tile>
   <tile id="146">
    <properties>
     <property name="atlas_name" value="robed_drow"/>
@@ -26,10 +31,10 @@
  </tileset>
  <layer name="Walls" width="12" height="8">
   <data encoding="base64" compression="zlib">
-   eJxjZGBgYGSAAEYiMTpAFlPiQBXHphebfch6WNhxm4/Oxud2fHah+4MYt2ED2NxDCgYAZ00Abg==
+   eJxjZGBgYGSAAEYiMTpAFlPiQBXHphebfch6WNhxm4/Oxud2fHah+4MYt+HTh8sNhDAAZ50Abw==
   </data>
  </layer>
- <layer name="Background" width="12" height="8">
+ <layer name="Background" width="12" height="8" visible="0">
   <data encoding="base64" compression="zlib">
    eJyFkF0KgDAMgzvw6v5sczI3PYg3NIMOQhV9+MhowxIancgMBhEZoRPIqp1TdQVevczbrBEwL/RPz/GUl2l+QY+f//m9kD9STtWu7G/7nfoH9+zK/mT8nPnVLZnbVXPDSrsN3AgqIFQ=
   </data>
