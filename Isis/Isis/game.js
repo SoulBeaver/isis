@@ -73,6 +73,7 @@ var Isis;
             this.game.stage.backgroundColor = "#ffffff";
 
             this.initializeMap();
+            this.replaceCreatureTilesWithAtlasSprites();
             this.initializePlayer();
 
             this.wallLayer.debug = true;
@@ -97,6 +98,20 @@ var Isis;
             this.backgroundLayer.resizeWorld();
 
             this.map.setCollisionBetween(1, 2, true, "Walls");
+        };
+
+        InGame.prototype.replaceCreatureTilesWithAtlasSprites = function () {
+            var _this = this;
+            var creatures = this.creatureLayer.getTiles(0, 0, this.world.width, this.world.height).filter(function (tile) {
+                return tile.properties.atlas_name;
+            });
+            creatures.forEach(function (creature) {
+                var creatureSprite = _this.game.add.sprite(creature.worldX, creature.worldY, "creature_atlas");
+                creatureSprite.animations.add("idle", [creature.properties.atlas_name + "_1.png", creature.properties.atlas_name + "_2.png"], 2, true);
+                creatureSprite.animations.play("idle");
+
+                _this.map.removeTile(creature.x, creature.y);
+            });
         };
 
         InGame.prototype.initializePlayer = function () {

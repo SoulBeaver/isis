@@ -15,6 +15,7 @@
             this.game.stage.backgroundColor = "#ffffff";
 
             this.initializeMap();
+            this.replaceCreatureTilesWithAtlasSprites();
             this.initializePlayer();
 
             this.wallLayer.debug = true;
@@ -39,6 +40,18 @@
             this.backgroundLayer.resizeWorld();
 
             this.map.setCollisionBetween(1, 2, true, "Walls");
+        }
+
+        replaceCreatureTilesWithAtlasSprites() {
+            var creatures = this.creatureLayer.getTiles(0, 0, this.world.width, this.world.height)
+                                              .filter((tile) => tile.properties.atlas_name);
+            creatures.forEach((creature) => {
+                var creatureSprite = this.game.add.sprite(creature.worldX, creature.worldY, "creature_atlas");
+                creatureSprite.animations.add("idle", [creature.properties.atlas_name + "_1.png", creature.properties.atlas_name + "_2.png"], 2, true);
+                creatureSprite.animations.play("idle");
+
+                this.map.removeTile(creature.x, creature.y);
+            });
         }
 
         initializePlayer() {
