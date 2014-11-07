@@ -9,6 +9,34 @@ var __extends = this.__extends || function (d, b) {
 };
 var Isis;
 (function (Isis) {
+    var Boot = (function (_super) {
+        __extends(Boot, _super);
+        function Boot() {
+            _super.apply(this, arguments);
+        }
+        Boot.prototype.preload = function () {
+            this.load.image("preloadBar", "assets/preloadBar.png");
+        };
+
+        Boot.prototype.create = function () {
+            this.input.maxPointers = 1;
+
+            this.configureGame();
+
+            this.game.state.start("Preloader", false, true);
+        };
+
+        Boot.prototype.configureGame = function () {
+            this.game.physics.startSystem(Phaser.Physics.P2JS);
+            this.game.physics.p2.restitution = 0;
+            this.game.physics.p2.gravity.y = 0;
+        };
+        return Boot;
+    })(Phaser.State);
+    Isis.Boot = Boot;
+})(Isis || (Isis = {}));
+var Isis;
+(function (Isis) {
     var Game = (function (_super) {
         __extends(Game, _super);
         function Game() {
@@ -27,26 +55,6 @@ var Isis;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
-    var Boot = (function (_super) {
-        __extends(Boot, _super);
-        function Boot() {
-            _super.apply(this, arguments);
-        }
-        Boot.prototype.preload = function () {
-            this.load.image("preloadBar", "assets/preloadBar.png");
-        };
-
-        Boot.prototype.create = function () {
-            this.input.maxPointers = 1;
-
-            this.game.state.start("Preloader", false, true);
-        };
-        return Boot;
-    })(Phaser.State);
-    Isis.Boot = Boot;
-})(Isis || (Isis = {}));
-var Isis;
-(function (Isis) {
     var InGame = (function (_super) {
         __extends(InGame, _super);
         function InGame() {
@@ -55,6 +63,19 @@ var Isis;
         InGame.prototype.create = function () {
             this.game.stage.backgroundColor = "#ffffff";
 
+            this.initializeMap();
+            this.game.physics.p2.convertTilemap(this.map, this.backgroundLayer);
+
+            this.player = this.game.add.sprite(48, 24, "hero");
+            this.game.physics.p2.enable(this.player);
+            this.game.camera.follow(this.player);
+
+            this.game.physics.p2.setBoundsToWorld(true, true, true, true, false);
+
+            this.cursors = this.game.input.keyboard.createCursorKeys();
+        };
+
+        InGame.prototype.initializeMap = function () {
             this.map = this.game.add.tilemap("maze");
 
             this.map.addTilesetImage("World_Tiles", "world_tileset");
@@ -67,6 +88,20 @@ var Isis;
             this.creatureLayer = this.map.createLayer("Creatures");
 
             this.backgroundLayer.resizeWorld();
+
+            this.map.setCollisionBetween(387, 405);
+        };
+
+        InGame.prototype.update = function () {
+            if (this.cursors.left.isDown) {
+                this.player.body.moveLeft(200);
+            } else if (this.cursors.right.isDown) {
+                this.player.body.moveRight(200);
+            } else if (this.cursors.up.isDown) {
+                this.player.body.moveUp(200);
+            } else if (this.cursors.down.isDown) {
+                this.player.body.moveDown(200);
+            }
         };
         return InGame;
     })(Phaser.State);
@@ -120,6 +155,8 @@ var Isis;
             this.load.image("items_tileset", "assets/tilemaps/tiles/Items.png");
             this.load.image("world_tileset", "assets/tilemaps/tiles/World_Tiles.png");
             this.load.image("world_objects_tileset", "assets/tilemaps/tiles/World_Objects.png");
+
+            this.load.image("hero", "assets/sprites/hero.png");
         };
 
         Preloader.prototype.create = function () {
