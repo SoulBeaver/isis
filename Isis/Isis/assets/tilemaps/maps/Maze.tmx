@@ -29,6 +29,9 @@
    </properties>
   </tile>
  </tileset>
+ <tileset firstgid="2190" name="World_Dirt_Shadows" tilewidth="24" tileheight="24">
+  <image source="../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/World/World_Dirt_Shadows.png" width="600" height="528"/>
+ </tileset>
  <layer name="Walls" width="12" height="8">
   <data encoding="base64" compression="zlib">
    eJxjZGBgYGSAAEYiMTpAFlPiQBXHphebfch6WNhxm4/Oxud2fHah+4MYt+HTh8sNhDAAZ50Abw==
@@ -36,12 +39,22 @@
  </layer>
  <layer name="Background" width="12" height="8">
   <data encoding="base64" compression="zlib">
-   eJyFkF0KgDAMgzvw6v5sczI3PYg3NIMOQhV9+MhowxIancgMBhEZoRPIqp1TdQVevczbrBEwL/RPz/GUl2l+QY+f//m9kD9STtWu7G/7nfoH9+zK/mT8nPnVLZnbVXPDSrsN3AgqIFQ=
+   eJyFkOEKgCAMhBf0Oj2mWZqRWQ/SG3bChGNI/fiYbsfuWBxEPBhFxKHO4NDauLVuYAWToderBHDSHm/0Tr1a/wHXz35+L6SP5FM0K+vrPNM/dLKyPhk9e35lS+Z2xdyw0GwHL6d5JmY=
+  </data>
+ </layer>
+ <layer name="Shadows" width="12" height="8">
+  <data encoding="base64" compression="zlib">
+   eJxjYCAdzOFCxdjEYOLkAFxmINtFDUCKW3G5BRefWAAAfq0M+Q==
+  </data>
+ </layer>
+ <layer name="Items" width="12" height="8">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAM/GXBIcGKXfg/LvUEQAmZ+qgB/hGwu5QCtwEAOiAD/Q==
   </data>
  </layer>
  <layer name="Objects" width="12" height="8">
   <data encoding="base64" compression="zlib">
-   eJxjYIAADxYGssBfXPpYsQv/x2OPJx65EjLdRw3wj4DdpRS4DQDzHASW
+   eJxjYIAADxaGAQeeg8AN9AYAunwAmg==
   </data>
  </layer>
  <layer name="Creatures" width="12" height="8">

@@ -91,10 +91,13 @@ var Isis;
             this.map.addTilesetImage("Creatures", "creatures_tileset");
             this.map.addTilesetImage("Items", "items_tileset");
             this.map.addTilesetImage("World_Objects", "world_objects_tileset");
+            this.map.addTilesetImage("World_Dirt_Shadows", "world_dirt_shadows_tileset");
 
             this.wallLayer = this.map.createLayer("Walls");
             this.backgroundLayer = this.map.createLayer("Background");
-            this.itemLayer = this.map.createLayer("Objects");
+            this.shadowLayer = this.map.createLayer("Shadows");
+            this.itemLayer = this.map.createLayer("Items");
+            this.objectLayer = this.map.createLayer("Objects");
             this.creatureLayer = this.map.createLayer("Creatures");
 
             this.backgroundLayer.resizeWorld();
@@ -129,6 +132,7 @@ var Isis;
 
         InGame.prototype.update = function () {
             this.game.physics.arcade.collide(this.player, this.wallLayer);
+            this.game.physics.arcade.overlap(this.player, this.itemLayer, this.collectItem, null, this);
 
             this.player.body.velocity.x = 0;
             this.player.body.velocity.y = 0;
@@ -146,6 +150,10 @@ var Isis;
                     this.moveDown(this.player);
                 }
             }
+        };
+
+        InGame.prototype.collectItem = function (player, item) {
+            item.destroy();
         };
 
         InGame.prototype.isWall = function (worldX, worldY) {
@@ -233,6 +241,7 @@ var Isis;
             this.load.image("items_tileset", "assets/tilemaps/tiles/Items.png");
             this.load.image("world_tileset", "assets/tilemaps/tiles/World_Tiles.png");
             this.load.image("world_objects_tileset", "assets/tilemaps/tiles/World_Objects.png");
+            this.load.image("world_dirt_shadows_tileset", "assets/tilemaps/tiles/World_Dirt_Shadows.png");
 
             this.load.atlas("creature_atlas", "assets/spritesheets/creature_atlas.png", "assets/spritesheets/creature_atlas.json");
         };
