@@ -9,6 +9,24 @@ var __extends = this.__extends || function (d, b) {
 };
 var Isis;
 (function (Isis) {
+    var Game = (function (_super) {
+        __extends(Game, _super);
+        function Game() {
+            _super.call(this, 800, 600, Phaser.AUTO, "content", null);
+
+            this.state.add("Boot", Isis.Boot, false);
+            this.state.add("Preloader", Isis.Preloader, false);
+            this.state.add("MainMenu", Isis.MainMenu, false);
+            this.state.add("InGame", Isis.InGame, false);
+
+            this.state.start("Boot");
+        }
+        return Game;
+    })(Phaser.Game);
+    Isis.Game = Game;
+})(Isis || (Isis = {}));
+var Isis;
+(function (Isis) {
     var Boot = (function (_super) {
         __extends(Boot, _super);
         function Boot() {
@@ -45,29 +63,13 @@ var Isis;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
-    var Game = (function (_super) {
-        __extends(Game, _super);
-        function Game() {
-            _super.call(this, 800, 600, Phaser.AUTO, "content", null);
-
-            this.state.add("Boot", Isis.Boot, false);
-            this.state.add("Preloader", Isis.Preloader, false);
-            this.state.add("MainMenu", Isis.MainMenu, false);
-            this.state.add("InGame", Isis.InGame, false);
-
-            this.state.start("Boot");
-        }
-        return Game;
-    })(Phaser.Game);
-    Isis.Game = Game;
-})(Isis || (Isis = {}));
-var Isis;
-(function (Isis) {
     var InGame = (function (_super) {
         __extends(InGame, _super);
         function InGame() {
             _super.apply(this, arguments);
             this.playerSpeed = 100;
+            this.isMoving = false;
+            this.creatures = [];
         }
         InGame.prototype.create = function () {
             this.game.stage.backgroundColor = "#ffffff";
@@ -104,12 +106,12 @@ var Isis;
             var _this = this;
             var creatures = this.creatureLayer.getTiles(0, 0, this.world.width, this.world.height).filter(function (tile) {
                 return tile.properties.atlas_name;
-            });
-            creatures.forEach(function (creature) {
+            }).forEach(function (creature) {
                 var creatureSprite = _this.game.add.sprite(creature.worldX, creature.worldY, "creature_atlas");
                 creatureSprite.animations.add("idle", [creature.properties.atlas_name + "_1.png", creature.properties.atlas_name + "_2.png"], 2, true);
                 creatureSprite.animations.play("idle");
 
+                _this.creatures.push(creatureSprite);
                 _this.map.removeTile(creature.x, creature.y);
             });
         };
@@ -131,17 +133,53 @@ var Isis;
             this.player.body.velocity.x = 0;
             this.player.body.velocity.y = 0;
 
-            if (this.cursors.left.isDown) {
-                this.player.body.velocity.x -= this.playerSpeed;
-            } else if (this.cursors.right.isDown) {
-                this.player.body.velocity.x += this.playerSpeed;
-            }
+            if (!this.isMoving) {
+                if (this.cursors.left.isDown && !this.isWall(this.player.x - 24, this.player.y)) {
+                    this.moveLeft(this.player);
+                } else if (this.cursors.right.isDown && !this.isWall(this.player.x + 24, this.player.y)) {
+                    this.moveRight(this.player);
+                }
 
-            if (this.cursors.up.isDown) {
-                this.player.body.velocity.y -= this.playerSpeed;
-            } else if (this.cursors.down.isDown) {
-                this.player.body.velocity.y += this.playerSpeed;
+                if (this.cursors.up.isDown && !this.isWall(this.player.x, this.player.y - 24)) {
+                    this.moveUp(this.player);
+                } else if (this.cursors.down.isDown && !this.isWall(this.player.x, this.player.y + 24)) {
+                    this.moveDown(this.player);
+                }
             }
+        };
+
+        InGame.prototype.isWall = function (worldX, worldY) {
+            var tileX = worldX / 24;
+            var tileY = worldY / 24;
+
+            var tile = this.map.getTile(tileX, tileY, "Walls", true);
+
+            return tile == null || tile.index == 1;
+        };
+
+        InGame.prototype.moveRight = function (entity) {
+            this.moveRelatively(entity, { x: "+24" });
+        };
+
+        InGame.prototype.moveLeft = function (entity) {
+            this.moveRelatively(entity, { x: "-24" });
+        };
+
+        InGame.prototype.moveUp = function (entity) {
+            this.moveRelatively(entity, { y: "-24" });
+        };
+
+        InGame.prototype.moveDown = function (entity) {
+            this.moveRelatively(entity, { y: "+24" });
+        };
+
+        InGame.prototype.moveRelatively = function (entity, tween) {
+            var _this = this;
+            this.game.add.tween(entity).to(tween, 300, Phaser.Easing.Linear.None, true).onComplete.add(function () {
+                return _this.isMoving = false;
+            }, this);
+
+            this.isMoving = true;
         };
         return InGame;
     })(Phaser.State);
