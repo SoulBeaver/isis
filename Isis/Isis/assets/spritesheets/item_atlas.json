@@ -1,0 +1,48 @@
+{"frames": [
+
+{
+	"filename": "blue_diamond.png",
+	"frame": {"x":2,"y":2,"w":15,"h":15},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":1,"w":15,"h":15},
+	"sourceSize": {"w":16,"h":16},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "green_diamond.png",
+	"frame": {"x":19,"y":2,"w":15,"h":15},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":1,"w":15,"h":15},
+	"sourceSize": {"w":16,"h":16},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "red_diamond.png",
+	"frame": {"x":36,"y":2,"w":15,"h":15},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":1,"w":15,"h":15},
+	"sourceSize": {"w":16,"h":16},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "yellow_diamond.png",
+	"frame": {"x":53,"y":2,"w":15,"h":15},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":1,"w":15,"h":15},
+	"sourceSize": {"w":16,"h":16},
+	"pivot": {"x":0.5,"y":0.5}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "item_atlas.png",
+	"format": "RGBA8888",
+	"size": {"w":70,"h":19},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:aba766a61b3d0e90ce2b1088e1595b24:30c8ef03b212adf38927eafcb2bd0a86:b611dc43bb5bbf9cf8df4deab49dc00f$"
+}
+}

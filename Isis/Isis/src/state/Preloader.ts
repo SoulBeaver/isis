@@ -19,6 +19,7 @@
             this.load.image("world_dirt_shadows_tileset", "assets/tilemaps/tiles/World_Dirt_Shadows.png");
 
             this.load.atlas("creature_atlas", "assets/spritesheets/creature_atlas.png", "assets/spritesheets/creature_atlas.json");
+            this.load.atlas("item_atlas", "assets/spritesheets/item_atlas.png", "assets/spritesheets/item_atlas.json");
         }
 
         create() {

@@ -11,16 +11,19 @@
         cursors: Phaser.CursorKeys;
 
         player: Phaser.Sprite;
-        playerSpeed: number = 100;
+        playerSpeed: number = 150;
         isMoving: boolean = false;
 
-        creatures: Array<Phaser.Sprite> = [];
+        creatures: Phaser.Group;
+        items: Phaser.Group;
 
         create() {
-            this.game.stage.backgroundColor = "#ffffff";
+            this.game.stage.backgroundColor = "#000000";
 
             this.initializeMap();
             this.replaceCreatureTilesWithAtlasSprites();
+            this.separateItemsFromTilemap();
+
             this.initializePlayer();
 
             this.wallLayer.debug = true;
@@ -51,15 +54,36 @@
         }
 
         replaceCreatureTilesWithAtlasSprites() {
-            var creatures = this.creatureLayer.getTiles(0, 0, this.world.width, this.world.height)
+            this.creatures = this.game.add.group();
+            this.creatures.enableBody = true;
+            this.creatures.physicsBodyType = Phaser.Physics.ARCADE;
+
+            this.creatureLayer.getTiles(0, 0, this.world.width, this.world.height)
                 .filter((tile) => tile.properties.atlas_name)
-                .forEach((creature) => {
-                    var creatureSprite = this.game.add.sprite(creature.worldX, creature.worldY, "creature_atlas");
-                    creatureSprite.animations.add("idle", [creature.properties.atlas_name + "_1.png", creature.properties.atlas_name + "_2.png"], 2, true);
+                .forEach((creatureTile) => {
+                    var creatureSprite = this.creatures.create(creatureTile.worldX, creatureTile.worldY, "creature_atlas");
+                    creatureSprite.animations.add("idle", [creatureTile.properties.atlas_name + "_1.png", creatureTile.properties.atlas_name + "_2.png"], 2, true);
                     creatureSprite.animations.play("idle");
 
-                    this.creatures.push(creatureSprite);
-                    this.map.removeTile(creature.x, creature.y);
+                    creatureSprite.body.immovable = true;
+
+                    this.map.removeTile(creatureTile.x, creatureTile.y, "Creatures");
+                });
+        }
+
+        separateItemsFromTilemap() {
+            this.items = this.game.add.group();
+            this.items.enableBody = true;
+
+            this.itemLayer.getTiles(0, 0, this.world.width, this.world.height)
+                .filter((tile) => tile.properties.atlas_name)
+                .forEach((itemTile) => {
+                    var itemSprite = this.items.create(itemTile.worldX, itemTile.worldY, "item_atlas", itemTile.properties.atlas_name +".png");
+                    // Center sprite in tile.
+                    itemSprite.x += 4;
+                    itemSprite.y += 4;
+
+                    this.map.removeTile(itemTile.x, itemTile.y, "Items");
                 });
         }
 
@@ -67,6 +91,7 @@
             this.player = this.game.add.sprite(48, 24, "creature_atlas");
             this.player.animations.add("idle", ["blue_knight_1.png", "blue_knight_2.png"], 2, true);
             this.player.animations.play("idle");
+            this.player.name = "player";
 
             this.game.physics.arcade.enable(this.player);
             this.player.body.setSize(24, 24);
@@ -75,38 +100,110 @@
         }
 
         update() {
-            this.game.physics.arcade.collide(this.player, this.wallLayer);
-            this.game.physics.arcade.overlap(this.player, this.itemLayer, this.collectItem, null, this);
+            this.game.physics.arcade.overlap(this.player, this.items, this.collectItem, null, this);
 
             this.player.body.velocity.x = 0;
             this.player.body.velocity.y = 0;
 
             if (!this.isMoving) {
-                if (this.cursors.left.isDown && !this.isWall(this.player.x - 24, this.player.y)) {
-                    this.moveLeft(this.player);
-                } else if (this.cursors.right.isDown && !this.isWall(this.player.x + 24, this.player.y)) {
-                    this.moveRight(this.player);
+
+                if (this.cursors.left.isDown) {
+                    if (this.isPassable(this.player.x - 24, this.player.y)) {
+                        if (this.isEnemy(this.player.x - 24, this.player.y)) {
+                            this.attackCreature(this.player, this.creatureAt(this.player.x - 24, this.player.y));
+                        } else {
+                            this.moveLeft(this.player);
+                        }
+                    }
                 }
 
-                if (this.cursors.up.isDown && !this.isWall(this.player.x, this.player.y - 24)) {
-                    this.moveUp(this.player);
-                } else if (this.cursors.down.isDown && !this.isWall(this.player.x, this.player.y + 24)) {
-                    this.moveDown(this.player);
+                if (this.cursors.right.isDown) {
+                    if (this.isPassable(this.player.x + 24, this.player.y)) {
+                        if (this.isEnemy(this.player.x + 24, this.player.y)) {
+                            this.attackCreature(this.player, this.creatureAt(this.player.x + 24, this.player.y));
+                        } else {
+                            this.moveRight(this.player);
+                        }
+                    }
+                }
+
+                if (this.cursors.up.isDown) {
+                    if (this.isPassable(this.player.x, this.player.y - 24)) {
+                        if (this.isEnemy(this.player.x, this.player.y - 24)) {
+                            this.attackCreature(this.player, this.creatureAt(this.player.x, this.player.y - 24));
+                        } else {
+                            this.moveUp(this.player);
+                        }
+                    }
+                }
+
+                if (this.cursors.down.isDown) {
+                    if (this.isPassable(this.player.x, this.player.y + 24)) {
+                        if (this.isEnemy(this.player.x, this.player.y + 24)) {
+                            this.attackCreature(this.player, this.creatureAt(this.player.x, this.player.y + 24));
+                        } else {
+                            this.moveDown(this.player);
+                        }
+                    }
                 }
             }            
         }
 
-        collectItem(player: Phaser.Sprite, item: any) {
+        collectItem(player: Phaser.Sprite, item: Phaser.Sprite) {
+            console.log("Yummy!");
+
             item.destroy();
         }
 
-        isWall(worldX: number, worldY: number) {
+        attackCreature(player: Phaser.Sprite, creature: Phaser.Sprite) {
+            console.log("Killing monster at " + creature.position);
+
+            this.creatures.remove(creature, true);
+        }
+
+        isPassable(worldX: number, worldY: number) {
             var tileX = worldX / 24;
             var tileY = worldY / 24;
 
             var tile = this.map.getTile(tileX, tileY, "Walls", true);
 
-            return tile == null || tile.index == 1;
+            return tile && tile.index != 1;
+        }
+
+        isEnemy(worldX: number, worldY: number) { 
+            var tileCoordinates = this.toTileCoordinates(worldX, worldY);
+
+            var tile = this.map.getTile(tileCoordinates.x, tileCoordinates.y);
+            var creatureExists = false;
+            if (tile) {
+                this.creatures.forEachAlive((creature) => {
+                    var creatureTileCoordinates = this.toTileCoordinates(creature.x, creature.y);
+                    if (creatureTileCoordinates.x == tileCoordinates.x && creatureTileCoordinates.y == tileCoordinates.y)
+                        creatureExists = true;
+                }, this);
+            }
+
+            return creatureExists;
+        }
+
+        creatureAt(worldX: number, worldY: number) {
+            var tileCoordinates = this.toTileCoordinates(worldX, worldY);
+
+            var tile = this.map.getTile(tileCoordinates.x, tileCoordinates.y);
+            var found = null;
+            if (tile) {
+                this.creatures.forEachAlive((creature) => {
+                    var creatureTileCoordinates = this.toTileCoordinates(creature.x, creature.y);
+                    if (creatureTileCoordinates.x == tileCoordinates.x && creatureTileCoordinates.y == tileCoordinates.y)
+                        found = creature;
+                }, this);
+            }
+
+            return found;
+        }
+
+        toTileCoordinates(worldX, worldY) {
+            return { x: worldX / 24, y: worldY / 24 };
         }
 
         moveRight(entity: Phaser.Sprite) {

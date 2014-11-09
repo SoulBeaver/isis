@@ -9,6 +9,26 @@
  <tileset firstgid="1194" name="Items" tilewidth="16" tileheight="16">
   <tileoffset x="4" y="-4"/>
   <image source="../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/oryx_16bit_fantasy_items_trans.png" width="384" height="304"/>
+  <tile id="83">
+   <properties>
+    <property name="atlas_name" value="green_diamond"/>
+   </properties>
+  </tile>
+  <tile id="84">
+   <properties>
+    <property name="atlas_name" value="blue_diamond"/>
+   </properties>
+  </tile>
+  <tile id="85">
+   <properties>
+    <property name="atlas_name" value="red_diamond"/>
+   </properties>
+  </tile>
+  <tile id="86">
+   <properties>
+    <property name="atlas_name" value="yellow_diamond"/>
+   </properties>
+  </tile>
  </tileset>
  <tileset firstgid="1650" name="Creatures" tilewidth="24" tileheight="24">
   <tileoffset x="0" y="-4"/>

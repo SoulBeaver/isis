@@ -122,6 +122,25 @@
              "x":4,
              "y":-4
             },
+         "tileproperties":
+            {
+             "83":
+                {
+                 "atlas_name":"green_diamond"
+                },
+             "84":
+                {
+                 "atlas_name":"blue_diamond"
+                },
+             "85":
+                {
+                 "atlas_name":"red_diamond"
+                },
+             "86":
+                {
+                 "atlas_name":"yellow_diamond"
+                }
+            },
          "tilewidth":16
         }, 
         {

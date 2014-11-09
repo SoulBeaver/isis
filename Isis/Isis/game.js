@@ -67,15 +67,16 @@ var Isis;
         __extends(InGame, _super);
         function InGame() {
             _super.apply(this, arguments);
-            this.playerSpeed = 100;
+            this.playerSpeed = 150;
             this.isMoving = false;
-            this.creatures = [];
         }
         InGame.prototype.create = function () {
-            this.game.stage.backgroundColor = "#ffffff";
+            this.game.stage.backgroundColor = "#000000";
 
             this.initializeMap();
             this.replaceCreatureTilesWithAtlasSprites();
+            this.separateItemsFromTilemap();
+
             this.initializePlayer();
 
             this.wallLayer.debug = true;
@@ -107,15 +108,38 @@ var Isis;
 
         InGame.prototype.replaceCreatureTilesWithAtlasSprites = function () {
             var _this = this;
-            var creatures = this.creatureLayer.getTiles(0, 0, this.world.width, this.world.height).filter(function (tile) {
+            this.creatures = this.game.add.group();
+            this.creatures.enableBody = true;
+            this.creatures.physicsBodyType = Phaser.Physics.ARCADE;
+
+            this.creatureLayer.getTiles(0, 0, this.world.width, this.world.height).filter(function (tile) {
                 return tile.properties.atlas_name;
-            }).forEach(function (creature) {
-                var creatureSprite = _this.game.add.sprite(creature.worldX, creature.worldY, "creature_atlas");
-                creatureSprite.animations.add("idle", [creature.properties.atlas_name + "_1.png", creature.properties.atlas_name + "_2.png"], 2, true);
+            }).forEach(function (creatureTile) {
+                var creatureSprite = _this.creatures.create(creatureTile.worldX, creatureTile.worldY, "creature_atlas");
+                creatureSprite.animations.add("idle", [creatureTile.properties.atlas_name + "_1.png", creatureTile.properties.atlas_name + "_2.png"], 2, true);
                 creatureSprite.animations.play("idle");
 
-                _this.creatures.push(creatureSprite);
-                _this.map.removeTile(creature.x, creature.y);
+                creatureSprite.body.immovable = true;
+
+                _this.map.removeTile(creatureTile.x, creatureTile.y, "Creatures");
+            });
+        };
+
+        InGame.prototype.separateItemsFromTilemap = function () {
+            var _this = this;
+            this.items = this.game.add.group();
+            this.items.enableBody = true;
+
+            this.itemLayer.getTiles(0, 0, this.world.width, this.world.height).filter(function (tile) {
+                return tile.properties.atlas_name;
+            }).forEach(function (itemTile) {
+                var itemSprite = _this.items.create(itemTile.worldX, itemTile.worldY, "item_atlas", itemTile.properties.atlas_name + ".png");
+
+                // Center sprite in tile.
+                itemSprite.x += 4;
+                itemSprite.y += 4;
+
+                _this.map.removeTile(itemTile.x, itemTile.y, "Items");
             });
         };
 
@@ -123,6 +147,7 @@ var Isis;
             this.player = this.game.add.sprite(48, 24, "creature_atlas");
             this.player.animations.add("idle", ["blue_knight_1.png", "blue_knight_2.png"], 2, true);
             this.player.animations.play("idle");
+            this.player.name = "player";
 
             this.game.physics.arcade.enable(this.player);
             this.player.body.setSize(24, 24);
@@ -131,38 +156,111 @@ var Isis;
         };
 
         InGame.prototype.update = function () {
-            this.game.physics.arcade.collide(this.player, this.wallLayer);
-            this.game.physics.arcade.overlap(this.player, this.itemLayer, this.collectItem, null, this);
+            this.game.physics.arcade.overlap(this.player, this.items, this.collectItem, null, this);
 
             this.player.body.velocity.x = 0;
             this.player.body.velocity.y = 0;
 
             if (!this.isMoving) {
-                if (this.cursors.left.isDown && !this.isWall(this.player.x - 24, this.player.y)) {
-                    this.moveLeft(this.player);
-                } else if (this.cursors.right.isDown && !this.isWall(this.player.x + 24, this.player.y)) {
-                    this.moveRight(this.player);
+                if (this.cursors.left.isDown) {
+                    if (this.isPassable(this.player.x - 24, this.player.y)) {
+                        if (this.isEnemy(this.player.x - 24, this.player.y)) {
+                            this.attackCreature(this.player, this.creatureAt(this.player.x - 24, this.player.y));
+                        } else {
+                            this.moveLeft(this.player);
+                        }
+                    }
                 }
 
-                if (this.cursors.up.isDown && !this.isWall(this.player.x, this.player.y - 24)) {
-                    this.moveUp(this.player);
-                } else if (this.cursors.down.isDown && !this.isWall(this.player.x, this.player.y + 24)) {
-                    this.moveDown(this.player);
+                if (this.cursors.right.isDown) {
+                    if (this.isPassable(this.player.x + 24, this.player.y)) {
+                        if (this.isEnemy(this.player.x + 24, this.player.y)) {
+                            this.attackCreature(this.player, this.creatureAt(this.player.x + 24, this.player.y));
+                        } else {
+                            this.moveRight(this.player);
+                        }
+                    }
+                }
+
+                if (this.cursors.up.isDown) {
+                    if (this.isPassable(this.player.x, this.player.y - 24)) {
+                        if (this.isEnemy(this.player.x, this.player.y - 24)) {
+                            this.attackCreature(this.player, this.creatureAt(this.player.x, this.player.y - 24));
+                        } else {
+                            this.moveUp(this.player);
+                        }
+                    }
+                }
+
+                if (this.cursors.down.isDown) {
+                    if (this.isPassable(this.player.x, this.player.y + 24)) {
+                        if (this.isEnemy(this.player.x, this.player.y + 24)) {
+                            this.attackCreature(this.player, this.creatureAt(this.player.x, this.player.y + 24));
+                        } else {
+                            this.moveDown(this.player);
+                        }
+                    }
                 }
             }
         };
 
         InGame.prototype.collectItem = function (player, item) {
+            console.log("Yummy!");
+
             item.destroy();
         };
 
-        InGame.prototype.isWall = function (worldX, worldY) {
+        InGame.prototype.attackCreature = function (player, creature) {
+            console.log("Killing monster at " + creature.position);
+
+            this.creatures.remove(creature, true);
+        };
+
+        InGame.prototype.isPassable = function (worldX, worldY) {
             var tileX = worldX / 24;
             var tileY = worldY / 24;
 
             var tile = this.map.getTile(tileX, tileY, "Walls", true);
 
-            return tile == null || tile.index == 1;
+            return tile && tile.index != 1;
+        };
+
+        InGame.prototype.isEnemy = function (worldX, worldY) {
+            var _this = this;
+            var tileCoordinates = this.toTileCoordinates(worldX, worldY);
+
+            var tile = this.map.getTile(tileCoordinates.x, tileCoordinates.y);
+            var creatureExists = false;
+            if (tile) {
+                this.creatures.forEachAlive(function (creature) {
+                    var creatureTileCoordinates = _this.toTileCoordinates(creature.x, creature.y);
+                    if (creatureTileCoordinates.x == tileCoordinates.x && creatureTileCoordinates.y == tileCoordinates.y)
+                        creatureExists = true;
+                }, this);
+            }
+
+            return creatureExists;
+        };
+
+        InGame.prototype.creatureAt = function (worldX, worldY) {
+            var _this = this;
+            var tileCoordinates = this.toTileCoordinates(worldX, worldY);
+
+            var tile = this.map.getTile(tileCoordinates.x, tileCoordinates.y);
+            var found = null;
+            if (tile) {
+                this.creatures.forEachAlive(function (creature) {
+                    var creatureTileCoordinates = _this.toTileCoordinates(creature.x, creature.y);
+                    if (creatureTileCoordinates.x == tileCoordinates.x && creatureTileCoordinates.y == tileCoordinates.y)
+                        found = creature;
+                }, this);
+            }
+
+            return found;
+        };
+
+        InGame.prototype.toTileCoordinates = function (worldX, worldY) {
+            return { x: worldX / 24, y: worldY / 24 };
         };
 
         InGame.prototype.moveRight = function (entity) {
@@ -244,6 +342,7 @@ var Isis;
             this.load.image("world_dirt_shadows_tileset", "assets/tilemaps/tiles/World_Dirt_Shadows.png");
 
             this.load.atlas("creature_atlas", "assets/spritesheets/creature_atlas.png", "assets/spritesheets/creature_atlas.json");
+            this.load.atlas("item_atlas", "assets/spritesheets/item_atlas.png", "assets/spritesheets/item_atlas.json");
         };
 
         Preloader.prototype.create = function () {
