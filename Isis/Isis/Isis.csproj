@@ -27,6 +27,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="app.ts" />
     <TypeScriptCompile Include="libs\phaser.d.ts" />
+    <TypeScriptCompile Include="src\Player.ts" />
     <TypeScriptCompile Include="src\state\Boot.ts" />
     <TypeScriptCompile Include="src\Game.ts" />
     <TypeScriptCompile Include="src\state\InGame.ts" />

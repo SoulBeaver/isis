@@ -27,6 +27,34 @@ var Isis;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
+    var Player = (function (_super) {
+        __extends(Player, _super);
+        function Player(game, x, y) {
+            _super.call(this, game, x, y, "creature_atlas");
+            this._acceleration = 150;
+
+            this.addAnimations();
+            this.addPhysics();
+
+            this.game.add.existing(this);
+        }
+        Player.prototype.addAnimations = function () {
+            this.animations.add("idle", ["blue_knight_1.png", "blue_knight_2.png"], 2, true);
+            this.animations.play("idle");
+        };
+
+        Player.prototype.addPhysics = function () {
+            this.game.physics.enable(this, Phaser.Physics.ARCADE);
+        };
+
+        Player.prototype.update = function () {
+        };
+        return Player;
+    })(Phaser.Sprite);
+    Isis.Player = Player;
+})(Isis || (Isis = {}));
+var Isis;
+(function (Isis) {
     var Boot = (function (_super) {
         __extends(Boot, _super);
         function Boot() {
@@ -143,13 +171,7 @@ var Isis;
         };
 
         InGame.prototype.initializePlayer = function () {
-            this.player = this.game.add.sprite(48, 24, "creature_atlas");
-            this.player.animations.add("idle", ["blue_knight_1.png", "blue_knight_2.png"], 2, true);
-            this.player.animations.play("idle");
-            this.player.name = "player";
-
-            this.game.physics.arcade.enable(this.player);
-            this.player.body.setSize(24, 24);
+            this.player = new Isis.Player(this.game, 48, 24);
 
             this.game.camera.follow(this.player);
         };

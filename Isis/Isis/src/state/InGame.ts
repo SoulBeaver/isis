@@ -10,7 +10,7 @@
 
         cursors: Phaser.CursorKeys;
 
-        player: Phaser.Sprite;
+        player: Player;
         playerSpeed: number = 150;
         isMoving: boolean = false;
 
@@ -88,13 +88,7 @@
         }
 
         initializePlayer() {
-            this.player = this.game.add.sprite(48, 24, "creature_atlas");
-            this.player.animations.add("idle", ["blue_knight_1.png", "blue_knight_2.png"], 2, true);
-            this.player.animations.play("idle");
-            this.player.name = "player";
-
-            this.game.physics.arcade.enable(this.player);
-            this.player.body.setSize(24, 24);
+            this.player = new Player(this.game, 48, 24);
 
             this.game.camera.follow(this.player);
         }
