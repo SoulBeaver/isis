@@ -12,7 +12,7 @@ var Isis;
     var Game = (function (_super) {
         __extends(Game, _super);
         function Game() {
-            _super.call(this, 800, 600, Phaser.AUTO, "content", null);
+            _super.call(this, 640, 480, Phaser.AUTO, "content", null);
 
             this.state.add("Boot", Isis.Boot, false);
             this.state.add("Preloader", Isis.Preloader, false);
@@ -49,13 +49,12 @@ var Isis;
 
             //scaling options
             this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+            this.scale.setShowAll();
+            this.scale.refresh();
 
             //have the game centered horizontally
             this.scale.pageAlignHorizontally = true;
             this.scale.pageAlignVertically = true;
-
-            //screen size will be set automatically
-            this.scale.setScreenSize(true);
         };
         return Boot;
     })(Phaser.State);
@@ -195,7 +194,7 @@ var Isis;
             var xOffset = player.x - creature.x;
             var yOffset = player.y - creature.y;
 
-            var tween = this.game.add.tween(player).to({ x: player.x - xOffset, y: player.y - yOffset, angle: -20 }, 100, Phaser.Easing.Linear.None).yoyo(true);
+            var tween = this.game.add.tween(player).to({ x: player.x - xOffset, y: player.y - yOffset, angle: xOffset <= 0 ? 20 : -20 }, 100, Phaser.Easing.Linear.None).yoyo(true);
             tween.onLoop.add(function () {
                 return _this.creatures.remove(creature, true);
             }, this);

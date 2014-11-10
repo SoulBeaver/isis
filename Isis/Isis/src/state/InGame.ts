@@ -140,7 +140,7 @@
             var yOffset = player.y - creature.y;
             
             var tween = this.game.add.tween(player)
-                .to({ x: player.x - xOffset, y: player.y - yOffset, angle: -20 }, 100, Phaser.Easing.Linear.None)
+                .to({ x: player.x - xOffset, y: player.y - yOffset, angle: xOffset <= 0 ? 20 : -20 }, 100, Phaser.Easing.Linear.None)
                 .yoyo(true);
             tween.onLoop.add(() => this.creatures.remove(creature, true), this);
             tween.onComplete.add(() => this.isMoving = false, this);

@@ -17,13 +17,12 @@
 
             //scaling options
             this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+            this.scale.setShowAll();
+            this.scale.refresh();
 
             //have the game centered horizontally
             this.scale.pageAlignHorizontally = true;
             this.scale.pageAlignVertically = true;
-
-            //screen size will be set automatically
-            this.scale.setScreenSize(true);
         }
     }
 } 
