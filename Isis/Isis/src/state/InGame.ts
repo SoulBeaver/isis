@@ -96,9 +96,6 @@
         update() {
             this.game.physics.arcade.overlap(this.player, this.items, this.collectItem, null, this);
 
-            this.player.body.velocity.x = 0;
-            this.player.body.velocity.y = 0;
-
             if (!this.isMoving) {
 
                 if (this.cursors.left.isDown)

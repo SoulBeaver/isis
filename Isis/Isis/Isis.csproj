@@ -37,6 +37,8 @@
   <ItemGroup>
     <Content Include="libs\phaser.map" />
     <Content Include="assets\tilemaps\maps\oryx_test.json" />
+    <Content Include="settings.json" />
+    <Content Include="assets\manifest.json" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

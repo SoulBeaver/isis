@@ -9,24 +9,6 @@ var __extends = this.__extends || function (d, b) {
 };
 var Isis;
 (function (Isis) {
-    var Game = (function (_super) {
-        __extends(Game, _super);
-        function Game() {
-            _super.call(this, 640, 480, Phaser.AUTO, "content", null);
-
-            this.state.add("Boot", Isis.Boot, false);
-            this.state.add("Preloader", Isis.Preloader, false);
-            this.state.add("MainMenu", Isis.MainMenu, false);
-            this.state.add("InGame", Isis.InGame, false);
-
-            this.state.start("Boot");
-        }
-        return Game;
-    })(Phaser.Game);
-    Isis.Game = Game;
-})(Isis || (Isis = {}));
-var Isis;
-(function (Isis) {
     var Player = (function (_super) {
         __extends(Player, _super);
         function Player(game, x, y) {
@@ -87,6 +69,24 @@ var Isis;
         return Boot;
     })(Phaser.State);
     Isis.Boot = Boot;
+})(Isis || (Isis = {}));
+var Isis;
+(function (Isis) {
+    var Game = (function (_super) {
+        __extends(Game, _super);
+        function Game() {
+            _super.call(this, 640, 480, Phaser.AUTO, "content", null);
+
+            this.state.add("Boot", Isis.Boot, false);
+            this.state.add("Preloader", Isis.Preloader, false);
+            this.state.add("MainMenu", Isis.MainMenu, false);
+            this.state.add("InGame", Isis.InGame, false);
+
+            this.state.start("Boot");
+        }
+        return Game;
+    })(Phaser.Game);
+    Isis.Game = Game;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
@@ -178,9 +178,6 @@ var Isis;
 
         InGame.prototype.update = function () {
             this.game.physics.arcade.overlap(this.player, this.items, this.collectItem, null, this);
-
-            this.player.body.velocity.x = 0;
-            this.player.body.velocity.y = 0;
 
             if (!this.isMoving) {
                 if (this.cursors.left.isDown)
@@ -307,16 +304,7 @@ var Isis;
         };
 
         Preloader.prototype.loadAssets = function () {
-            this.load.tilemap("maze", "assets/tilemaps/maps/Maze.json", null, Phaser.Tilemap.TILED_JSON);
-
-            this.load.image("creatures_tileset", "assets/tilemaps/tiles/Creatures.png");
-            this.load.image("items_tileset", "assets/tilemaps/tiles/Items.png");
-            this.load.image("world_tileset", "assets/tilemaps/tiles/World_Tiles.png");
-            this.load.image("world_objects_tileset", "assets/tilemaps/tiles/World_Objects.png");
-            this.load.image("world_dirt_shadows_tileset", "assets/tilemaps/tiles/World_Dirt_Shadows.png");
-
-            this.load.atlas("creature_atlas", "assets/spritesheets/creature_atlas.png", "assets/spritesheets/creature_atlas.json");
-            this.load.atlas("item_atlas", "assets/spritesheets/item_atlas.png", "assets/spritesheets/item_atlas.json");
+            this.load.pack("maze", "assets/manifest.json");
         };
 
         Preloader.prototype.create = function () {
