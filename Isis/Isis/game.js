@@ -1,12 +1,34 @@
 ﻿window.onload = function () {
     var game = new Isis.Game();
 };
+var Isis;
+(function (Isis) {
+    Isis.Configuration = {};
+})(Isis || (Isis = {}));
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+var Isis;
+(function (Isis) {
+    var Game = (function (_super) {
+        __extends(Game, _super);
+        function Game() {
+            _super.call(this, 640, 480, Phaser.AUTO, "content", null);
+
+            this.state.add("Boot", Isis.Boot, false);
+            this.state.add("Preloader", Isis.Preloader, false);
+            this.state.add("MainMenu", Isis.MainMenu, false);
+            this.state.add("InGame", Isis.InGame, false);
+
+            this.state.start("Boot");
+        }
+        return Game;
+    })(Phaser.Game);
+    Isis.Game = Game;
+})(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
     var Player = (function (_super) {
@@ -44,6 +66,7 @@ var Isis;
         }
         Boot.prototype.preload = function () {
             this.load.image("preloadBar", "assets/preloadBar.png");
+            this.load.json("settings", "assets/settings.json");
         };
 
         Boot.prototype.create = function () {
@@ -69,24 +92,6 @@ var Isis;
         return Boot;
     })(Phaser.State);
     Isis.Boot = Boot;
-})(Isis || (Isis = {}));
-var Isis;
-(function (Isis) {
-    var Game = (function (_super) {
-        __extends(Game, _super);
-        function Game() {
-            _super.call(this, 640, 480, Phaser.AUTO, "content", null);
-
-            this.state.add("Boot", Isis.Boot, false);
-            this.state.add("Preloader", Isis.Preloader, false);
-            this.state.add("MainMenu", Isis.MainMenu, false);
-            this.state.add("InGame", Isis.InGame, false);
-
-            this.state.start("Boot");
-        }
-        return Game;
-    })(Phaser.Game);
-    Isis.Game = Game;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {

@@ -2,6 +2,7 @@
     export class Boot extends Phaser.State {
         preload() {
             this.load.image("preloadBar", "assets/preloadBar.png");
+            this.load.json("settings", "assets/settings.json");
         }
 
         create() {
