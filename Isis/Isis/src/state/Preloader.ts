@@ -11,6 +11,7 @@
 
         loadAssets() {
             this.load.pack("maze", "assets/manifest.json");
+            this.load.json("manifest", "assets/manifest.json");
         }
 
         create() {

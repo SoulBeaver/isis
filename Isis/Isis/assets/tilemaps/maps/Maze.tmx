@@ -54,7 +54,7 @@
  </tileset>
  <layer name="Walls" width="12" height="8">
   <data encoding="base64" compression="zlib">
-   eJxjZGBgYGSAAEYiMTpAFlPiQBXHphebfch6WNhxm4/Oxud2fHah+4MYt+HTh8sNhDAAZ50Abw==
+   eJxjZGBgYGSAAEYiMTrAJobLPAYG7PbhMwuXPLqZpNiFbg8xbsOnD5cbCGEAK6gAOg==
   </data>
  </layer>
  <layer name="Background" width="12" height="8">

@@ -20,13 +20,16 @@
     <Content Include="app.css" />
     <Content Include="assets\preloadBar.png" />
     <Content Include="index.html" />
+    <Content Include="libs\lodash\lodash.js" />
     <Content Include="libs\phaser\phaser.js" />
     <Content Include="libs\phaser\phaser.min.js" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="app.ts" />
+    <TypeScriptCompile Include="libs\lodash\lodash.d.ts" />
     <TypeScriptCompile Include="libs\phaser\phaser.d.ts" />
+    <TypeScriptCompile Include="src\JSONAsset.ts" />
     <TypeScriptCompile Include="src\Configuration.ts" />
     <TypeScriptCompile Include="src\Player.ts" />
     <TypeScriptCompile Include="src\state\Boot.ts" />
@@ -34,6 +37,8 @@
     <TypeScriptCompile Include="src\state\InGame.ts" />
     <TypeScriptCompile Include="src\state\MainMenu.ts" />
     <TypeScriptCompile Include="src\state\Preloader.ts" />
+    <TypeScriptCompile Include="src\Tilemap.ts" />
+    <TypeScriptCompile Include="src\TilemapExtensions.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\tilemaps\maps\oryx_test.json" />
