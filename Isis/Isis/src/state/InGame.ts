@@ -8,28 +8,25 @@
         objectLayer: Phaser.TilemapLayer;
         creatureLayer: Phaser.TilemapLayer;
 
-        cursors: Phaser.CursorKeys;
+        isAcceptingInput = true;
 
         player: Player;
-        playerSpeed: number = 150;
-        isMoving: boolean = false;
 
         creatures: Phaser.Group;
         items: Phaser.Group;
 
+        settings: any;
+
         create() {
             this.game.stage.backgroundColor = "#000000";
+
+            this.settings = this.game.cache.getJSON("settings");
 
             this.initializeMap();
             this.separateCreaturesFromTilemap();
             this.separateItemsFromTilemap();
 
             this.initializePlayer();
-
-            this.wallLayer.debug = true;
-            this.player.debug = true;
-
-            this.cursors = this.game.input.keyboard.createCursorKeys();
         }
 
         initializeMap() {
@@ -90,23 +87,46 @@
         initializePlayer() {
             this.player = new Player(this.game, 48, 24);
 
+            this.player.onMoveDown.add(this.movePlayerDown, this);
+            this.player.onMoveUp.add(this.movePlayerUp, this);
+            this.player.onMoveLeft.add(this.movePlayerLeft, this);
+            this.player.onMoveRight.add(this.movePlayerRight, this);
+
             this.game.camera.follow(this.player);
         }
 
         update() {
             this.game.physics.arcade.overlap(this.player, this.items, this.collectItem, null, this);
 
-            if (!this.isMoving) {
-
-                if (this.cursors.left.isDown)
-                    this.tryMoveTo({ x: this.player.x - 24, y: this.player.y });
-                if (this.cursors.right.isDown)
-                    this.tryMoveTo({ x: this.player.x + 24, y: this.player.y });
-                if (this.cursors.up.isDown)
-                    this.tryMoveTo({ x: this.player.x, y: this.player.y - 24 });
-                if (this.cursors.down.isDown)
-                    this.tryMoveTo({ x: this.player.x, y: this.player.y + 24 });
+            if (this.isAcceptingInput) {
+                var keyboard = this.game.input.keyboard;
+                
+                for (var inputCommand in this.settings) {
+                    var keyCode = this.toKeyCode(this.settings[inputCommand]);
+                    if (keyboard.isDown(keyCode))
+                        this.player.tryActOn(inputCommand);
+                }
             }            
+        }
+
+        toKeyCode(keyString: string): number {
+            return Phaser.Keyboard[keyString];
+        }
+
+        movePlayerDown(player: Player) {
+            this.tryMoveTo({ x: this.player.x, y: this.player.y + 24 });
+        }
+
+        movePlayerUp(player: Player) {
+            this.tryMoveTo({ x: this.player.x, y: this.player.y - 24 });
+        }
+
+        movePlayerLeft(player: Player) {
+            this.tryMoveTo({ x: this.player.x - 24, y: this.player.y });
+        }
+
+        movePlayerRight(player: Player) {
+            this.tryMoveTo({ x: this.player.x + 24, y: this.player.y });
         }
 
         tryMoveTo(destination: { x: number; y: number }) {
@@ -125,7 +145,7 @@
         }
 
         attackCreature(player: Phaser.Sprite, creature: Phaser.Sprite) {
-            this.isMoving = true;
+            this.isAcceptingInput = false;
 
             var xOffset = player.x - creature.x;
             var yOffset = player.y - creature.y;
@@ -134,7 +154,7 @@
                 .to({ x: player.x - xOffset, y: player.y - yOffset, angle: xOffset <= 0 ? 20 : -20 }, 100, Phaser.Easing.Linear.None)
                 .yoyo(true);
             tween.onLoop.add(() => this.creatures.remove(creature, true), this);
-            tween.onComplete.add(() => this.isMoving = false, this);
+            tween.onComplete.add(() => this.isAcceptingInput = true, this);
             tween.start();
         }
 
@@ -167,9 +187,9 @@
         moveRelatively(entity: Phaser.Sprite, to: { x: number; y: number }) {
             this.game.add.tween(entity)
                 .to(to, 300, Phaser.Easing.Linear.None, true)
-                .onComplete.add(() => this.isMoving = false, this);
+                .onComplete.add(() => this.isAcceptingInput = true, this);
 
-            this.isMoving = true;
+            this.isAcceptingInput = false;
         }
     }
 } 

@@ -36,6 +36,10 @@ var Isis;
         function Player(game, x, y) {
             _super.call(this, game, x, y, "creature_atlas");
             this._acceleration = 150;
+            this.onMoveLeft = new Phaser.Signal();
+            this.onMoveRight = new Phaser.Signal();
+            this.onMoveUp = new Phaser.Signal();
+            this.onMoveDown = new Phaser.Signal();
 
             this.addAnimations();
             this.addPhysics();
@@ -51,7 +55,24 @@ var Isis;
             this.game.physics.enable(this, Phaser.Physics.ARCADE);
         };
 
-        Player.prototype.update = function () {
+        Player.prototype.tryActOn = function (command) {
+            switch (command) {
+                case "move_left":
+                    this.onMoveLeft.dispatch(this);
+                    break;
+
+                case "move_right":
+                    this.onMoveRight.dispatch(this);
+                    break;
+
+                case "move_up":
+                    this.onMoveUp.dispatch(this);
+                    break;
+
+                case "move_down":
+                    this.onMoveDown.dispatch(this);
+                    break;
+            }
         };
         return Player;
     })(Phaser.Sprite);
@@ -99,22 +120,18 @@ var Isis;
         __extends(InGame, _super);
         function InGame() {
             _super.apply(this, arguments);
-            this.playerSpeed = 150;
-            this.isMoving = false;
+            this.isAcceptingInput = true;
         }
         InGame.prototype.create = function () {
             this.game.stage.backgroundColor = "#000000";
+
+            this.settings = this.game.cache.getJSON("settings");
 
             this.initializeMap();
             this.separateCreaturesFromTilemap();
             this.separateItemsFromTilemap();
 
             this.initializePlayer();
-
-            this.wallLayer.debug = true;
-            this.player.debug = true;
-
-            this.cursors = this.game.input.keyboard.createCursorKeys();
         };
 
         InGame.prototype.initializeMap = function () {
@@ -178,22 +195,46 @@ var Isis;
         InGame.prototype.initializePlayer = function () {
             this.player = new Isis.Player(this.game, 48, 24);
 
+            this.player.onMoveDown.add(this.movePlayerDown, this);
+            this.player.onMoveUp.add(this.movePlayerUp, this);
+            this.player.onMoveLeft.add(this.movePlayerLeft, this);
+            this.player.onMoveRight.add(this.movePlayerRight, this);
+
             this.game.camera.follow(this.player);
         };
 
         InGame.prototype.update = function () {
             this.game.physics.arcade.overlap(this.player, this.items, this.collectItem, null, this);
 
-            if (!this.isMoving) {
-                if (this.cursors.left.isDown)
-                    this.tryMoveTo({ x: this.player.x - 24, y: this.player.y });
-                if (this.cursors.right.isDown)
-                    this.tryMoveTo({ x: this.player.x + 24, y: this.player.y });
-                if (this.cursors.up.isDown)
-                    this.tryMoveTo({ x: this.player.x, y: this.player.y - 24 });
-                if (this.cursors.down.isDown)
-                    this.tryMoveTo({ x: this.player.x, y: this.player.y + 24 });
+            if (this.isAcceptingInput) {
+                var keyboard = this.game.input.keyboard;
+
+                for (var inputCommand in this.settings) {
+                    var keyCode = this.toKeyCode(this.settings[inputCommand]);
+                    if (keyboard.isDown(keyCode))
+                        this.player.tryActOn(inputCommand);
+                }
             }
+        };
+
+        InGame.prototype.toKeyCode = function (keyString) {
+            return Phaser.Keyboard[keyString];
+        };
+
+        InGame.prototype.movePlayerDown = function (player) {
+            this.tryMoveTo({ x: this.player.x, y: this.player.y + 24 });
+        };
+
+        InGame.prototype.movePlayerUp = function (player) {
+            this.tryMoveTo({ x: this.player.x, y: this.player.y - 24 });
+        };
+
+        InGame.prototype.movePlayerLeft = function (player) {
+            this.tryMoveTo({ x: this.player.x - 24, y: this.player.y });
+        };
+
+        InGame.prototype.movePlayerRight = function (player) {
+            this.tryMoveTo({ x: this.player.x + 24, y: this.player.y });
         };
 
         InGame.prototype.tryMoveTo = function (destination) {
@@ -213,7 +254,7 @@ var Isis;
 
         InGame.prototype.attackCreature = function (player, creature) {
             var _this = this;
-            this.isMoving = true;
+            this.isAcceptingInput = false;
 
             var xOffset = player.x - creature.x;
             var yOffset = player.y - creature.y;
@@ -223,7 +264,7 @@ var Isis;
                 return _this.creatures.remove(creature, true);
             }, this);
             tween.onComplete.add(function () {
-                return _this.isMoving = false;
+                return _this.isAcceptingInput = true;
             }, this);
             tween.start();
         };
@@ -258,10 +299,10 @@ var Isis;
         InGame.prototype.moveRelatively = function (entity, to) {
             var _this = this;
             this.game.add.tween(entity).to(to, 300, Phaser.Easing.Linear.None, true).onComplete.add(function () {
-                return _this.isMoving = false;
+                return _this.isAcceptingInput = true;
             }, this);
 
-            this.isMoving = true;
+            this.isAcceptingInput = false;
         };
         return InGame;
     })(Phaser.State);
