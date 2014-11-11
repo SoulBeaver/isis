@@ -293,7 +293,10 @@ var Isis;
         };
 
         InGame.prototype.toTileCoordinates = function (worldXY) {
-            return { x: worldXY.x / 24, y: worldXY.y / 24 };
+            return {
+                x: worldXY.x / this.map.tileWidth,
+                y: worldXY.y / this.map.tileHeight
+            };
         };
 
         InGame.prototype.moveRelatively = function (entity, to) {

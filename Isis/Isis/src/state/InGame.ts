@@ -181,7 +181,10 @@
         }
 
         toTileCoordinates(worldXY: { x: number; y: number }) {
-            return { x: worldXY.x / 24, y: worldXY.y / 24 };
+            return {
+                x: worldXY.x / this.map.tileWidth,
+                y: worldXY.y / this.map.tileHeight
+            };
         }
 
         moveRelatively(entity: Phaser.Sprite, to: { x: number; y: number }) {
