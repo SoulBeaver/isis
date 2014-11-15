@@ -1,9 +1,7 @@
 ﻿module Isis {
     export class InGame extends Phaser.State {
         map: Tilemap;
-        creatures: Array<Phaser.Sprite>;
-        items: Array<Phaser.Sprite>;
-
+        
         isAcceptingInput = true;
         player: Player;
 
@@ -15,31 +13,8 @@
             this.settings = this.game.cache.getJSON("settings");
 
             this.map = new Tilemap(this.game, "maze", this.game.cache.getJSON("manifest"));
-            this.separateCreaturesFromTilemap();
-            this.separateItemsFromTilemap();
 
             this.initializePlayer();
-        }
-
-        separateCreaturesFromTilemap() {
-            this.creatures = extractFrom(this.map, this.map.creatureLayer, (creatureTile) => {
-                var creatureSprite = this.game.add.sprite(creatureTile.worldX, creatureTile.worldY, "creature_atlas");
-                creatureSprite.animations.add("idle", [creatureTile.properties.atlas_name + "_1.png", creatureTile.properties.atlas_name + "_2.png"], 2, true);
-                creatureSprite.animations.play("idle");
-
-                return creatureSprite;
-            });
-        }
-
-        separateItemsFromTilemap() {
-            this.items = extractFrom(this.map, this.map.itemLayer, (itemTile) => {
-                var itemSprite = this.game.add.sprite(itemTile.worldX, itemTile.worldY, "item_atlas", itemTile.properties.atlas_name + ".png");
-                // Center sprite in tile.
-                itemSprite.x += 4;
-                itemSprite.y += 4;
-
-                return itemSprite;
-            });
         }
 
         initializePlayer() {
@@ -105,7 +80,7 @@
         }
 
         collectItem(player: Player, item: Phaser.Sprite) {
-            this.items.splice(this.items.indexOf(item), 1);
+            this.map.items.splice(this.map.items.indexOf(item), 1);
             item.destroy();
         }
 
@@ -121,7 +96,7 @@
                 .yoyo(true);
             tween.onStart.add(() => this.isAcceptingInput = false, this);
             tween.onLoop.add(() => {
-                _.remove(this.creatures, creature);
+                _.remove(this.map.creatures, creature);
                 creature.destroy();
             }, this);
             tween.onComplete.add(() => this.isAcceptingInput = true, this);
@@ -129,17 +104,17 @@
         }
 
         creatureAt(tileCoordinates: TileCoordinates) {
-            return _.find(this.creatures, (creature) => _.isEqual(toTileCoordinates(this.map, creature), tileCoordinates));
+            return _.find(this.map.creatures, (creature) => _.isEqual(toTileCoordinates(this.map, creature), tileCoordinates));
         }
 
         itemAt(tileCoordinates: TileCoordinates) {
-            return _.find(this.items, (item) => _.isEqual(toTileCoordinates(this.map, item), tileCoordinates));
+            return _.find(this.map.items, (item) => _.isEqual(toTileCoordinates(this.map, item), tileCoordinates));
         }
 
         moveRelatively(entity: Phaser.Sprite, to: WorldCoordinates) {
             var tween = this.game.add.tween(entity).to(to, 300, Phaser.Easing.Linear.None, true);
             tween.onStart.add(() => this.isAcceptingInput = false, this);
-            tween.onComplete.add(() => this.isAcceptingInput = true, this);
+            tween.onComplete.add(() => this.isAcceptingInput = true, this); 
         }
     }
 } 
