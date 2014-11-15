@@ -87,6 +87,7 @@
 
         tryMoveTo(worldCoordinates: WorldCoordinates) {
             var tileCoordinates = toTileCoordinates(this.map, worldCoordinates);
+            console.log("Moving to: " + tileCoordinates.x + ", " + tileCoordinates.y);
 
             if (!this.map.isWall(tileCoordinates)) {
                 var creatureBlockingPath = this.creatureAt(tileCoordinates);
@@ -111,7 +112,7 @@
         attackCreature(player: Phaser.Sprite, creature: Phaser.Sprite) {
             var xOffset = player.x - creature.x;
             var yOffset = player.y - creature.y;
-            
+
             var tween = this.game.add.tween(player)
                 .to({
                     x: player.x - xOffset,
@@ -119,7 +120,10 @@
                 }, 100, Phaser.Easing.Linear.None)
                 .yoyo(true);
             tween.onStart.add(() => this.isAcceptingInput = false, this);
-            tween.onLoop.add(() => { this.creatures.splice(this.creatures.indexOf(creature), 1); creature.destroy(); }, this);
+            tween.onLoop.add(() => {
+                _.remove(this.creatures, creature);
+                creature.destroy();
+            }, this);
             tween.onComplete.add(() => this.isAcceptingInput = true, this);
             tween.start();
         }

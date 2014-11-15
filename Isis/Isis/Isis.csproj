@@ -29,6 +29,7 @@
     <TypeScriptCompile Include="app.ts" />
     <TypeScriptCompile Include="libs\lodash\lodash.d.ts" />
     <TypeScriptCompile Include="libs\phaser\phaser.d.ts" />
+    <TypeScriptCompile Include="libs\tsUnit\tsUnit.ts" />
     <TypeScriptCompile Include="src\JSONAsset.ts" />
     <TypeScriptCompile Include="src\Configuration.ts" />
     <TypeScriptCompile Include="src\Player.ts" />
@@ -45,6 +46,7 @@
     <Content Include="assets\settings.json" />
     <Content Include="assets\manifest.json" />
     <Content Include="libs\phaser\phaser.map" />
+    <Content Include="packages.config" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -54,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assets\tilemaps\tiles\" />
+    <Folder Include="test\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
