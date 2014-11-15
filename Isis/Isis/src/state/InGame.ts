@@ -1,68 +1,66 @@
 ﻿module Isis {
-    export class InGame extends Phaser.State {
-        map: Tilemap;
-        
-        isAcceptingInput = true;
-        player: Player;
+    interface IInputActionMap {
+        [input: string]: () => void;
+    }
 
-        settings: any;
+    export class InGame extends Phaser.State {
+        private map: Tilemap;
+        
+        private actionMap: IInputActionMap = []; 
+
+        private isAcceptingInput = true;
+        private player: Player;
 
         create() {
             this.game.stage.backgroundColor = "#000000";
 
-            this.settings = this.game.cache.getJSON("settings");
+            this.initializeInputBindings();
 
             this.map = new Tilemap(this.game, "maze", this.game.cache.getJSON("manifest"));
 
-            this.initializePlayer();
+            this.player = new Player(this.game, 48, 24);
+            this.game.camera.follow(this.player);
         }
 
-        initializePlayer() {
-            this.player = new Player(this.game, 48, 24);
+        initializeInputBindings() {
+            var settings = this.game.cache.getJSON("settings");
 
-            this.player.onMoveDown.add(this.movePlayerDown, this);
-            this.player.onMoveUp.add(this.movePlayerUp, this);
-            this.player.onMoveLeft.add(this.movePlayerLeft, this);
-            this.player.onMoveRight.add(this.movePlayerRight, this);
-
-            this.game.camera.follow(this.player);
+            this.actionMap[settings.move_left]  = () => this.movePlayerLeft();
+            this.actionMap[settings.move_right] = () => this.movePlayerRight();
+            this.actionMap[settings.move_up]    = () => this.movePlayerUp();
+            this.actionMap[settings.move_down]  = () => this.movePlayerDown();
         }
 
         update() {
             if (this.isAcceptingInput) {
                 var keyboard = this.game.input.keyboard;
                 
-                for (var inputCommand in this.settings) {
-                    var keyCode = this.toKeyCode(this.settings[inputCommand]);
+                for (var inputCommand in this.actionMap) {
+                    var keyCode = toKeyCode(inputCommand);
                     if (keyboard.isDown(keyCode))
-                        this.player.tryActOn(inputCommand);
+                        this.actionMap[inputCommand]();
                 }
             }            
         }
 
-        toKeyCode(keyString: string): number {
-            return Phaser.Keyboard[keyString];
-        }
-
-        movePlayerDown(player: Player) {
+        movePlayerDown() {
             this.tryMoveTo({ x: this.player.x, y: this.player.y + 24 });
         }
 
-        movePlayerUp(player: Player) {
+        movePlayerUp() {
             this.tryMoveTo({ x: this.player.x, y: this.player.y - 24 });
         }
 
-        movePlayerLeft(player: Player) {
+        movePlayerLeft() {
             this.tryMoveTo({ x: this.player.x - 24, y: this.player.y });
         }
 
-        movePlayerRight(player: Player) {
+        movePlayerRight() {
             this.tryMoveTo({ x: this.player.x + 24, y: this.player.y });
         }
 
         tryMoveTo(worldCoordinates: WorldCoordinates) {
             var tileCoordinates = toTileCoordinates(this.map, worldCoordinates);
-            console.log("Moving to: " + tileCoordinates.x + ", " + tileCoordinates.y);
 
             if (!this.map.isWall(tileCoordinates)) {
                 var creatureBlockingPath = this.creatureAt(tileCoordinates);
@@ -80,7 +78,7 @@
         }
 
         collectItem(player: Player, item: Phaser.Sprite) {
-            this.map.items.splice(this.map.items.indexOf(item), 1);
+            _.remove(this.map.items, item);
             item.destroy();
         }
 

@@ -551,10 +551,6 @@ var tsUnit;
 })(tsUnit || (tsUnit = {}));
 var Isis;
 (function (Isis) {
-    Isis.Configuration = {};
-})(Isis || (Isis = {}));
-var Isis;
-(function (Isis) {
     var Game = (function (_super) {
         __extends(Game, _super);
         function Game() {
@@ -573,15 +569,18 @@ var Isis;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
+    function toKeyCode(keyString) {
+        return Phaser.Keyboard[keyString];
+    }
+    Isis.toKeyCode = toKeyCode;
+})(Isis || (Isis = {}));
+var Isis;
+(function (Isis) {
     var Player = (function (_super) {
         __extends(Player, _super);
         function Player(game, x, y) {
             _super.call(this, game, x, y, "creature_atlas");
             this._acceleration = 150;
-            this.onMoveLeft = new Phaser.Signal();
-            this.onMoveRight = new Phaser.Signal();
-            this.onMoveUp = new Phaser.Signal();
-            this.onMoveDown = new Phaser.Signal();
 
             this.addAnimations();
             this.addPhysics();
@@ -595,26 +594,6 @@ var Isis;
 
         Player.prototype.addPhysics = function () {
             this.game.physics.enable(this, Phaser.Physics.ARCADE);
-        };
-
-        Player.prototype.tryActOn = function (command) {
-            switch (command) {
-                case "move_left":
-                    this.onMoveLeft.dispatch(this);
-                    break;
-
-                case "move_right":
-                    this.onMoveRight.dispatch(this);
-                    break;
-
-                case "move_up":
-                    this.onMoveUp.dispatch(this);
-                    break;
-
-                case "move_down":
-                    this.onMoveDown.dispatch(this);
-                    break;
-            }
         };
         return Player;
     })(Phaser.Sprite);
@@ -658,94 +637,76 @@ var Isis;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
+    Isis.Configuration = {};
+})(Isis || (Isis = {}));
+var Isis;
+(function (Isis) {
     var InGame = (function (_super) {
         __extends(InGame, _super);
         function InGame() {
             _super.apply(this, arguments);
+            this.actionMap = [];
             this.isAcceptingInput = true;
         }
         InGame.prototype.create = function () {
             this.game.stage.backgroundColor = "#000000";
 
-            this.settings = this.game.cache.getJSON("settings");
+            this.initializeInputBindings();
 
             this.map = new Isis.Tilemap(this.game, "maze", this.game.cache.getJSON("manifest"));
-            this.separateCreaturesFromTilemap();
-            this.separateItemsFromTilemap();
 
-            this.initializePlayer();
-        };
-
-        InGame.prototype.separateCreaturesFromTilemap = function () {
-            var _this = this;
-            this.creatures = Isis.extractFrom(this.map, this.map.creatureLayer, function (creatureTile) {
-                var creatureSprite = _this.game.add.sprite(creatureTile.worldX, creatureTile.worldY, "creature_atlas");
-                creatureSprite.animations.add("idle", [creatureTile.properties.atlas_name + "_1.png", creatureTile.properties.atlas_name + "_2.png"], 2, true);
-                creatureSprite.animations.play("idle");
-
-                return creatureSprite;
-            });
-        };
-
-        InGame.prototype.separateItemsFromTilemap = function () {
-            var _this = this;
-            this.items = Isis.extractFrom(this.map, this.map.itemLayer, function (itemTile) {
-                var itemSprite = _this.game.add.sprite(itemTile.worldX, itemTile.worldY, "item_atlas", itemTile.properties.atlas_name + ".png");
-
-                // Center sprite in tile.
-                itemSprite.x += 4;
-                itemSprite.y += 4;
-
-                return itemSprite;
-            });
-        };
-
-        InGame.prototype.initializePlayer = function () {
             this.player = new Isis.Player(this.game, 48, 24);
-
-            this.player.onMoveDown.add(this.movePlayerDown, this);
-            this.player.onMoveUp.add(this.movePlayerUp, this);
-            this.player.onMoveLeft.add(this.movePlayerLeft, this);
-            this.player.onMoveRight.add(this.movePlayerRight, this);
-
             this.game.camera.follow(this.player);
+        };
+
+        InGame.prototype.initializeInputBindings = function () {
+            var _this = this;
+            var settings = this.game.cache.getJSON("settings");
+
+            this.actionMap[settings.move_left] = function () {
+                return _this.movePlayerLeft();
+            };
+            this.actionMap[settings.move_right] = function () {
+                return _this.movePlayerRight();
+            };
+            this.actionMap[settings.move_up] = function () {
+                return _this.movePlayerUp();
+            };
+            this.actionMap[settings.move_down] = function () {
+                return _this.movePlayerDown();
+            };
         };
 
         InGame.prototype.update = function () {
             if (this.isAcceptingInput) {
                 var keyboard = this.game.input.keyboard;
 
-                for (var inputCommand in this.settings) {
-                    var keyCode = this.toKeyCode(this.settings[inputCommand]);
+                for (var inputCommand in this.actionMap) {
+                    var keyCode = Isis.toKeyCode(inputCommand);
                     if (keyboard.isDown(keyCode))
-                        this.player.tryActOn(inputCommand);
+                        this.actionMap[inputCommand]();
                 }
             }
         };
 
-        InGame.prototype.toKeyCode = function (keyString) {
-            return Phaser.Keyboard[keyString];
-        };
-
-        InGame.prototype.movePlayerDown = function (player) {
+        InGame.prototype.movePlayerDown = function () {
             this.tryMoveTo({ x: this.player.x, y: this.player.y + 24 });
         };
 
-        InGame.prototype.movePlayerUp = function (player) {
+        InGame.prototype.movePlayerUp = function () {
             this.tryMoveTo({ x: this.player.x, y: this.player.y - 24 });
         };
 
-        InGame.prototype.movePlayerLeft = function (player) {
+        InGame.prototype.movePlayerLeft = function () {
             this.tryMoveTo({ x: this.player.x - 24, y: this.player.y });
         };
 
-        InGame.prototype.movePlayerRight = function (player) {
+        InGame.prototype.movePlayerRight = function () {
             this.tryMoveTo({ x: this.player.x + 24, y: this.player.y });
         };
 
         InGame.prototype.tryMoveTo = function (worldCoordinates) {
             var tileCoordinates = Isis.toTileCoordinates(this.map, worldCoordinates);
-            console.log("Moving to: " + tileCoordinates.x + ", " + tileCoordinates.y);
 
             if (!this.map.isWall(tileCoordinates)) {
                 var creatureBlockingPath = this.creatureAt(tileCoordinates);
@@ -763,7 +724,7 @@ var Isis;
         };
 
         InGame.prototype.collectItem = function (player, item) {
-            this.items.splice(this.items.indexOf(item), 1);
+            _.remove(this.map.items, item);
             item.destroy();
         };
 
@@ -780,7 +741,7 @@ var Isis;
                 return _this.isAcceptingInput = false;
             }, this);
             tween.onLoop.add(function () {
-                _.remove(_this.creatures, creature);
+                _.remove(_this.map.creatures, creature);
                 creature.destroy();
             }, this);
             tween.onComplete.add(function () {
@@ -791,14 +752,14 @@ var Isis;
 
         InGame.prototype.creatureAt = function (tileCoordinates) {
             var _this = this;
-            return _.find(this.creatures, function (creature) {
+            return _.find(this.map.creatures, function (creature) {
                 return _.isEqual(Isis.toTileCoordinates(_this.map, creature), tileCoordinates);
             });
         };
 
         InGame.prototype.itemAt = function (tileCoordinates) {
             var _this = this;
-            return _.find(this.items, function (item) {
+            return _.find(this.map.items, function (item) {
                 return _.isEqual(Isis.toTileCoordinates(_this.map, item), tileCoordinates);
             });
         };
@@ -905,9 +866,45 @@ var Isis;
             this.objectLayer = this.createLayer("Objects");
             this.creatureLayer = this.createLayer("Creatures");
 
+            this.separateCreaturesFromTilemap();
+            this.separateItemsFromTilemap();
+
             this.backgroundLayer.resizeWorld();
             this.setCollisionBetween(1, 2, true, "Walls");
         }
+        Tilemap.prototype.separateCreaturesFromTilemap = function () {
+            var _this = this;
+            this.creatures = this.extractFrom(this.creatureLayer, function (creatureTile) {
+                var creatureSprite = _this.game.add.sprite(creatureTile.worldX, creatureTile.worldY, "creature_atlas");
+                creatureSprite.animations.add("idle", [creatureTile.properties.atlas_name + "_1.png", creatureTile.properties.atlas_name + "_2.png"], 2, true);
+                creatureSprite.animations.play("idle");
+
+                return creatureSprite;
+            });
+        };
+
+        Tilemap.prototype.separateItemsFromTilemap = function () {
+            var _this = this;
+            this.items = this.extractFrom(this.itemLayer, function (itemTile) {
+                var itemSprite = _this.game.add.sprite(itemTile.worldX, itemTile.worldY, "item_atlas", itemTile.properties.atlas_name + ".png");
+
+                // Center sprite in tile.
+                itemSprite.x += 4;
+                itemSprite.y += 4;
+
+                return itemSprite;
+            });
+        };
+
+        Tilemap.prototype.extractFrom = function (layer, converter) {
+            var _this = this;
+            return _.filter(layer.getTiles(0, 0, this.widthInPixels, this.heightInPixels), function (tile) {
+                return tile.properties.atlas_name;
+            }).map(function (tile) {
+                return converter(_this.removeTile(tile.x, tile.y, layer));
+            });
+        };
+
         Tilemap.prototype.isWall = function (at) {
             return this.tileExists(at, this.WALLS_LAYER);
         };
@@ -922,15 +919,6 @@ var Isis;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
-    function extractFrom(map, layer, converter) {
-        return _.filter(layer.getTiles(0, 0, map.widthInPixels, map.heightInPixels), function (tile) {
-            return tile.properties.atlas_name;
-        }).map(function (tile) {
-            return converter(map.removeTile(tile.x, tile.y, layer));
-        });
-    }
-    Isis.extractFrom = extractFrom;
-
     function toTileCoordinates(map, worldCoordinates) {
         return {
             x: Math.floor(worldCoordinates.x / map.tileWidth),

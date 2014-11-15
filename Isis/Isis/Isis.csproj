@@ -30,8 +30,10 @@
     <TypeScriptCompile Include="libs\lodash\lodash.d.ts" />
     <TypeScriptCompile Include="libs\phaser\phaser.d.ts" />
     <TypeScriptCompile Include="libs\tsUnit\tsUnit.ts" />
+    <TypeScriptCompile Include="src\input\Action.ts" />
     <TypeScriptCompile Include="src\JSONAsset.ts" />
-    <TypeScriptCompile Include="src\Configuration.ts" />
+    <TypeScriptCompile Include="src\KeyboardExtensions.ts" />
+    <TypeScriptCompile Include="src\state\Configuration.ts" />
     <TypeScriptCompile Include="src\Player.ts" />
     <TypeScriptCompile Include="src\state\Boot.ts" />
     <TypeScriptCompile Include="src\Game.ts" />

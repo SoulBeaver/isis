@@ -11,12 +11,15 @@ module Isis {
         ITEMS_LAYER      = "Items";
         OBJECTS_LAYER    = "Objects";
 
-        wallLayer: Phaser.TilemapLayer;
-        backgroundLayer: Phaser.TilemapLayer;
-        shadowLayer: Phaser.TilemapLayer;
-        itemLayer: Phaser.TilemapLayer;
-        objectLayer: Phaser.TilemapLayer;
-        creatureLayer: Phaser.TilemapLayer;
+        creatures: Array<Phaser.Sprite>;
+        items: Array<Phaser.Sprite>;
+
+        private wallLayer: Phaser.TilemapLayer;
+        private backgroundLayer: Phaser.TilemapLayer;
+        private shadowLayer: Phaser.TilemapLayer;
+        private itemLayer: Phaser.TilemapLayer;
+        private objectLayer: Phaser.TilemapLayer;
+        private creatureLayer: Phaser.TilemapLayer;
 
         constructor(game: Phaser.Game, key: string, manifest: any) {
             super(game, key);
@@ -34,8 +37,37 @@ module Isis {
             this.objectLayer     = this.createLayer("Objects");
             this.creatureLayer   = this.createLayer("Creatures");
 
+            this.separateCreaturesFromTilemap();
+            this.separateItemsFromTilemap();
+
             this.backgroundLayer.resizeWorld();
             this.setCollisionBetween(1, 2, true, "Walls");
+        }
+
+        private separateCreaturesFromTilemap() {
+            this.creatures = this.extractFrom(this.creatureLayer, (creatureTile) => {
+                var creatureSprite = this.game.add.sprite(creatureTile.worldX, creatureTile.worldY, "creature_atlas");
+                creatureSprite.animations.add("idle", [creatureTile.properties.atlas_name + "_1.png", creatureTile.properties.atlas_name + "_2.png"], 2, true);
+                creatureSprite.animations.play("idle");
+
+                return creatureSprite;
+            });
+        }
+
+        private separateItemsFromTilemap() {
+            this.items = this.extractFrom(this.itemLayer, (itemTile) => {
+                var itemSprite = this.game.add.sprite(itemTile.worldX, itemTile.worldY, "item_atlas", itemTile.properties.atlas_name + ".png");
+                // Center sprite in tile.
+                itemSprite.x += 4;
+                itemSprite.y += 4;
+
+                return itemSprite;
+            });
+        }
+
+        extractFrom(layer: Phaser.TilemapLayer, converter: (tile: Phaser.Tile) => Phaser.Sprite): Array<Phaser.Sprite> {
+            return _.filter(layer.getTiles(0, 0, this.widthInPixels, this.heightInPixels), (tile) => tile.properties.atlas_name)
+                    .map((tile) => converter(this.removeTile(tile.x, tile.y, layer)));
         }
 
         isWall(at: TileCoordinates) {
