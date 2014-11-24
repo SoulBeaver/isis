@@ -1,17 +1,21 @@
-﻿module Isis {
-    export class InGameView {
+﻿/// <reference path="../../libs/lodash/lodash.d.ts" />
+
+module Isis {
+    export class GameView {
         private game: Phaser.Game;
-        private controller: Phaser.State;
 
         private tweensToPlay: Array<Phaser.Tween> = [];
 
-        constructor(game: Phaser.Game, controller: Phaser.State) {
+        onTweensStarted: Phaser.Signal = new Phaser.Signal();
+        onTweensFinished: Phaser.Signal = new Phaser.Signal();
+
+        constructor(game: Phaser.Game) {
             this.game = game;
-            this.controller = controller;
         }
 
         move(entity: Phaser.Sprite, to: WorldCoordinates) {
             var tween = this.game.add.tween(entity).to(to, 300, Phaser.Easing.Linear.None);
+            this.registerTweenDeletion(tween);
 
             this.tweensToPlay.push(tween);
             return tween;
@@ -27,6 +31,7 @@
                     y: player.y - yOffset, angle: xOffset <= 0 ? 20 : -20
                 }, 100, Phaser.Easing.Linear.None)
                 .yoyo(true);
+            this.registerTweenDeletion(tween);
 
             this.tweensToPlay.push(tween);
             return tween;
@@ -34,7 +39,21 @@
 
         play() {
             _.forEach(this.tweensToPlay, (tween: Phaser.Tween) => tween.start());
-            this.tweensToPlay = [];
+
+            this.onTweensStarted.dispatch();
+            this.dispatchIfNoActiveTweensRemain();
+        }
+
+        private registerTweenDeletion(tween: Phaser.Tween) {
+            tween.onComplete.add(() => {
+                _.remove(this.tweensToPlay, tween);
+                this.dispatchIfNoActiveTweensRemain();
+            }, this);
+        }
+
+        private dispatchIfNoActiveTweensRemain() {
+            if (_.isEmpty(this.tweensToPlay))
+                this.onTweensFinished.dispatch();
         }
     }
 } 

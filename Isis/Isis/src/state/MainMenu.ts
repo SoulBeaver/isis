@@ -23,7 +23,7 @@
         }
 
         startGame() {
-            this.game.state.start("InGame", true, false);
+            this.game.state.start("PlayerState", true, false);
         }
     }
 }  

@@ -10,7 +10,7 @@
 
             this.configureGame();
 
-            this.game.state.start("Preloader", false, true);
+            this.game.state.start(State.Preloader, false, true);
         }
 
         configureGame() {

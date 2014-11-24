@@ -556,12 +556,14 @@ var Isis;
         function Game() {
             _super.call(this, 640, 480, Phaser.AUTO, "content", null);
 
-            this.state.add("Boot", Isis.Boot, false);
-            this.state.add("Preloader", Isis.Preloader, false);
-            this.state.add("MainMenu", Isis.MainMenu, false);
-            this.state.add("InGame", Isis.InGame, false);
+            this.state.add(Isis.State.Boot, Isis.Boot, false);
+            this.state.add(Isis.State.Preloader, Isis.Preloader, false);
+            this.state.add(Isis.State.MainMenu, Isis.MainMenu, false);
+            this.state.add(Isis.State.PlayerState, Isis.PlayerState, false);
+            this.state.add(Isis.State.EnemyState, Isis.EnemyState, false);
+            this.state.add(Isis.State.AnimatingState, Isis.AnimatingState, false);
 
-            this.state.start("Boot");
+            this.state.start(Isis.State.Boot);
         }
         return Game;
     })(Phaser.Game);
@@ -601,6 +603,44 @@ var Isis;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
+    var AnimatingState = (function (_super) {
+        __extends(AnimatingState, _super);
+        function AnimatingState() {
+            _super.apply(this, arguments);
+        }
+        AnimatingState.prototype.create = function () {
+            // No initialization logic yet.
+        };
+
+        AnimatingState.prototype.init = function (args) {
+            var _this = this;
+            this.view = args[0];
+            this.map = args[1];
+            this.player = args[2];
+            this.nextState = args[3];
+
+            this.view.onTweensFinished.addOnce(function () {
+                return _this.switchToNextState();
+            }, this);
+            this.view.play();
+        };
+
+        AnimatingState.prototype.update = function () {
+            // TODO:
+            // We should still be able to intercept user input
+            // such as opening a window, accessing the options, etc.
+        };
+
+        AnimatingState.prototype.switchToNextState = function () {
+            console.log("Tweens have finished playing.");
+            this.game.state.start(this.nextState, false, false, [this.view, this.map, this.player]);
+        };
+        return AnimatingState;
+    })(Phaser.State);
+    Isis.AnimatingState = AnimatingState;
+})(Isis || (Isis = {}));
+var Isis;
+(function (Isis) {
     var Boot = (function (_super) {
         __extends(Boot, _super);
         function Boot() {
@@ -616,7 +656,7 @@ var Isis;
 
             this.configureGame();
 
-            this.game.state.start("Preloader", false, true);
+            this.game.state.start(Isis.State.Preloader, false, true);
         };
 
         Boot.prototype.configureGame = function () {
@@ -641,125 +681,51 @@ var Isis;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
-    var InGame = (function (_super) {
-        __extends(InGame, _super);
-        function InGame() {
+    var EnemyState = (function (_super) {
+        __extends(EnemyState, _super);
+        function EnemyState() {
             _super.apply(this, arguments);
-            this.actionMap = [];
-            this.isAcceptingInput = true;
         }
-        InGame.prototype.create = function () {
+        EnemyState.prototype.create = function () {
             this.game.stage.backgroundColor = "#000000";
-
-            this.view = new Isis.InGameView(this.game, this);
-
-            this.initializeInputBindings();
-
-            this.map = new Isis.Tilemap(this.game, "maze", this.game.cache.getJSON("manifest"));
-
-            this.player = new Isis.Player(this.game, 48, 24);
-            this.game.camera.follow(this.player);
         };
 
-        InGame.prototype.initializeInputBindings = function () {
-            var _this = this;
-            var settings = this.game.cache.getJSON("settings");
-
-            this.actionMap[settings.move_left] = function () {
-                return _this.tryMoveTo(Isis.toTileCoordinates(_this.map, { x: _this.player.x - 24, y: _this.player.y }));
-            };
-            this.actionMap[settings.move_right] = function () {
-                return _this.tryMoveTo(Isis.toTileCoordinates(_this.map, { x: _this.player.x + 24, y: _this.player.y }));
-            };
-            this.actionMap[settings.move_up] = function () {
-                return _this.tryMoveTo(Isis.toTileCoordinates(_this.map, { x: _this.player.x, y: _this.player.y - 24 }));
-            };
-            this.actionMap[settings.move_down] = function () {
-                return _this.tryMoveTo(Isis.toTileCoordinates(_this.map, { x: _this.player.x, y: _this.player.y + 24 }));
-            };
+        EnemyState.prototype.init = function (args) {
+            this.view = args[0];
+            this.map = args[1];
+            this.player = args[2];
         };
 
-        InGame.prototype.update = function () {
-            if (this.isAcceptingInput) {
-                var keyboard = this.game.input.keyboard;
-
-                for (var inputCommand in this.actionMap) {
-                    var keyCode = Isis.toKeyCode(inputCommand);
-                    if (keyboard.isDown(keyCode))
-                        this.actionMap[inputCommand]();
-                }
-            }
-
-            this.view.play();
+        EnemyState.prototype.update = function () {
+            this.switchToAnimatingState();
         };
 
-        InGame.prototype.tryMoveTo = function (tileCoordinates) {
-            if (this.map.wallAt(tileCoordinates))
-                return;
-
-            if (this.map.creatureAt(tileCoordinates)) {
-                this.attack(this.player, this.map.creatureAt(tileCoordinates));
-            } else if (this.map.objectAt(tileCoordinates)) {
-                this.activate(this.player, this.map.objectAt(tileCoordinates));
-            } else {
-                if (this.map.itemAt(tileCoordinates))
-                    this.pickUp(this.player, this.map.itemAt(tileCoordinates));
-
-                this.move(this.player, tileCoordinates);
-            }
+        EnemyState.prototype.switchToAnimatingState = function () {
+            this.game.state.start(Isis.State.AnimatingState, false, false, [this.view, this.map, this.player, Isis.State.PlayerState]);
         };
-
-        InGame.prototype.attack = function (player, creature) {
-            var _this = this;
-            var tween = this.view.attack(player, creature);
-            tween.onStart.addOnce(function () {
-                return _this.isAcceptingInput = false;
-            }, this);
-            tween.onLoop.addOnce(function () {
-                return _this.map.removeCreature(creature);
-            }, this);
-            tween.onComplete.addOnce(function () {
-                return _this.isAcceptingInput = true;
-            }, this);
-        };
-
-        InGame.prototype.activate = function (player, object) {
-        };
-
-        InGame.prototype.pickUp = function (player, item) {
-            this.map.removeItem(item);
-        };
-
-        InGame.prototype.move = function (player, to) {
-            var _this = this;
-            var tween = this.view.move(this.player, Isis.toWorldCoordinates(this.map, to));
-            tween.onStart.addOnce(function () {
-                return _this.isAcceptingInput = false;
-            }, this);
-            tween.onComplete.addOnce(function () {
-                return _this.isAcceptingInput = true;
-            }, this);
-        };
-        return InGame;
+        return EnemyState;
     })(Phaser.State);
-    Isis.InGame = InGame;
+    Isis.EnemyState = EnemyState;
 })(Isis || (Isis = {}));
+/// <reference path="../../libs/lodash/lodash.d.ts" />
 var Isis;
 (function (Isis) {
-    var InGameView = (function () {
-        function InGameView(game, controller) {
+    var GameView = (function () {
+        function GameView(game) {
             this.tweensToPlay = [];
+            this.onTweensStarted = new Phaser.Signal();
+            this.onTweensFinished = new Phaser.Signal();
             this.game = game;
-            this.controller = controller;
         }
-        InGameView.prototype.move = function (entity, to) {
+        GameView.prototype.move = function (entity, to) {
             var tween = this.game.add.tween(entity).to(to, 300, Phaser.Easing.Linear.None);
+            this.registerTweenDeletion(tween);
 
             this.tweensToPlay.push(tween);
             return tween;
         };
 
-        InGameView.prototype.attack = function (player, creature) {
+        GameView.prototype.attack = function (player, creature) {
             var xOffset = player.x - creature.x;
             var yOffset = player.y - creature.y;
 
@@ -767,20 +733,36 @@ var Isis;
                 x: player.x - xOffset,
                 y: player.y - yOffset, angle: xOffset <= 0 ? 20 : -20
             }, 100, Phaser.Easing.Linear.None).yoyo(true);
+            this.registerTweenDeletion(tween);
 
             this.tweensToPlay.push(tween);
             return tween;
         };
 
-        InGameView.prototype.play = function () {
+        GameView.prototype.play = function () {
             _.forEach(this.tweensToPlay, function (tween) {
                 return tween.start();
             });
-            this.tweensToPlay = [];
+
+            this.onTweensStarted.dispatch();
+            this.dispatchIfNoActiveTweensRemain();
         };
-        return InGameView;
+
+        GameView.prototype.registerTweenDeletion = function (tween) {
+            var _this = this;
+            tween.onComplete.add(function () {
+                _.remove(_this.tweensToPlay, tween);
+                _this.dispatchIfNoActiveTweensRemain();
+            }, this);
+        };
+
+        GameView.prototype.dispatchIfNoActiveTweensRemain = function () {
+            if (_.isEmpty(this.tweensToPlay))
+                this.onTweensFinished.dispatch();
+        };
+        return GameView;
     })();
-    Isis.InGameView = InGameView;
+    Isis.GameView = GameView;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
@@ -803,11 +785,132 @@ var Isis;
         };
 
         MainMenu.prototype.startGame = function () {
-            this.game.state.start("InGame", true, false);
+            this.game.state.start("PlayerState", true, false);
         };
         return MainMenu;
     })(Phaser.State);
     Isis.MainMenu = MainMenu;
+})(Isis || (Isis = {}));
+var Isis;
+(function (Isis) {
+    var PlayerState = (function (_super) {
+        __extends(PlayerState, _super);
+        function PlayerState() {
+            _super.apply(this, arguments);
+            this.actionMap = [];
+        }
+        PlayerState.prototype.create = function () {
+            if (!PlayerState.hasBeenCreated) {
+                this.game.stage.backgroundColor = "#000000";
+
+                this.initializeView();
+                this.initializeInputBindings();
+                this.initializeMap();
+                this.initializePlayer();
+
+                PlayerState.hasBeenCreated = true;
+            }
+        };
+
+        PlayerState.prototype.init = function (args) {
+            // PlayerState is the first state started after MainMenu finishes.
+            // The main menu, however, has no args to pass to the PlayerState.
+            // So args will be undefined until we complete the PlayerState -> AnimatingState -> EnemyState loop once.
+            if (!args)
+                return;
+
+            this.view = args[0];
+            this.map = args[1];
+            this.player = args[2];
+        };
+
+        PlayerState.prototype.initializeView = function () {
+            this.view = new Isis.GameView(this.game);
+        };
+
+        PlayerState.prototype.initializeInputBindings = function () {
+            var _this = this;
+            var settings = this.game.cache.getJSON("settings");
+
+            this.actionMap[settings.move_left] = function () {
+                return _this.tryMoveTo(Isis.toTileCoordinates(_this.map, { x: _this.player.x - 24, y: _this.player.y }));
+            };
+            this.actionMap[settings.move_right] = function () {
+                return _this.tryMoveTo(Isis.toTileCoordinates(_this.map, { x: _this.player.x + 24, y: _this.player.y }));
+            };
+            this.actionMap[settings.move_up] = function () {
+                return _this.tryMoveTo(Isis.toTileCoordinates(_this.map, { x: _this.player.x, y: _this.player.y - 24 }));
+            };
+            this.actionMap[settings.move_down] = function () {
+                return _this.tryMoveTo(Isis.toTileCoordinates(_this.map, { x: _this.player.x, y: _this.player.y + 24 }));
+            };
+        };
+
+        PlayerState.prototype.initializeMap = function () {
+            this.map = new Isis.Tilemap(this.game, "maze", this.game.cache.getJSON("manifest"));
+        };
+
+        PlayerState.prototype.initializePlayer = function () {
+            this.player = new Isis.Player(this.game, 48, 24);
+            this.game.camera.follow(this.player);
+        };
+
+        PlayerState.prototype.update = function () {
+            var keyboard = this.game.input.keyboard;
+
+            for (var inputCommand in this.actionMap) {
+                var keyCode = Isis.toKeyCode(inputCommand);
+                if (keyboard.isDown(keyCode)) {
+                    this.actionMap[inputCommand]();
+
+                    this.switchToAnimatingState();
+                }
+            }
+        };
+
+        PlayerState.prototype.tryMoveTo = function (tileCoordinates) {
+            if (this.map.wallAt(tileCoordinates))
+                return;
+
+            if (this.map.creatureAt(tileCoordinates)) {
+                this.attack(this.player, this.map.creatureAt(tileCoordinates));
+            } else if (this.map.objectAt(tileCoordinates)) {
+                this.activate(this.player, this.map.objectAt(tileCoordinates));
+            } else {
+                if (this.map.itemAt(tileCoordinates))
+                    this.pickUp(this.player, this.map.itemAt(tileCoordinates));
+
+                this.move(this.player, tileCoordinates);
+            }
+        };
+
+        PlayerState.prototype.attack = function (player, creature) {
+            var _this = this;
+            var tween = this.view.attack(player, creature);
+            tween.onLoop.addOnce(function () {
+                return _this.map.removeCreature(creature);
+            }, this);
+        };
+
+        PlayerState.prototype.activate = function (player, object) {
+            // TODO: Nothing to do yet.
+        };
+
+        PlayerState.prototype.pickUp = function (player, item) {
+            this.map.removeItem(item);
+        };
+
+        PlayerState.prototype.move = function (player, to) {
+            this.view.move(this.player, Isis.toWorldCoordinates(this.map, to));
+        };
+
+        PlayerState.prototype.switchToAnimatingState = function () {
+            this.game.state.start(Isis.State.AnimatingState, false, false, [this.view, this.map, this.player, Isis.State.EnemyState]);
+        };
+        PlayerState.hasBeenCreated = false;
+        return PlayerState;
+    })(Phaser.State);
+    Isis.PlayerState = PlayerState;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
@@ -833,11 +936,44 @@ var Isis;
         };
 
         Preloader.prototype.startMainMenu = function () {
-            this.game.state.start("InGame", true, false);
+            // We're skipping the main menu to ease testing of gameplay- no need to click through the menu.
+            this.game.state.start(Isis.State.PlayerState, true, false);
         };
         return Preloader;
     })(Phaser.State);
     Isis.Preloader = Preloader;
+})(Isis || (Isis = {}));
+var Isis;
+(function (Isis) {
+    /*
+    * The original implementation used an Enum, which seems to be the correct solution:
+    *
+    * export enum State { Boot, Preloader, MainMenu, ... }
+    *
+    * However, you can't get a string representation of the enum doing
+    *
+    *     State.Boot.toString(); // Returns 0
+    *
+    * Instead, you use the index to get the valid representation.
+    *
+    *     State[State.Boot].toString(); // Returns "Boot"
+    *     or
+    *     State[0].toString();
+    *
+    * And that's just too silly and nonsensical. So we're using a static class.
+    */
+    var State = (function () {
+        function State() {
+        }
+        State.Boot = "Boot";
+        State.Preloader = "Preloader";
+        State.MainMenu = "MainMenu";
+        State.PlayerState = "PlayerState";
+        State.EnemyState = "EnemyState";
+        State.AnimatingState = "AnimatingState";
+        return State;
+    })();
+    Isis.State = State;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
