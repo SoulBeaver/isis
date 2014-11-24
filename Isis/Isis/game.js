@@ -651,6 +651,8 @@ var Isis;
         InGame.prototype.create = function () {
             this.game.stage.backgroundColor = "#000000";
 
+            this.view = new Isis.InGameView(this.game, this);
+
             this.initializeInputBindings();
 
             this.map = new Isis.Tilemap(this.game, "maze", this.game.cache.getJSON("manifest"));
@@ -664,16 +666,16 @@ var Isis;
             var settings = this.game.cache.getJSON("settings");
 
             this.actionMap[settings.move_left] = function () {
-                return _this.movePlayerLeft();
+                return _this.tryMoveTo(Isis.toTileCoordinates(_this.map, { x: _this.player.x - 24, y: _this.player.y }));
             };
             this.actionMap[settings.move_right] = function () {
-                return _this.movePlayerRight();
+                return _this.tryMoveTo(Isis.toTileCoordinates(_this.map, { x: _this.player.x + 24, y: _this.player.y }));
             };
             this.actionMap[settings.move_up] = function () {
-                return _this.movePlayerUp();
+                return _this.tryMoveTo(Isis.toTileCoordinates(_this.map, { x: _this.player.x, y: _this.player.y - 24 }));
             };
             this.actionMap[settings.move_down] = function () {
-                return _this.movePlayerDown();
+                return _this.tryMoveTo(Isis.toTileCoordinates(_this.map, { x: _this.player.x, y: _this.player.y + 24 }));
             };
         };
 
@@ -687,49 +689,77 @@ var Isis;
                         this.actionMap[inputCommand]();
                 }
             }
+
+            this.view.play();
         };
 
-        InGame.prototype.movePlayerDown = function () {
-            this.tryMoveTo({ x: this.player.x, y: this.player.y + 24 });
-        };
+        InGame.prototype.tryMoveTo = function (tileCoordinates) {
+            if (this.map.wallAt(tileCoordinates))
+                return;
 
-        InGame.prototype.movePlayerUp = function () {
-            this.tryMoveTo({ x: this.player.x, y: this.player.y - 24 });
-        };
+            if (this.map.creatureAt(tileCoordinates)) {
+                this.attack(this.player, this.map.creatureAt(tileCoordinates));
+            } else if (this.map.objectAt(tileCoordinates)) {
+                this.activate(this.player, this.map.objectAt(tileCoordinates));
+            } else {
+                if (this.map.itemAt(tileCoordinates))
+                    this.pickUp(this.player, this.map.itemAt(tileCoordinates));
 
-        InGame.prototype.movePlayerLeft = function () {
-            this.tryMoveTo({ x: this.player.x - 24, y: this.player.y });
-        };
-
-        InGame.prototype.movePlayerRight = function () {
-            this.tryMoveTo({ x: this.player.x + 24, y: this.player.y });
-        };
-
-        InGame.prototype.tryMoveTo = function (worldCoordinates) {
-            var tileCoordinates = Isis.toTileCoordinates(this.map, worldCoordinates);
-
-            if (!this.map.isWall(tileCoordinates)) {
-                var creatureBlockingPath = this.creatureAt(tileCoordinates);
-                if (creatureBlockingPath) {
-                    this.attackCreature(this.player, creatureBlockingPath);
-                } else {
-                    var itemInPath = this.itemAt(tileCoordinates);
-                    if (itemInPath) {
-                        this.collectItem(this.player, itemInPath);
-                    }
-
-                    this.moveRelatively(this.player, worldCoordinates);
-                }
+                this.move(this.player, tileCoordinates);
             }
         };
 
-        InGame.prototype.collectItem = function (player, item) {
-            _.remove(this.map.items, item);
-            item.destroy();
+        InGame.prototype.attack = function (player, creature) {
+            var _this = this;
+            var tween = this.view.attack(player, creature);
+            tween.onStart.addOnce(function () {
+                return _this.isAcceptingInput = false;
+            }, this);
+            tween.onLoop.addOnce(function () {
+                return _this.map.removeCreature(creature);
+            }, this);
+            tween.onComplete.addOnce(function () {
+                return _this.isAcceptingInput = true;
+            }, this);
         };
 
-        InGame.prototype.attackCreature = function (player, creature) {
+        InGame.prototype.activate = function (player, object) {
+        };
+
+        InGame.prototype.pickUp = function (player, item) {
+            this.map.removeItem(item);
+        };
+
+        InGame.prototype.move = function (player, to) {
             var _this = this;
+            var tween = this.view.move(this.player, Isis.toWorldCoordinates(this.map, to));
+            tween.onStart.addOnce(function () {
+                return _this.isAcceptingInput = false;
+            }, this);
+            tween.onComplete.addOnce(function () {
+                return _this.isAcceptingInput = true;
+            }, this);
+        };
+        return InGame;
+    })(Phaser.State);
+    Isis.InGame = InGame;
+})(Isis || (Isis = {}));
+var Isis;
+(function (Isis) {
+    var InGameView = (function () {
+        function InGameView(game, controller) {
+            this.tweensToPlay = [];
+            this.game = game;
+            this.controller = controller;
+        }
+        InGameView.prototype.move = function (entity, to) {
+            var tween = this.game.add.tween(entity).to(to, 300, Phaser.Easing.Linear.None);
+
+            this.tweensToPlay.push(tween);
+            return tween;
+        };
+
+        InGameView.prototype.attack = function (player, creature) {
             var xOffset = player.x - creature.x;
             var yOffset = player.y - creature.y;
 
@@ -737,46 +767,20 @@ var Isis;
                 x: player.x - xOffset,
                 y: player.y - yOffset, angle: xOffset <= 0 ? 20 : -20
             }, 100, Phaser.Easing.Linear.None).yoyo(true);
-            tween.onStart.add(function () {
-                return _this.isAcceptingInput = false;
-            }, this);
-            tween.onLoop.add(function () {
-                _.remove(_this.map.creatures, creature);
-                creature.destroy();
-            }, this);
-            tween.onComplete.add(function () {
-                return _this.isAcceptingInput = true;
-            }, this);
-            tween.start();
+
+            this.tweensToPlay.push(tween);
+            return tween;
         };
 
-        InGame.prototype.creatureAt = function (tileCoordinates) {
-            var _this = this;
-            return _.find(this.map.creatures, function (creature) {
-                return _.isEqual(Isis.toTileCoordinates(_this.map, creature), tileCoordinates);
+        InGameView.prototype.play = function () {
+            _.forEach(this.tweensToPlay, function (tween) {
+                return tween.start();
             });
+            this.tweensToPlay = [];
         };
-
-        InGame.prototype.itemAt = function (tileCoordinates) {
-            var _this = this;
-            return _.find(this.map.items, function (item) {
-                return _.isEqual(Isis.toTileCoordinates(_this.map, item), tileCoordinates);
-            });
-        };
-
-        InGame.prototype.moveRelatively = function (entity, to) {
-            var _this = this;
-            var tween = this.game.add.tween(entity).to(to, 300, Phaser.Easing.Linear.None, true);
-            tween.onStart.add(function () {
-                return _this.isAcceptingInput = false;
-            }, this);
-            tween.onComplete.add(function () {
-                return _this.isAcceptingInput = true;
-            }, this);
-        };
-        return InGame;
-    })(Phaser.State);
-    Isis.InGame = InGame;
+        return InGameView;
+    })();
+    Isis.InGameView = InGameView;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
@@ -835,7 +839,18 @@ var Isis;
     })(Phaser.State);
     Isis.Preloader = Preloader;
 })(Isis || (Isis = {}));
-/// <reference path="../libs/lodash/lodash.d.ts" />
+var Isis;
+(function (Isis) {
+    var Tile = (function () {
+        function Tile(coordinates, type) {
+            this.coordinates = coordinates;
+            this.type = type;
+        }
+        return Tile;
+    })();
+    Isis.Tile = Tile;
+})(Isis || (Isis = {}));
+/// <reference path="../../libs/lodash/lodash.d.ts" />
 var Isis;
 (function (Isis) {
     ;
@@ -851,8 +866,11 @@ var Isis;
             this.CREATURES_LAYER = "Creatures";
             this.ITEMS_LAYER = "Items";
             this.OBJECTS_LAYER = "Objects";
+            this.items = [];
+            this.activatableObjects = [];
+            this.creatures = [];
 
-            var tilesetImages = _.filter(manifest.maze, function (asset) {
+            _.filter(manifest.maze, function (asset) {
                 return asset.type == "image";
             }).forEach(function (asset) {
                 var tileset = asset.url.substring(asset.url.lastIndexOf('/') + 1, asset.url.lastIndexOf('.'));
@@ -905,13 +923,71 @@ var Isis;
             });
         };
 
-        Tilemap.prototype.isWall = function (at) {
+        Tilemap.prototype.wallAt = function (at) {
             return this.tileExists(at, this.WALLS_LAYER);
+        };
+
+        Tilemap.prototype.itemAt = function (at) {
+            var _this = this;
+            return _.find(this.items, function (item) {
+                return _.isEqual(Isis.toTileCoordinates(_this, item), at);
+            });
+        };
+
+        Tilemap.prototype.objectAt = function (at) {
+            var _this = this;
+            return _.find(this.activatableObjects, function (object) {
+                return _.isEqual(Isis.toTileCoordinates(_this, object), at);
+            });
+        };
+
+        Tilemap.prototype.creatureAt = function (at) {
+            var _this = this;
+            return _.find(this.creatures, function (creature) {
+                return _.isEqual(Isis.toTileCoordinates(_this, creature), at);
+            });
         };
 
         Tilemap.prototype.tileExists = function (at, layer) {
             var tile = this.getTile(at.x, at.y, layer);
             return tile && tile.index != 0;
+        };
+
+        Tilemap.prototype.removeItem = function (item) {
+            _.remove(this.items, item);
+            item.destroy();
+        };
+
+        Tilemap.prototype.removeCreature = function (creature) {
+            _.remove(this.creatures, creature);
+            creature.destroy();
+        };
+
+        Tilemap.prototype.tileLeftOf = function (tile) {
+            var _this = this;
+            var tileToTheLeft = this.getTile(tile.x - 1, tile.y);
+            this.getTileBelow(this.getLayerIndex(this.WALLS_LAYER), tile.x - 1, tile.y);
+            if (!tileToTheLeft)
+                return new Isis.Tile({ x: -1, y: -1 }, 0 /* DoesNotExist */);
+
+            if (this.getTile(tile.x - 1, tile.y, this.WALLS_LAYER))
+                return new Isis.Tile(tileToTheLeft, 1 /* Wall */);
+
+            var creature = _.find(this.creatures, function (creature) {
+                var creatureCoordinates = Isis.toTileCoordinates(_this, creature);
+                return _.isEqual(creatureCoordinates, tileToTheLeft);
+            });
+            if (creature)
+                return new Isis.Tile(tileToTheLeft, 5 /* Creature */);
+
+            var item = _.find(this.items, function (item) {
+                var itemCoordinates = Isis.toTileCoordinates(_this, item);
+                return _.isEqual(itemCoordinates, tileToTheLeft);
+            });
+            if (item)
+                return new Isis.Tile(tileToTheLeft, 3 /* Item */);
+
+            return new Isis.Tile(tileToTheLeft, 2 /* Background */);
         };
         return Tilemap;
     })(Phaser.Tilemap);
@@ -926,5 +1002,25 @@ var Isis;
         };
     }
     Isis.toTileCoordinates = toTileCoordinates;
+
+    function toWorldCoordinates(map, tileCoordinates) {
+        return {
+            x: tileCoordinates.x * map.tileWidth,
+            y: tileCoordinates.y * map.tileHeight
+        };
+    }
+    Isis.toWorldCoordinates = toWorldCoordinates;
+})(Isis || (Isis = {}));
+var Isis;
+(function (Isis) {
+    (function (TileType) {
+        TileType[TileType["DoesNotExist"] = 0] = "DoesNotExist";
+        TileType[TileType["Wall"] = 1] = "Wall";
+        TileType[TileType["Background"] = 2] = "Background";
+        TileType[TileType["Item"] = 3] = "Item";
+        TileType[TileType["Object"] = 4] = "Object";
+        TileType[TileType["Creature"] = 5] = "Creature";
+    })(Isis.TileType || (Isis.TileType = {}));
+    var TileType = Isis.TileType;
 })(Isis || (Isis = {}));
 //# sourceMappingURL=game.js.map

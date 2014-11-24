@@ -4,6 +4,7 @@
     }
 
     export class InGame extends Phaser.State {
+        private view: InGameView;
         private map: Tilemap;
         
         private actionMap: IInputActionMap = []; 
@@ -13,6 +14,8 @@
 
         create() {
             this.game.stage.backgroundColor = "#000000";
+
+            this.view = new InGameView(this.game, this);
 
             this.initializeInputBindings();
 
@@ -24,11 +27,11 @@
 
         initializeInputBindings() {
             var settings = this.game.cache.getJSON("settings");
-
-            this.actionMap[settings.move_left]  = () => this.movePlayerLeft();
-            this.actionMap[settings.move_right] = () => this.movePlayerRight();
-            this.actionMap[settings.move_up]    = () => this.movePlayerUp();
-            this.actionMap[settings.move_down]  = () => this.movePlayerDown();
+            
+            this.actionMap[settings.move_left]  = () => this.tryMoveTo(toTileCoordinates(this.map, { x: this.player.x - 24, y: this.player.y }));
+            this.actionMap[settings.move_right] = () => this.tryMoveTo(toTileCoordinates(this.map, { x: this.player.x + 24, y: this.player.y }));
+            this.actionMap[settings.move_up]    = () => this.tryMoveTo(toTileCoordinates(this.map, { x: this.player.x, y: this.player.y - 24 }));
+            this.actionMap[settings.move_down]  = () => this.tryMoveTo(toTileCoordinates(this.map, { x: this.player.x, y: this.player.y + 24 }));
         }
 
         update() {
@@ -40,79 +43,46 @@
                     if (keyboard.isDown(keyCode))
                         this.actionMap[inputCommand]();
                 }
-            }            
+            }
+
+            this.view.play();
         }
 
-        movePlayerDown() {
-            this.tryMoveTo({ x: this.player.x, y: this.player.y + 24 });
-        }
+        tryMoveTo(tileCoordinates: TileCoordinates) {
+            if (this.map.wallAt(tileCoordinates))
+                return;
 
-        movePlayerUp() {
-            this.tryMoveTo({ x: this.player.x, y: this.player.y - 24 });
-        }
+            if (this.map.creatureAt(tileCoordinates)) {
+                this.attack(this.player, this.map.creatureAt(tileCoordinates));
+            } else if (this.map.objectAt(tileCoordinates)) {
+                this.activate(this.player, this.map.objectAt(tileCoordinates));
+            } else {
+                if (this.map.itemAt(tileCoordinates))
+                    this.pickUp(this.player, this.map.itemAt(tileCoordinates));
 
-        movePlayerLeft() {
-            this.tryMoveTo({ x: this.player.x - 24, y: this.player.y });
-        }
-
-        movePlayerRight() {
-            this.tryMoveTo({ x: this.player.x + 24, y: this.player.y });
-        }
-
-        tryMoveTo(worldCoordinates: WorldCoordinates) {
-            var tileCoordinates = toTileCoordinates(this.map, worldCoordinates);
-
-            if (!this.map.isWall(tileCoordinates)) {
-                var creatureBlockingPath = this.creatureAt(tileCoordinates);
-                if (creatureBlockingPath) {
-                    this.attackCreature(this.player, creatureBlockingPath);
-                } else {
-                    var itemInPath = this.itemAt(tileCoordinates);
-                    if (itemInPath) {
-                        this.collectItem(this.player, itemInPath);
-                    }
-
-                    this.moveRelatively(this.player, worldCoordinates);
-                }
+                this.move(this.player, tileCoordinates);
             }
         }
 
-        collectItem(player: Player, item: Phaser.Sprite) {
-            _.remove(this.map.items, item);
-            item.destroy();
+        attack(player: Phaser.Sprite, creature: Phaser.Sprite) {
+            var tween = this.view.attack(player, creature);
+            tween.onStart.addOnce(() => this.isAcceptingInput = false, this);
+            tween.onLoop.addOnce(() => this.map.removeCreature(creature), this);
+            tween.onComplete.addOnce(() => this.isAcceptingInput = true, this);
         }
 
-        attackCreature(player: Phaser.Sprite, creature: Phaser.Sprite) {
-            var xOffset = player.x - creature.x;
-            var yOffset = player.y - creature.y;
+        activate(player: Player, object: Phaser.Sprite) {
 
-            var tween = this.game.add.tween(player)
-                .to({
-                    x: player.x - xOffset,
-                    y: player.y - yOffset, angle: xOffset <= 0 ? 20 : -20
-                }, 100, Phaser.Easing.Linear.None)
-                .yoyo(true);
-            tween.onStart.add(() => this.isAcceptingInput = false, this);
-            tween.onLoop.add(() => {
-                _.remove(this.map.creatures, creature);
-                creature.destroy();
-            }, this);
-            tween.onComplete.add(() => this.isAcceptingInput = true, this);
-            tween.start();
         }
 
-        creatureAt(tileCoordinates: TileCoordinates) {
-            return _.find(this.map.creatures, (creature) => _.isEqual(toTileCoordinates(this.map, creature), tileCoordinates));
+        pickUp(player: Player, item: Phaser.Sprite) {
+            this.map.removeItem(item);
         }
 
-        itemAt(tileCoordinates: TileCoordinates) {
-            return _.find(this.map.items, (item) => _.isEqual(toTileCoordinates(this.map, item), tileCoordinates));
-        }
-
-        moveRelatively(entity: Phaser.Sprite, to: WorldCoordinates) {
-            var tween = this.game.add.tween(entity).to(to, 300, Phaser.Easing.Linear.None, true);
-            tween.onStart.add(() => this.isAcceptingInput = false, this);
-            tween.onComplete.add(() => this.isAcceptingInput = true, this); 
+        move(player: Player, to: TileCoordinates) {
+            var tween = this.view.move(this.player, toWorldCoordinates(this.map, to));
+            tween.onStart.addOnce(() => this.isAcceptingInput = false, this);
+            tween.onComplete.addOnce(() => this.isAcceptingInput = true, this);
         }
     }
 } 

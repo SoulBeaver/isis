@@ -1,4 +1,4 @@
-/**
+﻿/**
 * @author       Richard Davey <rich@photonstorm.com>
 * @copyright    2014 Photon Storm Ltd.
 * @license      {@link https://github.com/photonstorm/phaser/blob/master/license.txt|MIT License}
@@ -61709,7 +61709,7 @@ Phaser.Tilemap = function (game, key, tileWidth, tileHeight, width, height) {
     /**
     * @property {array} objects - An array of Tiled Object Layers.
     */
-    this.objects = data.objects;
+    this.objects = data.activatableObjects;
 
     /**
     * @property {array} collideIndexes - An array of tile indexes that collide.
@@ -64377,7 +64377,7 @@ Phaser.TilemapParser = {
 
         map.layers = layers;
         map.images = [];
-        map.objects = {};
+        map.activatableObjects = {};
         map.collision = {};
         map.tilesets = [];
         map.tiles = [];
@@ -64573,76 +64573,76 @@ Phaser.TilemapParser = {
             objects[json.layers[i].name] = [];
             collision[json.layers[i].name] = [];
 
-            for (var v = 0, len = json.layers[i].objects.length; v < len; v++)
+            for (var v = 0, len = json.layers[i].activatableObjects.length; v < len; v++)
             {
                 //  Object Tiles
-                if (json.layers[i].objects[v].gid)
+                if (json.layers[i].activatableObjects[v].gid)
                 {
                     var object = {
 
-                        gid: json.layers[i].objects[v].gid,
-                        name: json.layers[i].objects[v].name,
-                        x: json.layers[i].objects[v].x,
-                        y: json.layers[i].objects[v].y,
-                        visible: json.layers[i].objects[v].visible,
-                        properties: json.layers[i].objects[v].properties
+                        gid: json.layers[i].activatableObjects[v].gid,
+                        name: json.layers[i].activatableObjects[v].name,
+                        x: json.layers[i].activatableObjects[v].x,
+                        y: json.layers[i].activatableObjects[v].y,
+                        visible: json.layers[i].activatableObjects[v].visible,
+                        properties: json.layers[i].activatableObjects[v].properties
 
                     };
 
                     objects[json.layers[i].name].push(object);
                 }
-                else if (json.layers[i].objects[v].polyline)
+                else if (json.layers[i].activatableObjects[v].polyline)
                 {
                     var object = {
 
-                        name: json.layers[i].objects[v].name,
-                        type: json.layers[i].objects[v].type,
-                        x: json.layers[i].objects[v].x,
-                        y: json.layers[i].objects[v].y,
-                        width: json.layers[i].objects[v].width,
-                        height: json.layers[i].objects[v].height,
-                        visible: json.layers[i].objects[v].visible,
-                        properties: json.layers[i].objects[v].properties
+                        name: json.layers[i].activatableObjects[v].name,
+                        type: json.layers[i].activatableObjects[v].type,
+                        x: json.layers[i].activatableObjects[v].x,
+                        y: json.layers[i].activatableObjects[v].y,
+                        width: json.layers[i].activatableObjects[v].width,
+                        height: json.layers[i].activatableObjects[v].height,
+                        visible: json.layers[i].activatableObjects[v].visible,
+                        properties: json.layers[i].activatableObjects[v].properties
 
                     };
 
                     object.polyline = [];
 
                     //  Parse the polyline into an array
-                    for (var p = 0; p < json.layers[i].objects[v].polyline.length; p++)
+                    for (var p = 0; p < json.layers[i].activatableObjects[v].polyline.length; p++)
                     {
-                        object.polyline.push([ json.layers[i].objects[v].polyline[p].x, json.layers[i].objects[v].polyline[p].y ]);
+                        object.polyline.push([ json.layers[i].activatableObjects[v].polyline[p].x, json.layers[i].activatableObjects[v].polyline[p].y ]);
                     }
 
                     collision[json.layers[i].name].push(object);
                     objects[json.layers[i].name].push(object);
                 }
                 // polygon
-                else if (json.layers[i].objects[v].polygon)
+                else if (json.layers[i].activatableObjects[v].polygon)
                 {
-                    var object = slice(json.layers[i].objects[v],
+                    var object = slice(json.layers[i].activatableObjects[v],
                                        ["name", "type", "x", "y", "visible", "properties" ]);
 
                     //  Parse the polygon into an array
                     object.polygon = [];
-                    for (var p = 0; p < json.layers[i].objects[v].polygon.length; p++)
+                    for (var p = 0; p < json.layers[i].activatableObjects[v].polygon.length; p++)
                     {
-                        object.polygon.push([ json.layers[i].objects[v].polygon[p].x, json.layers[i].objects[v].polygon[p].y ]);
+                        object.polygon.push([ json.layers[i].activatableObjects[v].polygon[p].x, json.layers[i].activatableObjects[v].polygon[p].y ]);
                     }
                     objects[json.layers[i].name].push(object);
 
                 }
                 // ellipse
-                else if (json.layers[i].objects[v].ellipse)
+                else if (json.layers[i].activatableObjects[v].ellipse)
                 {
-                    var object = slice(json.layers[i].objects[v],
+                    var object = slice(json.layers[i].activatableObjects[v],
                                        ["name", "type", "ellipse", "x", "y", "width", "height", "visible", "properties" ]);
                     objects[json.layers[i].name].push(object);
                 }
                 // otherwise it's a rectangle
                 else
                 {
-                    var object = slice(json.layers[i].objects[v],
+                    var object = slice(json.layers[i].activatableObjects[v],
                                        ["name", "type", "x", "y", "width", "height", "visible", "properties" ]);
                     object.rectangle = true;
                     objects[json.layers[i].name].push(object);
@@ -64650,7 +64650,7 @@ Phaser.TilemapParser = {
             }
         }
 
-        map.objects = objects;
+        map.activatableObjects = objects;
         map.collision = collision;
 
         map.tiles = [];

@@ -30,7 +30,6 @@
     <TypeScriptCompile Include="libs\lodash\lodash.d.ts" />
     <TypeScriptCompile Include="libs\phaser\phaser.d.ts" />
     <TypeScriptCompile Include="libs\tsUnit\tsUnit.ts" />
-    <TypeScriptCompile Include="src\input\Action.ts" />
     <TypeScriptCompile Include="src\JSONAsset.ts" />
     <TypeScriptCompile Include="src\KeyboardExtensions.ts" />
     <TypeScriptCompile Include="src\state\Configuration.ts" />
@@ -38,10 +37,13 @@
     <TypeScriptCompile Include="src\state\Boot.ts" />
     <TypeScriptCompile Include="src\Game.ts" />
     <TypeScriptCompile Include="src\state\InGame.ts" />
+    <TypeScriptCompile Include="src\state\InGameView.ts" />
     <TypeScriptCompile Include="src\state\MainMenu.ts" />
     <TypeScriptCompile Include="src\state\Preloader.ts" />
-    <TypeScriptCompile Include="src\Tilemap.ts" />
-    <TypeScriptCompile Include="src\TilemapExtensions.ts" />
+    <TypeScriptCompile Include="src\tilemap\Tile.ts" />
+    <TypeScriptCompile Include="src\tilemap\Tilemap.ts" />
+    <TypeScriptCompile Include="src\tilemap\TilemapExtensions.ts" />
+    <TypeScriptCompile Include="src\tilemap\TileType.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\tilemaps\maps\oryx_test.json" />
@@ -58,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assets\tilemaps\tiles\" />
+    <Folder Include="src\input\" />
     <Folder Include="test\" />
   </ItemGroup>
   <PropertyGroup>
