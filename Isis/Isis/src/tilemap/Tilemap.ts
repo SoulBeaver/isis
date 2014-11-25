@@ -5,15 +5,16 @@ module Isis {
     export interface WorldCoordinates { x: number; y: number };
 
     export class Tilemap extends Phaser.Tilemap {
-        WALLS_LAYER      = "Walls";
-        BACKGROUND_LAYER = "Background";
-        CREATURES_LAYER  = "Creatures";
-        ITEMS_LAYER      = "Items";
-        OBJECTS_LAYER    = "Objects";
+        private WallsLayer      = "Walls";
+        private BackgroundLayer = "Background";
+        private ShadowsLayer    = "Shadows";
+        private CreaturesLayer  = "Creatures";
+        private ItemsLayer      = "Items";
+        private ObjectsLayer    = "Objects";
 
-        private items: Array<Phaser.Sprite> = [];
-        private activatableObjects: Array<Phaser.Sprite> = [];
-        private creatures: Array<Phaser.Sprite> = [];
+        private items: Array<Phaser.Sprite>;
+        private activatableObjects: Array<Phaser.Sprite>;
+        private creatures: Array<Phaser.Sprite>;
 
         private wallLayer: Phaser.TilemapLayer;
         private backgroundLayer: Phaser.TilemapLayer;
@@ -31,12 +32,12 @@ module Isis {
                  this.addTilesetImage(tileset, asset.key);
              });
 
-            this.wallLayer       = this.createLayer("Walls");
-            this.backgroundLayer = this.createLayer("Background");
-            this.shadowLayer     = this.createLayer("Shadows");
-            this.itemLayer       = this.createLayer("Items");
-            this.objectLayer     = this.createLayer("Objects");
-            this.creatureLayer   = this.createLayer("Creatures");
+            this.wallLayer       = this.createLayer(this.WallsLayer);
+            this.backgroundLayer = this.createLayer(this.BackgroundLayer);
+            this.shadowLayer     = this.createLayer(this.ShadowsLayer);
+            this.itemLayer       = this.createLayer(this.ItemsLayer);
+            this.objectLayer     = this.createLayer(this.ObjectsLayer);
+            this.creatureLayer   = this.createLayer(this.CreaturesLayer);
 
             this.separateCreaturesFromTilemap();
             this.separateItemsFromTilemap();
@@ -72,7 +73,7 @@ module Isis {
         }
 
         wallAt(at: TileCoordinates) {
-            return this.tileExists(at, this.WALLS_LAYER);
+            return this.tileExists(at, this.WallsLayer);
         }
 
         itemAt(at: TileCoordinates) {
@@ -93,22 +94,22 @@ module Isis {
         }
 
         removeItem(item: Phaser.Sprite) {
-            this.items = _.reject(this.items, item);
+            _.remove(this.items, (candidate) => _.isEqual(candidate, item));
             item.destroy();
         }
 
         removeCreature(creature: Phaser.Sprite) {
-            this.creatures = _.reject(this.creatures, creature);
+            _.remove(this.creatures, (candidate) => _.isEqual(candidate, creature));
             creature.destroy();
         }
 
         tileLeftOf(tile: TileCoordinates) {
             var tileToTheLeft = this.getTile(tile.x - 1, tile.y);
-            this.getTileBelow(this.getLayerIndex(this.WALLS_LAYER), tile.x - 1, tile.y);
+            this.getTileBelow(this.getLayerIndex(this.WallsLayer), tile.x - 1, tile.y);
             if (!tileToTheLeft)
                 return new Tile({ x: -1, y: -1 }, TileType.DoesNotExist);
 
-            if (this.getTile(tile.x - 1, tile.y, this.WALLS_LAYER))
+            if (this.getTile(tile.x - 1, tile.y, this.WallsLayer))
                 return new Tile(tileToTheLeft, TileType.Wall);
 
             var creature = _.find(this.creatures, (creature: Phaser.Sprite) => {

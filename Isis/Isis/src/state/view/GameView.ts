@@ -1,4 +1,4 @@
-﻿/// <reference path="../../libs/lodash/lodash.d.ts" />
+﻿/// <reference path="../../../libs/lodash/lodash.d.ts" />
 
 module Isis {
     export class GameView {

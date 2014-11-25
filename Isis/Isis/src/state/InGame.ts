@@ -40,7 +40,6 @@
             this.enemyState.onSwitchState.add(this.switchFromEnemyState, this);
 
             this.animatingState = new AnimatingState(this.game, this.view, this.map, this.player);
-            this.animatingState.onSwitchState.add(this.switchFromAnimatingState, this);
 
             this.currentState = this.playerState;
         }
@@ -49,49 +48,34 @@
             this.currentState.update();
         }
 
-        private switchFromPlayerState(nextState: State) {
-            switch (nextState) {
-                case State.AnimatingState:
-                    this.currentState.finalize();
+        private switchFromPlayerState() {
+            this.currentState.finalize();
 
-                    this.animatingState.nextState = State.EnemyState;
-                    this.currentState = this.animatingState;
-                    break;
-
-                default:
-                    throw new Error("PlayerState cannot switch into anything other than AnimatingState!");
-            }
+            this.currentState = this.animatingState;
+            this.currentState.onSwitchState.addOnce(this.switchToEnemyState, this);
+            this.currentState.initialize();
         }
 
-        private switchFromEnemyState(nextState: State) {
-            switch (nextState) {
-                case State.AnimatingState:
-                    this.currentState.finalize();
+        private switchFromEnemyState() {
+            this.currentState.finalize();
 
-                    this.animatingState.nextState = State.PlayerState;
-                    this.currentState = this.animatingState;
-                    break;
-
-                default:
-                    throw new Error("PlayerState cannot switch into anything other than AnimatingState!");
-            }
+            this.currentState = this.animatingState;
+            this.currentState.onSwitchState.addOnce(this.switchToPlayerState, this);
+            this.currentState.initialize();
         }
 
-        private switchFromAnimatingState(nextState: State) {
-            switch (nextState) {
-                case State.PlayerState:
-                    this.currentState.finalize();
-                    this.currentState = this.playerState;
-                    break;
+        private switchToEnemyState() {
+            this.currentState.finalize();
 
-                case State.EnemyState:
-                    this.currentState.finalize();
-                    this.currentState = this.enemyState;
-                    break;
+            this.currentState = this.enemyState;
+            this.currentState.initialize();
+        }
 
-                default:
-                    throw new Error("AnimatingState cannot switch into anything other than PlayerState or EnemyState!");
-            }
+        private switchToPlayerState() {
+            this.currentState.finalize();
+
+            this.currentState = this.playerState;
+            this.currentState.initialize();
         }
     }
 } 

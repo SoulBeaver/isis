@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <ProjectGuid>{F700D895-C700-4ACB-A74A-F12BF819797B}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <OutputPath>bin</OutputPath>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="app.css" />
+    <Content Include="assets\preloadBar.png" />
+    <Content Include="index.html" />
+    <Content Include="libs\lodash\lodash.js" />
+    <Content Include="libs\phaser\phaser.js" />
+    <Content Include="libs\phaser\phaser.min.js" />
+    <Content Include="web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="app.ts" />
+    <TypeScriptCompile Include="libs\lodash\lodash.d.ts" />
+    <TypeScriptCompile Include="libs\phaser\phaser.d.ts" />
+    <TypeScriptCompile Include="libs\tsUnit\tsUnit.ts" />
+    <TypeScriptCompile Include="src\JSONAsset.ts" />
+    <TypeScriptCompile Include="src\KeyboardExtensions.ts" />
+    <TypeScriptCompile Include="src\state\ingame\AnimatingState.ts" />
+    <TypeScriptCompile Include="src\Player.ts" />
+    <TypeScriptCompile Include="src\state\Boot.ts" />
+    <TypeScriptCompile Include="src\Game.ts" />
+    <TypeScriptCompile Include="src\state\ingame\EnemyState.ts" />
+    <TypeScriptCompile Include="src\state\InGame.ts" />
+    <TypeScriptCompile Include="src\state\ingame\InGameSubState.ts" />
+    <TypeScriptCompile Include="src\state\ingame\PlayerState.ts" />
+    <TypeScriptCompile Include="src\state\view\GameView.ts" />
+    <TypeScriptCompile Include="src\state\MainMenu.ts" />
+    <TypeScriptCompile Include="src\state\Preloader.ts" />
+    <TypeScriptCompile Include="src\state\State.ts" />
+    <TypeScriptCompile Include="src\tilemap\Tile.ts" />
+    <TypeScriptCompile Include="src\tilemap\Tilemap.ts" />
+    <TypeScriptCompile Include="src\tilemap\TilemapExtensions.ts" />
+    <TypeScriptCompile Include="src\tilemap\TileType.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="assets\tilemaps\maps\oryx_test.json" />
+    <Content Include="assets\settings.json" />
+    <Content Include="assets\manifest.json" />
+    <Content Include="libs\phaser\phaser.map" />
+    <Content Include="packages.config" />
+    <None Include="web.Debug.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+    <None Include="web.Release.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="assets\tilemaps\tiles\" />
+    <Folder Include="src\input\" />
+    <Folder Include="test\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>Isis</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>61493</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:61493/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptRemoveComments>false</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>true</TypeScriptSourceMap>
+    <TypeScriptModuleKind>none</TypeScriptModuleKind>
+    <TypeScriptOutFile>game.js</TypeScriptOutFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>false</TypeScriptSourceMap>
+    <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
+  </PropertyGroup>
+  <Import Project="$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets')" />
+</Project>

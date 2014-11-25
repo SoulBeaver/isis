@@ -1,4 +1,6 @@
-﻿module Isis {
+﻿/// <reference path="InGameSubState.ts"/>
+
+module Isis {
     export class PlayerState extends InGameSubState {
         private actionMap: Array<() => void> = [];
         private creaturesToDelete: Array<Phaser.Sprite> = [];
@@ -65,11 +67,12 @@
         }
 
         private switchToAnimatingState() {
-            this.onSwitchState.dispatch([State.AnimatingState, State.EnemyState]);
+            this.onSwitchState.dispatch();
         }
 
         finalize() {
-            this.creaturesToDelete.forEach(this.map.removeCreature);
+            this.creaturesToDelete.forEach((creature: Phaser.Sprite) => this.map.removeCreature(creature), this);
+            this.creaturesToDelete = [];
         }
     }
 } 
