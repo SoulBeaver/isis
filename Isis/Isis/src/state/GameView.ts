@@ -18,7 +18,6 @@ module Isis {
             this.registerTweenDeletion(tween);
 
             this.tweensToPlay.push(tween);
-            return tween;
         }
 
         attack(player: Phaser.Sprite, creature: Phaser.Sprite) {
@@ -34,7 +33,6 @@ module Isis {
             this.registerTweenDeletion(tween);
 
             this.tweensToPlay.push(tween);
-            return tween;
         }
 
         play() {
@@ -46,7 +44,7 @@ module Isis {
 
         private registerTweenDeletion(tween: Phaser.Tween) {
             tween.onComplete.add(() => {
-                _.remove(this.tweensToPlay, tween);
+                this.tweensToPlay = _.reject(this.tweensToPlay, tween);
                 this.dispatchIfNoActiveTweensRemain();
             }, this);
         }

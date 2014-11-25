@@ -20,6 +20,9 @@
         static Boot = "Boot";
         static Preloader = "Preloader";
         static MainMenu = "MainMenu";
+        static InGame = "InGame";
+
+        // SubStates
         static PlayerState = "PlayerState";
         static EnemyState = "EnemyState";
         static AnimatingState = "AnimatingState";

@@ -1,19 +1,5 @@
 ﻿module Isis {
-    export class EnemyState extends Phaser.State {
-        private view: GameView;
-        private map: Tilemap;
-        private player: Player;
-
-        create() {
-            this.game.stage.backgroundColor = "#000000";
-        }
-
-        init(args: any) {
-            this.view = args[0];
-            this.map = args[1];
-            this.player = args[2];
-        }
-
+    export class EnemyState extends InGameSubState {
         update() {
             this.switchToAnimatingState();
         }

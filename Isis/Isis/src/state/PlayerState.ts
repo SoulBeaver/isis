@@ -1,43 +1,12 @@
 ﻿module Isis {
-    interface IInputActionMap {
-        [input: string]: () => void;
-    }
+    export class PlayerState extends InGameSubState {
+        private actionMap: Array<() => void> = [];
+        private creaturesToDelete: Array<Phaser.Sprite> = [];
 
-    export class PlayerState extends Phaser.State {
-        private static hasBeenCreated = false;
-        private view: GameView;
-        private map: Tilemap;
-        
-        private actionMap: IInputActionMap = []; 
-        private player: Player;
+        constructor(game: Phaser.Game, view: GameView, map: Tilemap, player: Player) {
+            super(game, view, map, player);
 
-        create() {
-            if (!PlayerState.hasBeenCreated) {
-                this.game.stage.backgroundColor = "#000000";
-
-                this.initializeView();
-                this.initializeInputBindings();
-                this.initializeMap();
-                this.initializePlayer();
-
-                PlayerState.hasBeenCreated = true;
-            }
-        }
-
-        init(args: any) {
-            // PlayerState is the first state started after MainMenu finishes.
-            // The main menu, however, has no args to pass to the PlayerState.
-            // So args will be undefined until we complete the PlayerState -> AnimatingState -> EnemyState loop once.
-            if (!args)
-                return;
-
-            this.view = args[0];
-            this.map = args[1];
-            this.player = args[2];
-        }
-
-        private initializeView() {
-            this.view = new GameView(this.game);
+            this.initializeInputBindings();
         }
 
         private initializeInputBindings() {
@@ -47,15 +16,6 @@
             this.actionMap[settings.move_right] = () => this.tryMoveTo(toTileCoordinates(this.map, { x: this.player.x + 24, y: this.player.y }));
             this.actionMap[settings.move_up]    = () => this.tryMoveTo(toTileCoordinates(this.map, { x: this.player.x, y: this.player.y - 24 }));
             this.actionMap[settings.move_down]  = () => this.tryMoveTo(toTileCoordinates(this.map, { x: this.player.x, y: this.player.y + 24 }));
-        }
-
-        private initializeMap() {
-            this.map = new Tilemap(this.game, "maze", this.game.cache.getJSON("manifest"));
-        }
-
-        private initializePlayer() {
-            this.player = new Player(this.game, 48, 24);
-            this.game.camera.follow(this.player);
         }
 
         update() {
@@ -88,8 +48,8 @@
         }
 
         private attack(player: Phaser.Sprite, creature: Phaser.Sprite) {
-            var tween = this.view.attack(player, creature);
-            tween.onLoop.addOnce(() => this.map.removeCreature(creature), this);
+            this.view.attack(player, creature);
+            this.creaturesToDelete.push(creature);
         }
 
         private activate(player: Player, object: Phaser.Sprite) {
@@ -105,7 +65,11 @@
         }
 
         private switchToAnimatingState() {
-            this.game.state.start(State.AnimatingState, false, false, [this.view, this.map, this.player, State.EnemyState]);
+            this.onSwitchState.dispatch([State.AnimatingState, State.EnemyState]);
+        }
+
+        finalize() {
+            this.creaturesToDelete.forEach(this.map.removeCreature);
         }
     }
 } 

@@ -22,7 +22,7 @@
 
         startMainMenu() {
             // We're skipping the main menu to ease testing of gameplay- no need to click through the menu.
-            this.game.state.start(State.PlayerState, true, false);
+            this.game.state.start(State.InGame, true, false);
         }
     }
 }  

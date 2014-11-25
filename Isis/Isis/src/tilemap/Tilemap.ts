@@ -93,12 +93,12 @@ module Isis {
         }
 
         removeItem(item: Phaser.Sprite) {
-            _.remove(this.items, item);
+            this.items = _.reject(this.items, item);
             item.destroy();
         }
 
         removeCreature(creature: Phaser.Sprite) {
-            _.remove(this.creatures, creature);
+            this.creatures = _.reject(this.creatures, creature);
             creature.destroy();
         }
 
