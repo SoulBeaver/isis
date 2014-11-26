@@ -1,9 +1,18 @@
 ﻿module Isis {
+    /**
+     * Controlling class for all in-game logic. Has the ability to call and create popups and switch to different States.
+     */
     export class InGame extends Phaser.State {
         private view: GameView;
         private map: Tilemap;
         private player: Player;
 
+        // In a roguelike, there is a clear separation between the player and everything else.
+        // Since I'm trying to emulate a turn-based roguelike, the InGame state includes
+        // three Sub-States that allow for more fine-grained control.
+        // The PlayerState handles player input and allows him to move,
+        // The EnemyState performs any Ai logic necessary for the enemies to appear intelligent
+        // and AnimatingState displays the Player's and Enemie's actions visually.
         private playerState: PlayerState;
         private enemyState: EnemyState;
         private animatingState: AnimatingState;
@@ -39,6 +48,9 @@
             this.enemyState = new EnemyState(this.game, this.view, this.map, this.player);
             this.enemyState.onSwitchState.add(this.switchFromEnemyState, this);
 
+            // We're not adding a onSwitchState because we switch to either Player or EnemyState depending
+            // on which state came before. Therefore, we add a callback to the animating state whenever
+            // the Player or EnemyState is finished.
             this.animatingState = new AnimatingState(this.game, this.view, this.map, this.player);
 
             this.currentState = this.playerState;

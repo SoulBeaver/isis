@@ -469,6 +469,9 @@ var tsUnit;
 })(tsUnit || (tsUnit = {}));
 var Isis;
 (function (Isis) {
+    /**
+     * Entry into the game. Define any states necessary, then start the loading process.
+     */
     var Game = (function (_super) {
         __extends(Game, _super);
         function Game() {
@@ -514,6 +517,10 @@ var Isis;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
+    /**
+     * Boot configures the game (dimensions, scale, platform-dependent code, etc)
+     * and loads the loading bar for the upcoming asset loading.
+     */
     var Boot = (function (_super) {
         __extends(Boot, _super);
         function Boot() {
@@ -524,7 +531,6 @@ var Isis;
             this.load.json("settings", "assets/settings.json");
         };
         Boot.prototype.create = function () {
-            this.input.maxPointers = 1;
             this.configureGame();
             this.game.state.start(Isis.State.Preloader, false, true);
         };
@@ -544,6 +550,10 @@ var Isis;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
+    /**
+     * A mini-controller that is part of a proper Phaser.State. Can still be updated
+     * like a Phaser.State and performs whatever logic necessary.
+     */
     var InGameSubState = (function () {
         function InGameSubState(game, view, map, player) {
             this.onSwitchState = new Phaser.Signal();
@@ -604,6 +614,9 @@ var Isis;
 /// <reference path="InGameSubState.ts"/>
 var Isis;
 (function (Isis) {
+    /**
+     * Controlling class for any player actions made.
+     */
     var PlayerState = (function (_super) {
         __extends(PlayerState, _super);
         function PlayerState(game, view, map, player) {
@@ -615,6 +628,10 @@ var Isis;
         PlayerState.prototype.initializeInputBindings = function () {
             var _this = this;
             var settings = this.game.cache.getJSON("settings");
+            // I'd like to keep the keys separate from the actions, so we read from the assets/settings.json to see which key is bound to which
+            // action. We can then construct a decoupled associative array for every action. Currently, the player can only move via keyboard
+            // but I'm hoping to allow for mouse input as well.
+            // Caveat:  the settings.json input MUST be a string value of Phaser.Keyboard.<Key>. Otherwise an exception will be thrown.
             this.actionMap[settings.move_left] = function () { return _this.tryMoveTo(_this.map.toTileCoordinates({ x: _this.player.x - 24, y: _this.player.y })); };
             this.actionMap[settings.move_right] = function () { return _this.tryMoveTo(_this.map.toTileCoordinates({ x: _this.player.x + 24, y: _this.player.y })); };
             this.actionMap[settings.move_up] = function () { return _this.tryMoveTo(_this.map.toTileCoordinates({ x: _this.player.x, y: _this.player.y - 24 })); };
@@ -630,6 +647,18 @@ var Isis;
                 }
             }
         };
+        /*
+         * A player can do three things when moving:
+         *     Move if there is nothing in the way
+         *     Attack if a creature is in the way
+         *     Activate an object if it is in the way
+         *
+         * I chose not to ignore the movement if a creature or object is in the way because I find it
+         * it intuitive that a "bump" between player and creature should mean attack, or that
+         * the player bumping into an object should mean that the user wants to activate it.
+         * Creating a special shortcut or method to activate these separate from moving into them
+         * seems like too much work and not worth the effort.
+         */
         PlayerState.prototype.tryMoveTo = function (destination) {
             if (this.map.wallAt(destination))
                 return;
@@ -645,6 +674,7 @@ var Isis;
                 this.move(this.player, destination);
             }
         };
+        // For now, attacking a creature will automatically kill it.
         PlayerState.prototype.attack = function (player, creature) {
             this.view.attack(player, creature);
             this.creaturesToDelete.push(creature);
@@ -652,6 +682,7 @@ var Isis;
         PlayerState.prototype.activate = function (player, object) {
             // TODO: Nothing to do yet.
         };
+        // For now, the item is destroyed. In future versions, the player will have an inventory.
         PlayerState.prototype.pickUp = function (player, item) {
             this.map.removeItem(item);
         };
@@ -672,6 +703,9 @@ var Isis;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
+    /**
+     * Controlling class for all in-game logic. Has the ability to call and create popups and switch to different States.
+     */
     var InGame = (function (_super) {
         __extends(InGame, _super);
         function InGame() {
@@ -699,6 +733,9 @@ var Isis;
             this.playerState.onSwitchState.add(this.switchFromPlayerState, this);
             this.enemyState = new Isis.EnemyState(this.game, this.view, this.map, this.player);
             this.enemyState.onSwitchState.add(this.switchFromEnemyState, this);
+            // We're not adding a onSwitchState because we switch to either Player or EnemyState depending
+            // on which state came before. Therefore, we add a callback to the animating state whenever
+            // the Player or EnemyState is finished.
             this.animatingState = new Isis.AnimatingState(this.game, this.view, this.map, this.player);
             this.currentState = this.playerState;
         };
@@ -756,6 +793,9 @@ var Isis;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
+    /**
+     * Preloader loads all assets required by every state in the game.
+     */
     var Preloader = (function (_super) {
         __extends(Preloader, _super);
         function Preloader() {
@@ -768,6 +808,7 @@ var Isis;
         };
         Preloader.prototype.loadAssets = function () {
             this.load.pack("maze", "assets/manifest.json");
+            // Explicitly load the manifest as well! It is used later for the tilemaps to identify which tilesets they require.
             this.load.json("manifest", "assets/manifest.json");
         };
         Preloader.prototype.create = function () {
@@ -783,6 +824,10 @@ var Isis;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
+    /**
+     * Enumeration class referring to every State- but not sub-state- found in this game.
+     */
+    // This is not an enum because TypeScript enums do not support string values.
     var State = (function () {
         function State() {
         }

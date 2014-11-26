@@ -1,4 +1,7 @@
 ﻿module Isis {
+    /**
+     * Preloader loads all assets required by every state in the game.
+     */ 
     export class Preloader extends Phaser.State {
         preloadBar: Phaser.Sprite;
 
@@ -11,6 +14,7 @@
 
         loadAssets() {
             this.load.pack("maze", "assets/manifest.json");
+            // Explicitly load the manifest as well! It is used later for the tilemaps to identify which tilesets they require.
             this.load.json("manifest", "assets/manifest.json");
         }
 

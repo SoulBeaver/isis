@@ -1,4 +1,8 @@
 ﻿module Isis {
+    /**
+     * Boot configures the game (dimensions, scale, platform-dependent code, etc)
+     * and loads the loading bar for the upcoming asset loading.
+     */
     export class Boot extends Phaser.State {
         preload() {
             this.load.image("preloadBar", "assets/preloadBar.png");
@@ -6,8 +10,6 @@
         }
 
         create() {
-            this.input.maxPointers = 1;
-
             this.configureGame();
 
             this.game.state.start(State.Preloader, false, true);

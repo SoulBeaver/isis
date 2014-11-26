@@ -1,6 +1,9 @@
 ﻿/// <reference path="InGameSubState.ts"/>
 
 module Isis {
+    /**
+     * Controlling class for any player actions made.
+     */
     export class PlayerState extends InGameSubState {
         private actionMap: Array<() => void> = [];
         private creaturesToDelete: Array<Phaser.Sprite> = [];
@@ -14,6 +17,10 @@ module Isis {
         private initializeInputBindings() {
             var settings = this.game.cache.getJSON("settings");
 
+            // I'd like to keep the keys separate from the actions, so we read from the assets/settings.json to see which key is bound to which
+            // action. We can then construct a decoupled associative array for every action. Currently, the player can only move via keyboard
+            // but I'm hoping to allow for mouse input as well.
+            // Caveat:  the settings.json input MUST be a string value of Phaser.Keyboard.<Key>. Otherwise an exception will be thrown.
             this.actionMap[settings.move_left]  = () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x - 24, y: this.player.y }));
             this.actionMap[settings.move_right] = () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x + 24, y: this.player.y }));
             this.actionMap[settings.move_up]    = () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x, y: this.player.y - 24 }));
@@ -33,6 +40,18 @@ module Isis {
             }
         }
 
+        /*
+         * A player can do three things when moving:
+         *     Move if there is nothing in the way
+         *     Attack if a creature is in the way
+         *     Activate an object if it is in the way
+         *
+         * I chose not to ignore the movement if a creature or object is in the way because I find it
+         * it intuitive that a "bump" between player and creature should mean attack, or that
+         * the player bumping into an object should mean that the user wants to activate it.
+         * Creating a special shortcut or method to activate these separate from moving into them
+         * seems like too much work and not worth the effort.
+         */
         private tryMoveTo(destination: TileCoordinates) {
             if (this.map.wallAt(destination))
                 return;
@@ -49,6 +68,7 @@ module Isis {
             }
         }
 
+        // For now, attacking a creature will automatically kill it.
         private attack(player: Phaser.Sprite, creature: Phaser.Sprite) {
             this.view.attack(player, creature);
             this.creaturesToDelete.push(creature);
@@ -58,6 +78,7 @@ module Isis {
             // TODO: Nothing to do yet.
         }
 
+        // For now, the item is destroyed. In future versions, the player will have an inventory.
         private pickUp(player: Player, item: Phaser.Sprite) {
             this.map.removeItem(item);
         }

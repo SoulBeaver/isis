@@ -1,4 +1,8 @@
 ﻿module Isis {
+    /**
+     * A mini-controller that is part of a proper Phaser.State. Can still be updated
+     * like a Phaser.State and performs whatever logic necessary.
+     */
     export class InGameSubState {
         game: Phaser.Game;
         view: GameView;
