@@ -13,11 +13,11 @@ module Isis {
 
         private initializeInputBindings() {
             var settings = this.game.cache.getJSON("settings");
-            
-            this.actionMap[settings.move_left]  = () => this.tryMoveTo(toTileCoordinates(this.map, { x: this.player.x - 24, y: this.player.y }));
-            this.actionMap[settings.move_right] = () => this.tryMoveTo(toTileCoordinates(this.map, { x: this.player.x + 24, y: this.player.y }));
-            this.actionMap[settings.move_up]    = () => this.tryMoveTo(toTileCoordinates(this.map, { x: this.player.x, y: this.player.y - 24 }));
-            this.actionMap[settings.move_down]  = () => this.tryMoveTo(toTileCoordinates(this.map, { x: this.player.x, y: this.player.y + 24 }));
+
+            this.actionMap[settings.move_left]  = () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x - 24, y: this.player.y }));
+            this.actionMap[settings.move_right] = () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x + 24, y: this.player.y }));
+            this.actionMap[settings.move_up]    = () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x, y: this.player.y - 24 }));
+            this.actionMap[settings.move_down]  = () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x, y: this.player.y + 24 }));
         }
 
         update() {
@@ -33,19 +33,19 @@ module Isis {
             }
         }
 
-        private tryMoveTo(tileCoordinates: TileCoordinates) {
-            if (this.map.wallAt(tileCoordinates))
+        private tryMoveTo(destination: TileCoordinates) {
+            if (this.map.wallAt(destination))
                 return;
 
-            if (this.map.creatureAt(tileCoordinates)) {
-                this.attack(this.player, this.map.creatureAt(tileCoordinates));
-            } else if (this.map.objectAt(tileCoordinates)) {
-                this.activate(this.player, this.map.objectAt(tileCoordinates));
+            if (this.map.creatureAt(destination)) {
+                this.attack(this.player, this.map.creatureAt(destination));
+            } else if (this.map.objectAt(destination)) {
+                this.activate(this.player, this.map.objectAt(destination));
             } else {
-                if (this.map.itemAt(tileCoordinates))
-                    this.pickUp(this.player, this.map.itemAt(tileCoordinates));
+                if (this.map.itemAt(destination))
+                    this.pickUp(this.player, this.map.itemAt(destination));
 
-                this.move(this.player, tileCoordinates);
+                this.move(this.player, destination);
             }
         }
 
@@ -63,7 +63,7 @@ module Isis {
         }
 
         private move(player: Player, to: TileCoordinates) {
-            this.view.move(this.player, toWorldCoordinates(this.map, to));
+            this.view.move(this.player, this.map.toWorldCoordinates(to));
         }
 
         private switchToAnimatingState() {

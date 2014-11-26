@@ -615,10 +615,10 @@ var Isis;
         PlayerState.prototype.initializeInputBindings = function () {
             var _this = this;
             var settings = this.game.cache.getJSON("settings");
-            this.actionMap[settings.move_left] = function () { return _this.tryMoveTo(Isis.toTileCoordinates(_this.map, { x: _this.player.x - 24, y: _this.player.y })); };
-            this.actionMap[settings.move_right] = function () { return _this.tryMoveTo(Isis.toTileCoordinates(_this.map, { x: _this.player.x + 24, y: _this.player.y })); };
-            this.actionMap[settings.move_up] = function () { return _this.tryMoveTo(Isis.toTileCoordinates(_this.map, { x: _this.player.x, y: _this.player.y - 24 })); };
-            this.actionMap[settings.move_down] = function () { return _this.tryMoveTo(Isis.toTileCoordinates(_this.map, { x: _this.player.x, y: _this.player.y + 24 })); };
+            this.actionMap[settings.move_left] = function () { return _this.tryMoveTo(_this.map.toTileCoordinates({ x: _this.player.x - 24, y: _this.player.y })); };
+            this.actionMap[settings.move_right] = function () { return _this.tryMoveTo(_this.map.toTileCoordinates({ x: _this.player.x + 24, y: _this.player.y })); };
+            this.actionMap[settings.move_up] = function () { return _this.tryMoveTo(_this.map.toTileCoordinates({ x: _this.player.x, y: _this.player.y - 24 })); };
+            this.actionMap[settings.move_down] = function () { return _this.tryMoveTo(_this.map.toTileCoordinates({ x: _this.player.x, y: _this.player.y + 24 })); };
         };
         PlayerState.prototype.update = function () {
             var keyboard = this.game.input.keyboard;
@@ -630,19 +630,19 @@ var Isis;
                 }
             }
         };
-        PlayerState.prototype.tryMoveTo = function (tileCoordinates) {
-            if (this.map.wallAt(tileCoordinates))
+        PlayerState.prototype.tryMoveTo = function (destination) {
+            if (this.map.wallAt(destination))
                 return;
-            if (this.map.creatureAt(tileCoordinates)) {
-                this.attack(this.player, this.map.creatureAt(tileCoordinates));
+            if (this.map.creatureAt(destination)) {
+                this.attack(this.player, this.map.creatureAt(destination));
             }
-            else if (this.map.objectAt(tileCoordinates)) {
-                this.activate(this.player, this.map.objectAt(tileCoordinates));
+            else if (this.map.objectAt(destination)) {
+                this.activate(this.player, this.map.objectAt(destination));
             }
             else {
-                if (this.map.itemAt(tileCoordinates))
-                    this.pickUp(this.player, this.map.itemAt(tileCoordinates));
-                this.move(this.player, tileCoordinates);
+                if (this.map.itemAt(destination))
+                    this.pickUp(this.player, this.map.itemAt(destination));
+                this.move(this.player, destination);
             }
         };
         PlayerState.prototype.attack = function (player, creature) {
@@ -656,7 +656,7 @@ var Isis;
             this.map.removeItem(item);
         };
         PlayerState.prototype.move = function (player, to) {
-            this.view.move(this.player, Isis.toWorldCoordinates(this.map, to));
+            this.view.move(this.player, this.map.toWorldCoordinates(to));
         };
         PlayerState.prototype.switchToAnimatingState = function () {
             this.onSwitchState.dispatch();
@@ -840,26 +840,12 @@ var Isis;
     })();
     Isis.GameView = GameView;
 })(Isis || (Isis = {}));
-var Isis;
-(function (Isis) {
-    var Tile = (function () {
-        function Tile(coordinates, type) {
-            this.coordinates = coordinates;
-            this.type = type;
-        }
-        return Tile;
-    })();
-    Isis.Tile = Tile;
-})(Isis || (Isis = {}));
 /// <reference path="../../libs/lodash/lodash.d.ts" />
 var Isis;
 (function (Isis) {
-    ;
-    ;
     var Tilemap = (function (_super) {
         __extends(Tilemap, _super);
         function Tilemap(game, key, manifest) {
-            var _this = this;
             _super.call(this, game, key);
             this.WallsLayer = "Walls";
             this.BackgroundLayer = "Background";
@@ -867,10 +853,7 @@ var Isis;
             this.CreaturesLayer = "Creatures";
             this.ItemsLayer = "Items";
             this.ObjectsLayer = "Objects";
-            _.filter(manifest.maze, function (asset) { return asset.type == "image"; }).forEach(function (asset) {
-                var tileset = asset.url.substring(asset.url.lastIndexOf('/') + 1, asset.url.lastIndexOf('.'));
-                _this.addTilesetImage(tileset, asset.key);
-            });
+            this.addTilesets(manifest.maze);
             this.wallLayer = this.createLayer(this.WallsLayer);
             this.backgroundLayer = this.createLayer(this.BackgroundLayer);
             this.shadowLayer = this.createLayer(this.ShadowsLayer);
@@ -882,6 +865,13 @@ var Isis;
             this.backgroundLayer.resizeWorld();
             this.setCollisionBetween(1, 2, true, "Walls");
         }
+        Tilemap.prototype.addTilesets = function (manifestTilemap) {
+            var _this = this;
+            _.filter(manifestTilemap, function (asset) { return asset.type == "image"; }).forEach(function (asset) {
+                var tileset = asset.url.substring(asset.url.lastIndexOf('/') + 1, asset.url.lastIndexOf('.'));
+                _this.addTilesetImage(tileset, asset.key);
+            });
+        };
         Tilemap.prototype.separateCreaturesFromTilemap = function () {
             var _this = this;
             this.creatures = this.extractFrom(this.creatureLayer, function (creatureTile) {
@@ -893,11 +883,13 @@ var Isis;
         };
         Tilemap.prototype.separateItemsFromTilemap = function () {
             var _this = this;
+            var centerItem = function (item) {
+                item.x += _this.tileWidth / 6;
+                item.y += _this.tileHeight / 6;
+            };
             this.items = this.extractFrom(this.itemLayer, function (itemTile) {
                 var itemSprite = _this.game.add.sprite(itemTile.worldX, itemTile.worldY, "item_atlas", itemTile.properties.atlas_name + ".png");
-                // Center sprite in tile.
-                itemSprite.x += 4;
-                itemSprite.y += 4;
+                centerItem(itemSprite);
                 return itemSprite;
             });
         };
@@ -906,23 +898,20 @@ var Isis;
             return _.filter(layer.getTiles(0, 0, this.widthInPixels, this.heightInPixels), function (tile) { return tile.properties.atlas_name; }).map(function (tile) { return converter(_this.removeTile(tile.x, tile.y, layer)); });
         };
         Tilemap.prototype.wallAt = function (at) {
-            return this.tileExists(at, this.WallsLayer);
+            var tile = this.getTile(at.x, at.y, this.WallsLayer);
+            return tile && tile.index != 0;
         };
         Tilemap.prototype.itemAt = function (at) {
             var _this = this;
-            return _.find(this.items, function (item) { return _.isEqual(Isis.toTileCoordinates(_this, item), at); });
+            return _.find(this.items, function (item) { return _.isEqual(_this.toTileCoordinates(item), at); });
         };
         Tilemap.prototype.objectAt = function (at) {
             var _this = this;
-            return _.find(this.activatableObjects, function (object) { return _.isEqual(Isis.toTileCoordinates(_this, object), at); });
+            return _.find(this.activatableObjects, function (object) { return _.isEqual(_this.toTileCoordinates(object), at); });
         };
         Tilemap.prototype.creatureAt = function (at) {
             var _this = this;
-            return _.find(this.creatures, function (creature) { return _.isEqual(Isis.toTileCoordinates(_this, creature), at); });
-        };
-        Tilemap.prototype.tileExists = function (at, layer) {
-            var tile = this.getTile(at.x, at.y, layer);
-            return tile && tile.index != 0;
+            return _.find(this.creatures, function (creature) { return _.isEqual(_this.toTileCoordinates(creature), at); });
         };
         Tilemap.prototype.removeItem = function (item) {
             _.remove(this.items, function (candidate) { return _.isEqual(candidate, item); });
@@ -932,27 +921,17 @@ var Isis;
             _.remove(this.creatures, function (candidate) { return _.isEqual(candidate, creature); });
             creature.destroy();
         };
-        Tilemap.prototype.tileLeftOf = function (tile) {
-            var _this = this;
-            var tileToTheLeft = this.getTile(tile.x - 1, tile.y);
-            this.getTileBelow(this.getLayerIndex(this.WallsLayer), tile.x - 1, tile.y);
-            if (!tileToTheLeft)
-                return new Isis.Tile({ x: -1, y: -1 }, 0 /* DoesNotExist */);
-            if (this.getTile(tile.x - 1, tile.y, this.WallsLayer))
-                return new Isis.Tile(tileToTheLeft, 1 /* Wall */);
-            var creature = _.find(this.creatures, function (creature) {
-                var creatureCoordinates = Isis.toTileCoordinates(_this, creature);
-                return _.isEqual(creatureCoordinates, tileToTheLeft);
-            });
-            if (creature)
-                return new Isis.Tile(tileToTheLeft, 5 /* Creature */);
-            var item = _.find(this.items, function (item) {
-                var itemCoordinates = Isis.toTileCoordinates(_this, item);
-                return _.isEqual(itemCoordinates, tileToTheLeft);
-            });
-            if (item)
-                return new Isis.Tile(tileToTheLeft, 3 /* Item */);
-            return new Isis.Tile(tileToTheLeft, 2 /* Background */);
+        Tilemap.prototype.toTileCoordinates = function (worldCoordinates) {
+            return {
+                x: Math.floor(worldCoordinates.x / this.tileWidth),
+                y: Math.floor(worldCoordinates.y / this.tileHeight)
+            };
+        };
+        Tilemap.prototype.toWorldCoordinates = function (tileCoordinates) {
+            return {
+                x: tileCoordinates.x * this.tileWidth,
+                y: tileCoordinates.y * this.tileHeight
+            };
         };
         return Tilemap;
     })(Phaser.Tilemap);
@@ -960,31 +939,12 @@ var Isis;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
-    function toTileCoordinates(map, worldCoordinates) {
-        return {
-            x: Math.floor(worldCoordinates.x / map.tileWidth),
-            y: Math.floor(worldCoordinates.y / map.tileHeight)
-        };
-    }
-    Isis.toTileCoordinates = toTileCoordinates;
-    function toWorldCoordinates(map, tileCoordinates) {
-        return {
-            x: tileCoordinates.x * map.tileWidth,
-            y: tileCoordinates.y * map.tileHeight
-        };
-    }
-    Isis.toWorldCoordinates = toWorldCoordinates;
-})(Isis || (Isis = {}));
-var Isis;
-(function (Isis) {
-    (function (TileType) {
-        TileType[TileType["DoesNotExist"] = 0] = "DoesNotExist";
-        TileType[TileType["Wall"] = 1] = "Wall";
-        TileType[TileType["Background"] = 2] = "Background";
-        TileType[TileType["Item"] = 3] = "Item";
-        TileType[TileType["Object"] = 4] = "Object";
-        TileType[TileType["Creature"] = 5] = "Creature";
-    })(Isis.TileType || (Isis.TileType = {}));
-    var TileType = Isis.TileType;
+    var WorldCoordinates = (function () {
+        function WorldCoordinates() {
+        }
+        return WorldCoordinates;
+    })();
+    Isis.WorldCoordinates = WorldCoordinates;
+    ;
 })(Isis || (Isis = {}));
 //# sourceMappingURL=game.js.map

@@ -1,9 +1,6 @@
 ﻿/// <reference path="../../libs/lodash/lodash.d.ts" />
 
 module Isis {
-    export interface TileCoordinates { x: number; y: number };
-    export interface WorldCoordinates { x: number; y: number };
-
     export class Tilemap extends Phaser.Tilemap {
         private WallsLayer      = "Walls";
         private BackgroundLayer = "Background";
@@ -26,12 +23,8 @@ module Isis {
         constructor(game: Phaser.Game, key: string, manifest: any) {
             super(game, key);
 
-            _.filter(manifest.maze, (asset: JSONAsset) => asset.type == "image")
-             .forEach((asset: JSONAsset) => {
-                 var tileset = asset.url.substring(asset.url.lastIndexOf('/') + 1, asset.url.lastIndexOf('.'));
-                 this.addTilesetImage(tileset, asset.key);
-             });
-
+            this.addTilesets(manifest.maze);
+            
             this.wallLayer       = this.createLayer(this.WallsLayer);
             this.backgroundLayer = this.createLayer(this.BackgroundLayer);
             this.shadowLayer     = this.createLayer(this.ShadowsLayer);
@@ -46,6 +39,14 @@ module Isis {
             this.setCollisionBetween(1, 2, true, "Walls");
         }
 
+        private addTilesets(manifestTilemap: any) {
+            _.filter(manifestTilemap, (asset: JSONAsset) => asset.type == "image")
+             .forEach((asset: JSONAsset) => {
+                 var tileset = asset.url.substring(asset.url.lastIndexOf('/') + 1, asset.url.lastIndexOf('.'));
+                 this.addTilesetImage(tileset, asset.key);
+             });
+        }
+
         private separateCreaturesFromTilemap() {
             this.creatures = this.extractFrom(this.creatureLayer, (creatureTile) => {
                 var creatureSprite = this.game.add.sprite(creatureTile.worldX, creatureTile.worldY, "creature_atlas");
@@ -57,11 +58,11 @@ module Isis {
         }
 
         private separateItemsFromTilemap() {
+            var centerItem = (item: Phaser.Sprite) => { item.x += this.tileWidth / 6; item.y += this.tileHeight / 6; }
+
             this.items = this.extractFrom(this.itemLayer, (itemTile) => {
                 var itemSprite = this.game.add.sprite(itemTile.worldX, itemTile.worldY, "item_atlas", itemTile.properties.atlas_name + ".png");
-                // Center sprite in tile.
-                itemSprite.x += 4;
-                itemSprite.y += 4;
+                centerItem(itemSprite);
 
                 return itemSprite;
             });
@@ -73,24 +74,20 @@ module Isis {
         }
 
         wallAt(at: TileCoordinates) {
-            return this.tileExists(at, this.WallsLayer);
+            var tile = this.getTile(at.x, at.y, this.WallsLayer);
+            return tile && tile.index != 0;
         }
 
         itemAt(at: TileCoordinates) {
-            return _.find(this.items, (item: Phaser.Sprite) => _.isEqual(toTileCoordinates(this, item), at));
+            return _.find(this.items, (item: Phaser.Sprite) => _.isEqual(this.toTileCoordinates(item), at));
         }
 
         objectAt(at: TileCoordinates) {
-            return _.find(this.activatableObjects, (object: Phaser.Sprite) => _.isEqual(toTileCoordinates(this, object), at));
+            return _.find(this.activatableObjects, (object: Phaser.Sprite) => _.isEqual(this.toTileCoordinates(object), at));
         }
 
         creatureAt(at: TileCoordinates) {
-            return _.find(this.creatures, (creature: Phaser.Sprite) => _.isEqual(toTileCoordinates(this, creature), at));
-        }
-
-        tileExists(at: TileCoordinates, layer: string) {
-            var tile = this.getTile(at.x, at.y, layer); 
-            return tile && tile.index != 0;
+            return _.find(this.creatures, (creature: Phaser.Sprite) => _.isEqual(this.toTileCoordinates(creature), at));
         }
 
         removeItem(item: Phaser.Sprite) {
@@ -103,30 +100,18 @@ module Isis {
             creature.destroy();
         }
 
-        tileLeftOf(tile: TileCoordinates) {
-            var tileToTheLeft = this.getTile(tile.x - 1, tile.y);
-            this.getTileBelow(this.getLayerIndex(this.WallsLayer), tile.x - 1, tile.y);
-            if (!tileToTheLeft)
-                return new Tile({ x: -1, y: -1 }, TileType.DoesNotExist);
+        toTileCoordinates(worldCoordinates: WorldCoordinates): TileCoordinates {
+            return {
+                x: Math.floor(worldCoordinates.x / this.tileWidth),
+                y: Math.floor(worldCoordinates.y / this.tileHeight)
+            };
+        }
 
-            if (this.getTile(tile.x - 1, tile.y, this.WallsLayer))
-                return new Tile(tileToTheLeft, TileType.Wall);
-
-            var creature = _.find(this.creatures, (creature: Phaser.Sprite) => {
-                var creatureCoordinates = toTileCoordinates(this, creature);
-                return _.isEqual(creatureCoordinates, tileToTheLeft);
-            });
-            if (creature)
-                return new Tile(tileToTheLeft, TileType.Creature);
-
-            var item = _.find(this.items, (item: Phaser.Sprite) => {
-                var itemCoordinates = toTileCoordinates(this, item);
-                return _.isEqual(itemCoordinates, tileToTheLeft);
-            });
-            if (item)
-                return new Tile(tileToTheLeft, TileType.Item);
-
-            return new Tile(tileToTheLeft, TileType.Background);
+        toWorldCoordinates(tileCoordinates: TileCoordinates): WorldCoordinates {
+            return {
+                x: tileCoordinates.x * this.tileWidth,
+                y: tileCoordinates.y * this.tileHeight
+            };
         }
     }
 } 
