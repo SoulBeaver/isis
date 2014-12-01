@@ -18,8 +18,11 @@
             this.player = player;
         }
 
-        initialize() {
-            
+        initialize(map?: Tilemap, player?: Player) {
+	        if (map)
+				this.map = map;
+	        if (player)
+		        this.player = player;
         }
 
         update() {

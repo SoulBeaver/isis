@@ -22,28 +22,34 @@
         create() {
             this.game.stage.backgroundColor = "#000000";
 
-            this.initializeView();
-            this.initializeMap();
-            this.initializePlayer();
-            this.initializeSubStates();
+			this.switchToMap("maze");
+			this.initializeView();
+			this.currentState = this.playerState;
         }
 
         private initializeView() {
             this.view = new GameView(this.game);
         }
 
-        private initializeMap() {
-            this.map = new Tilemap(this.game, "maze", this.game.cache.getJSON("manifest"));
+        private initializeMap(mapName: string) {
+            this.map = new Tilemap(this.game, mapName, this.game.cache.getJSON("manifest"));
         }
 
-        private initializePlayer() {
-            this.player = new Player(this.game, 48, 24);
+		private initializePlayer() {
+			var spawnPlayerTrigger = this.map.getTrigger("spawn_player");
+			var spawnWorldCoordinates = this.map.toWorldCoordinates({
+				x: spawnPlayerTrigger.properties.spawnX,
+				y: spawnPlayerTrigger.properties.spawnY
+			});
+
+			this.player = new Player(this.game, spawnWorldCoordinates);
             this.game.camera.follow(this.player);
         }
 
         private initializeSubStates() {
             this.playerState = new PlayerState(this.game, this.view, this.map, this.player);
-            this.playerState.onSwitchState.add(this.switchFromPlayerState, this);
+			this.playerState.onSwitchState.add(this.switchFromPlayerState, this);
+	        this.playerState.onChangeMap.add(this.initiateMapChange, this);
 
             this.enemyState = new EnemyState(this.game, this.view, this.map, this.player);
             this.enemyState.onSwitchState.add(this.switchFromEnemyState, this);
@@ -52,12 +58,11 @@
             // on which state came before. Therefore, we add a callback to the animating state whenever
             // the Player or EnemyState is finished.
             this.animatingState = new AnimatingState(this.game, this.view, this.map, this.player);
-
-            this.currentState = this.playerState;
         }
 
-        update() {
-            this.currentState.update();
+		update() {
+			if (this.currentState)
+				this.currentState.update();
         }
 
         private switchFromPlayerState() {
@@ -88,6 +93,31 @@
 
             this.currentState = this.playerState;
             this.currentState.initialize();
-        }
+		}
+
+		private initiateMapChange(mapName: string) {
+			this.playerState.onSwitchState.removeAll(this);
+
+			this.currentState.finalize();
+			this.currentState = null;
+
+			this.view.fadeOut();
+			this.view.onTweensFinished.addOnce(() => this.onMapFadeOutComplete(mapName), this);
+			this.view.play();
+		}
+
+		private onMapFadeOutComplete(mapName: string) {
+			this.switchToMap(mapName);
+
+			this.view.fadeIn();
+			this.view.onTweensFinished.addOnce(() => this.currentState = this.playerState, this);
+			this.view.play();
+		}
+
+		private switchToMap(mapName: string) {
+			this.initializeMap(mapName);
+			this.initializePlayer();
+			this.initializeSubStates();
+		}
     }
 } 

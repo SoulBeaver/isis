@@ -2,8 +2,8 @@
     export class Player extends Phaser.Sprite {
         private _acceleration = 150;
 
-        constructor(game: Phaser.Game, x: number, y: number) {
-            super(game, x, y, "creature_atlas");
+        constructor(game: Phaser.Game, coordinates: WorldCoordinates) {
+            super(game, coordinates.x, coordinates.y, "creature_atlas");
 
             this.addAnimations();
             this.addPhysics();

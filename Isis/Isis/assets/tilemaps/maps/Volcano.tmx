@@ -2,6 +2,21 @@
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="12" height="8" tilewidth="24" tileheight="24" backgroundcolor="#000000">
  <tileset firstgid="1" name="Creatures" tilewidth="24" tileheight="24">
   <image source="../tiles/Creatures.png" width="480" height="648"/>
+  <tile id="301">
+   <properties>
+    <property name="atlas_name" value="green_goblin"/>
+   </properties>
+  </tile>
+  <tile id="309">
+   <properties>
+    <property name="atlas_name" value="green_orc"/>
+   </properties>
+  </tile>
+  <tile id="310">
+   <properties>
+    <property name="atlas_name" value="red_orc"/>
+   </properties>
+  </tile>
  </tileset>
  <tileset firstgid="541" name="World_Dirt_Shadows" tilewidth="24" tileheight="24">
   <image source="../tiles/World_Dirt_Shadows.png" width="600" height="528"/>
@@ -11,6 +26,16 @@
  </tileset>
  <tileset firstgid="2144" name="World_Objects" tilewidth="24" tileheight="24">
   <image source="../tiles/World_Objects.png" width="336" height="261"/>
+  <tile id="56">
+   <properties>
+    <property name="atlas_name" value="closed_cellar_door"/>
+   </properties>
+  </tile>
+  <tile id="57">
+   <properties>
+    <property name="atlas_name" value="open_cellar_door"/>
+   </properties>
+  </tile>
  </tileset>
  <tileset firstgid="2284" name="Items" tilewidth="16" tileheight="16">
   <tileoffset x="4" y="-4"/>
@@ -46,4 +71,17 @@
    eJxjYKAuMGMkXY8eGXrwAXMqm0dLAACWsQCf
   </data>
  </layer>
+ <objectgroup name="Triggers">
+  <object name="spawn_player" x="156" y="156">
+   <properties>
+    <property name="spawnX" value="6"/>
+    <property name="spawnY" value="6"/>
+   </properties>
+  </object>
+  <object name="warp" type="object" x="156" y="132">
+   <properties>
+    <property name="map" value="maze"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

@@ -80,7 +80,7 @@
                      "map":"volcano"
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"object",
                  "visible":true,
                  "width":0,
                  "x":60,
@@ -94,7 +94,7 @@
                      "map":"desert"
                     },
                  "rotation":0,
-                 "type":"",
+                 "type":"object",
                  "visible":true,
                  "width":0,
                  "x":276,
@@ -105,7 +105,8 @@
                  "name":"spawn_player",
                  "properties":
                     {
-
+                     "spawnX":"2",
+                     "spawnY":"1"
                     },
                  "rotation":0,
                  "type":"",
@@ -157,6 +158,17 @@
             },
          "spacing":0,
          "tileheight":24,
+         "tileproperties":
+            {
+             "42":
+                {
+                 "atlas_name":"closed_steel_gate"
+                },
+             "43":
+                {
+                 "atlas_name":"opened_steel_gate"
+                }
+            },
          "tilewidth":24
         }, 
         {

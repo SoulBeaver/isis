@@ -66,6 +66,47 @@
          "width":12,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "height":0,
+         "name":"Triggers",
+         "objects":[
+                {
+                 "height":0,
+                 "name":"spawn_player",
+                 "properties":
+                    {
+                     "spawnX":"6",
+                     "spawnY":"6"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":156,
+                 "y":156
+                }, 
+                {
+                 "height":0,
+                 "name":"warp",
+                 "properties":
+                    {
+                     "map":"maze"
+                    },
+                 "rotation":0,
+                 "type":"object",
+                 "visible":true,
+                 "width":0,
+                 "x":156,
+                 "y":132
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":0,
+         "x":0,
+         "y":0
         }],
  "orientation":"orthogonal",
  "properties":
@@ -88,6 +129,21 @@
             },
          "spacing":0,
          "tileheight":24,
+         "tileproperties":
+            {
+             "301":
+                {
+                 "atlas_name":"green_goblin"
+                },
+             "309":
+                {
+                 "atlas_name":"green_orc"
+                },
+             "310":
+                {
+                 "atlas_name":"red_orc"
+                }
+            },
          "tilewidth":24
         }, 
         {
@@ -133,6 +189,17 @@
             },
          "spacing":0,
          "tileheight":24,
+         "tileproperties":
+            {
+             "56":
+                {
+                 "atlas_name":"closed_cellar_door"
+                },
+             "57":
+                {
+                 "atlas_name":"open_cellar_door"
+                }
+            },
          "tilewidth":24
         }, 
         {

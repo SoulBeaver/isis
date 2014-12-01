@@ -4,7 +4,9 @@ module Isis {
     /**
      * Controlling class for any player actions made.
      */
-    export class PlayerState extends InGameSubState {
+	export class PlayerState extends InGameSubState {
+		onChangeMap: Phaser.Signal = new Phaser.Signal();
+
         private actionMap: Array<() => void> = [];
         private creaturesToDelete: Array<Phaser.Sprite> = [];
 
@@ -21,10 +23,10 @@ module Isis {
             // action. We can then construct a decoupled associative array for every action. Currently, the player can only move via keyboard
             // but I'm hoping to allow for mouse input as well.
             // Caveat:  the settings.json input MUST be a string value of Phaser.Keyboard.<Key>. Otherwise an exception will be thrown.
-            this.actionMap[settings.move_left]  = () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x - 24, y: this.player.y }));
-            this.actionMap[settings.move_right] = () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x + 24, y: this.player.y }));
-            this.actionMap[settings.move_up]    = () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x, y: this.player.y - 24 }));
-            this.actionMap[settings.move_down]  = () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x, y: this.player.y + 24 }));
+            this.actionMap[settings.move_left]		= () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x - 24, y: this.player.y }));
+            this.actionMap[settings.move_right]	= () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x + 24, y: this.player.y }));
+            this.actionMap[settings.move_up]		= () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x, y: this.player.y - 24 }));
+            this.actionMap[settings.move_down]	= () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x, y: this.player.y + 24 }));
         }
 
         update() {
@@ -74,8 +76,13 @@ module Isis {
             this.creaturesToDelete.push(creature);
         }
 
-        private activate(player: Player, object: Phaser.Sprite) {
-            // TODO: Nothing to do yet.
+		private activate(player: Player, object: ActivatableObject) {
+			if (!object.trigger)
+				return;
+
+			var trigger = object.trigger;
+			if (trigger.name == "warp")
+				this.onChangeMap.dispatch(trigger.properties.map);
         }
 
         // For now, the item is destroyed. In future versions, the player will have an inventory.

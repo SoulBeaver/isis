@@ -8,7 +8,9 @@ module Isis {
             super(game, view, map, player);
         }
 
-        initialize() {
+		initialize(map?: Tilemap, player?: Player) {
+			super.initialize(map, player);
+
             this.view.onTweensFinished.add(this.switchToNextState, this);
             this.view.play();
         }

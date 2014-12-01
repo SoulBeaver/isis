@@ -13,7 +13,10 @@
         }
 
         loadAssets() {
-            this.load.pack("maze", "assets/manifest.json");
+			this.load.pack("atlases", "assets/manifest.json");
+			this.load.pack("maze", "assets/manifest.json");
+			this.load.pack("volcano", "assets/manifest.json");
+
             // Explicitly load the manifest as well! It is used later for the tilemaps to identify which tilesets they require.
             this.load.json("manifest", "assets/manifest.json");
         }

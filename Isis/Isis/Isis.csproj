@@ -43,8 +43,10 @@
     <TypeScriptCompile Include="src\state\MainMenu.ts" />
     <TypeScriptCompile Include="src\state\Preloader.ts" />
     <TypeScriptCompile Include="src\state\State.ts" />
+    <TypeScriptCompile Include="src\tilemap\model\ActivatableObject.ts" />
     <TypeScriptCompile Include="src\tilemap\TileCoordinates.ts" />
     <TypeScriptCompile Include="src\tilemap\Tilemap.ts" />
+    <TypeScriptCompile Include="src\tilemap\Trigger.ts" />
     <TypeScriptCompile Include="src\tilemap\WorldCoordinates.ts" />
   </ItemGroup>
   <ItemGroup>
@@ -62,7 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assets\tilemaps\tiles\" />
-    <Folder Include="src\input\" />
     <Folder Include="test\" />
   </ItemGroup>
   <PropertyGroup>

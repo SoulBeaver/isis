@@ -2,16 +2,18 @@
 
 module Isis {
     export class Tilemap extends Phaser.Tilemap {
-        private WallsLayer      = "Walls";
-        private BackgroundLayer = "Background";
-        private ShadowsLayer    = "Shadows";
-        private CreaturesLayer  = "Creatures";
-        private ItemsLayer      = "Items";
-        private ObjectsLayer    = "Objects";
+        private WallsLayer			= "Walls";
+        private BackgroundLayer	= "Background";
+        private ShadowsLayer		= "Shadows";
+        private CreaturesLayer		= "Creatures";
+        private ItemsLayer			= "Items";
+		private ObjectsLayer			= "Objects";
+		private TriggersLayer			= "Triggers";
 
         private items: Array<Phaser.Sprite>;
-        private activatableObjects: Array<Phaser.Sprite>;
-        private creatures: Array<Phaser.Sprite>;
+		private creatures: Array<Phaser.Sprite>;
+		private activatableObjects: Array<ActivatableObject>;
+		private triggers: Array<Trigger>;
 
         private wallLayer: Phaser.TilemapLayer;
         private backgroundLayer: Phaser.TilemapLayer;
@@ -22,25 +24,28 @@ module Isis {
 
         constructor(game: Phaser.Game, key: string, manifest: any) {
             super(game, key);
-
-            this.addTilesets(manifest.maze);
+		
+            this.addTilesets(manifest[key]);
             
-            this.wallLayer       = this.createLayer(this.WallsLayer);
-            this.backgroundLayer = this.createLayer(this.BackgroundLayer);
-            this.shadowLayer     = this.createLayer(this.ShadowsLayer);
-            this.itemLayer       = this.createLayer(this.ItemsLayer);
-            this.objectLayer     = this.createLayer(this.ObjectsLayer);
-            this.creatureLayer   = this.createLayer(this.CreaturesLayer);
+            this.wallLayer	= this.createLayer(this.WallsLayer);
+            this.backgroundLayer	= this.createLayer(this.BackgroundLayer);
+            this.shadowLayer	= this.createLayer(this.ShadowsLayer);
+            this.itemLayer	= this.createLayer(this.ItemsLayer);
+            this.objectLayer	= this.createLayer(this.ObjectsLayer);
+            this.creatureLayer	= this.createLayer(this.CreaturesLayer);
 
             this.separateCreaturesFromTilemap();
-            this.separateItemsFromTilemap();
+			this.separateItemsFromTilemap();
+	        this.separateObjectsFromTilemap();
+
+			this.identifyTriggers();
 
             this.backgroundLayer.resizeWorld();
             this.setCollisionBetween(1, 2, true, "Walls");
         }
 
-        private addTilesets(manifestTilemap: any) {
-            _.filter(manifestTilemap, (asset: JSONAsset) => asset.type == "image")
+		private addTilesets(manifestTilemap: any) {
+			_.filter(manifestTilemap, (asset: JSONAsset) => asset.type == "image")
              .forEach((asset: JSONAsset) => {
                  var tileset = asset.url.substring(asset.url.lastIndexOf('/') + 1, asset.url.lastIndexOf('.'));
                  this.addTilesetImage(tileset, asset.key);
@@ -50,28 +55,80 @@ module Isis {
         private separateCreaturesFromTilemap() {
             this.creatures = this.extractFrom(this.creatureLayer, (creatureTile) => {
                 var creatureSprite = this.game.add.sprite(creatureTile.worldX, creatureTile.worldY, "creature_atlas");
-                creatureSprite.animations.add("idle", [creatureTile.properties.atlas_name + "_1.png", creatureTile.properties.atlas_name + "_2.png"], 2, true);
+				creatureSprite.animations.add("idle",
+										   [
+											   creatureTile.properties.atlas_name + "_1.png",
+											   creatureTile.properties.atlas_name + "_2.png"
+										   ],
+										   2,
+										   true);
                 creatureSprite.animations.play("idle");
 
                 return creatureSprite;
             });
-        }
+		}
+
+		private separateObjectsFromTilemap() {
+			this.activatableObjects = this.extractFrom(this.objectLayer, (objectTile) => {
+				var objectSprite = new ActivatableObject(this.game,
+																		 objectTile.worldX,
+																	     objectTile.worldY,
+																	     "object_atlas",
+																		 objectTile.properties.atlas_name + ".png");
+
+				return objectSprite;
+			});
+		}
 
         private separateItemsFromTilemap() {
             var centerItem = (item: Phaser.Sprite) => { item.x += this.tileWidth / 6; item.y += this.tileHeight / 6; }
 
             this.items = this.extractFrom(this.itemLayer, (itemTile) => {
-                var itemSprite = this.game.add.sprite(itemTile.worldX, itemTile.worldY, "item_atlas", itemTile.properties.atlas_name + ".png");
+				var itemSprite = this.game.add.sprite(itemTile.worldX,
+																   itemTile.worldY,
+																   "item_atlas",
+																   itemTile.properties.atlas_name + ".png");
                 centerItem(itemSprite);
 
                 return itemSprite;
             });
         }
 
-        private extractFrom(layer: Phaser.TilemapLayer, converter: (tile: Phaser.Tile) => Phaser.Sprite): Array<Phaser.Sprite> {
+        private extractFrom<T>(layer: Phaser.TilemapLayer, converter: (tile: Phaser.Tile) => T) {
             return _.filter(layer.getTiles(0, 0, this.widthInPixels, this.heightInPixels), (tile) => tile.properties.atlas_name)
-                    .map((tile) => converter(this.removeTile(tile.x, tile.y, layer)));
-        }
+                       .map((tile) => converter(this.removeTile(tile.x, tile.y, layer)));
+		}
+
+		private identifyTriggers() {
+			/*
+			A typical JSON entry for an object in the object layer (our triggers), looks like this:
+
+			    {
+                 "height":0,
+                 "name":"warp",
+                 "properties":
+                    {
+                     "map":"volcano"
+                    },
+                 "rotation":0,
+                 "type":"object",
+                 "visible":true,
+                 "width":0,
+                 "x":60,
+                 "y":12
+                }
+			 */
+			var mixedTriggers = _.map(this.objects[this.TriggersLayer], (json: any) => new Trigger(json));
+
+			_.chain(mixedTriggers)
+				.filter({ type: "object" })
+				.forEach((trigger: Trigger) => {
+					var object = this.objectAt(this.toTileCoordinates(trigger));
+					object.trigger = trigger;
+				});
+
+			this.triggers = _.reject(mixedTriggers, { type: "object" });
+		}
 
         wallAt(at: TileCoordinates) {
             var tile = this.getTile(at.x, at.y, this.WallsLayer);
@@ -83,12 +140,20 @@ module Isis {
         }
 
         objectAt(at: TileCoordinates) {
-            return _.find(this.activatableObjects, (object: Phaser.Sprite) => _.isEqual(this.toTileCoordinates(object), at));
+            return _.find(this.activatableObjects, (object: ActivatableObject) => _.isEqual(this.toTileCoordinates(object), at));
         }
 
         creatureAt(at: TileCoordinates) {
             return _.find(this.creatures, (creature: Phaser.Sprite) => _.isEqual(this.toTileCoordinates(creature), at));
-        }
+		}
+
+		triggerAt(at: TileCoordinates) {
+			return _.find(this.triggers, (trigger: Trigger) => _.isEqual(this.toTileCoordinates(trigger), at));
+		}
+
+		getTrigger(name: string) {
+			return _.find(this.triggers, { name: name });
+		}
 
         removeItem(item: Phaser.Sprite) {
             _.remove(this.items, (candidate) => _.isEqual(candidate, item));

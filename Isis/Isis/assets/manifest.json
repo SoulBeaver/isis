@@ -1,10 +1,30 @@
 ﻿{
-    "maze":  [
+    "atlases": [ 
+        {
+            "type": "atlasJSONArray",
+            "key": "creature_atlas",
+            "textureURL": "assets/spritesheets/creature_atlas.png",
+            "atlasURL": "assets/spritesheets/creature_atlas.json"
+        },
+        {
+            "type": "atlasJSONArray",
+            "key": "item_atlas",
+            "textureURL": "assets/spritesheets/item_atlas.png",
+            "atlasURL": "assets/spritesheets/item_atlas.json"
+        },
+        {
+            "type": "atlasJSONArray",
+            "key": "object_atlas",
+            "textureURL": "assets/spritesheets/object_atlas.png",
+            "atlasURL": "assets/spritesheets/object_atlas.json"
+        }
+    ],
+    "maze": [
         {
             "type": "tilemap",
             "key": "maze",
             "url": "assets/tilemaps/maps/Maze.json",
-            "data":  null,
+            "data": null,
             "format": "TILED_JSON"
         },
         {
@@ -31,18 +51,40 @@
             "type": "image",
             "key": "world_dirt_shadows_tileset",
             "url": "assets/tilemaps/tiles/World_Dirt_Shadows.png"
+        }
+    ],
+    "volcano": [
+        {
+            "type": "tilemap",
+            "key": "volcano",
+            "url": "assets/tilemaps/maps/Volcano.json",
+            "data": null,
+            "format": "TILED_JSON"
         },
         {
-            "type": "atlasJSONArray",
-            "key": "creature_atlas",
-            "textureURL": "assets/spritesheets/creature_atlas.png",
-            "atlasURL": "assets/spritesheets/creature_atlas.json"
+            "type": "image",
+            "key": "creatures_tileset",
+            "url": "assets/tilemaps/tiles/Creatures.png"
         },
         {
-            "type": "atlasJSONArray",
-            "key": "item_atlas",
-            "textureURL": "assets/spritesheets/item_atlas.png",
-            "atlasURL": "assets/spritesheets/item_atlas.json"
+            "type": "image",
+            "key": "items_tileset",
+            "url": "assets/tilemaps/tiles/Items.png"
+        },
+        {
+            "type": "image",
+            "key": "world_tileset",
+            "url": "assets/tilemaps/tiles/World_Tiles.png"
+        },
+        {
+            "type": "image",
+            "key": "world_objects_tileset",
+            "url": "assets/tilemaps/tiles/World_Objects.png"
+        },
+        {
+            "type": "image",
+            "key": "world_dirt_shadows_tileset",
+            "url": "assets/tilemaps/tiles/World_Dirt_Shadows.png"
         }
     ]
 }

@@ -4,13 +4,15 @@ module Isis {
     export class GameView {
         private game: Phaser.Game;
 
-        private tweensToPlay: Array<Phaser.Tween> = [];
+		private tweensToPlay: Array<Phaser.Tween> = [];
 
         onTweensStarted: Phaser.Signal = new Phaser.Signal();
         onTweensFinished: Phaser.Signal = new Phaser.Signal();
 
         constructor(game: Phaser.Game) {
-            this.game = game;
+			this.game = game;
+
+			
         }
 
         move(entity: Phaser.Sprite, to: WorldCoordinates) {
@@ -33,9 +35,38 @@ module Isis {
             this.registerTweenDeletion(tween);
 
             this.tweensToPlay.push(tween);
-        }
+		}
 
-        play() {
+		fadeOut() {
+			var fadeRectangle = this.createFullScreenRectangle(-this.game.world.width, 0);
+
+			var tween = this.game.add.tween(fadeRectangle).to({ x: 0 }, 500, Phaser.Easing.Linear.None);
+			tween.onComplete.add(() => fadeRectangle.destroy());
+			this.registerTweenDeletion(tween);
+
+			this.tweensToPlay.push(tween);
+		}
+
+		fadeIn() {
+			var fadeRectangle = this.createFullScreenRectangle(0, 0);
+
+			var tween = this.game.add.tween(fadeRectangle).to({ x: this.game.world.width }, 500, Phaser.Easing.Linear.None);
+			tween.onComplete.add(() => fadeRectangle.destroy());
+			this.registerTweenDeletion(tween);
+
+			this.tweensToPlay.push(tween);
+		}
+
+		private createFullScreenRectangle(x: number, y: number) {
+			var fadeRectangle = this.game.add.graphics(x, y);
+			fadeRectangle.lineStyle(1, 0x000000, 1);
+			fadeRectangle.beginFill(0x000000, 1);
+			fadeRectangle.drawRect(0, 0, this.game.world.width, this.game.world.height);
+
+			return fadeRectangle;
+		}
+
+		play() {
             _.forEach(this.tweensToPlay, (tween: Phaser.Tween) => tween.start());
 
             this.onTweensStarted.dispatch();
@@ -49,7 +80,7 @@ module Isis {
             }, this);
         }
 
-        private dispatchIfNoActiveTweensRemain() {
+		private dispatchIfNoActiveTweensRemain() {
             if (_.isEmpty(this.tweensToPlay))
                 this.onTweensFinished.dispatch();
         }

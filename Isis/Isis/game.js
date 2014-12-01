@@ -497,8 +497,8 @@ var Isis;
 (function (Isis) {
     var Player = (function (_super) {
         __extends(Player, _super);
-        function Player(game, x, y) {
-            _super.call(this, game, x, y, "creature_atlas");
+        function Player(game, coordinates) {
+            _super.call(this, game, coordinates.x, coordinates.y, "creature_atlas");
             this._acceleration = 150;
             this.addAnimations();
             this.addPhysics();
@@ -562,7 +562,11 @@ var Isis;
             this.map = map;
             this.player = player;
         }
-        InGameSubState.prototype.initialize = function () {
+        InGameSubState.prototype.initialize = function (map, player) {
+            if (map)
+                this.map = map;
+            if (player)
+                this.player = player;
         };
         InGameSubState.prototype.update = function () {
         };
@@ -580,7 +584,8 @@ var Isis;
         function AnimatingState(game, view, map, player) {
             _super.call(this, game, view, map, player);
         }
-        AnimatingState.prototype.initialize = function () {
+        AnimatingState.prototype.initialize = function (map, player) {
+            _super.prototype.initialize.call(this, map, player);
             this.view.onTweensFinished.add(this.switchToNextState, this);
             this.view.play();
         };
@@ -621,6 +626,7 @@ var Isis;
         __extends(PlayerState, _super);
         function PlayerState(game, view, map, player) {
             _super.call(this, game, view, map, player);
+            this.onChangeMap = new Phaser.Signal();
             this.actionMap = [];
             this.creaturesToDelete = [];
             this.initializeInputBindings();
@@ -680,7 +686,11 @@ var Isis;
             this.creaturesToDelete.push(creature);
         };
         PlayerState.prototype.activate = function (player, object) {
-            // TODO: Nothing to do yet.
+            if (!object.trigger)
+                return;
+            var trigger = object.trigger;
+            if (trigger.name == "warp")
+                this.onChangeMap.dispatch(trigger.properties.map);
         };
         // For now, the item is destroyed. In future versions, the player will have an inventory.
         PlayerState.prototype.pickUp = function (player, item) {
@@ -713,34 +723,39 @@ var Isis;
         }
         InGame.prototype.create = function () {
             this.game.stage.backgroundColor = "#000000";
+            this.switchToMap("maze");
             this.initializeView();
-            this.initializeMap();
-            this.initializePlayer();
-            this.initializeSubStates();
+            this.currentState = this.playerState;
         };
         InGame.prototype.initializeView = function () {
             this.view = new Isis.GameView(this.game);
         };
-        InGame.prototype.initializeMap = function () {
-            this.map = new Isis.Tilemap(this.game, "maze", this.game.cache.getJSON("manifest"));
+        InGame.prototype.initializeMap = function (mapName) {
+            this.map = new Isis.Tilemap(this.game, mapName, this.game.cache.getJSON("manifest"));
         };
         InGame.prototype.initializePlayer = function () {
-            this.player = new Isis.Player(this.game, 48, 24);
+            var spawnPlayerTrigger = this.map.getTrigger("spawn_player");
+            var spawnWorldCoordinates = this.map.toWorldCoordinates({
+                x: spawnPlayerTrigger.properties.spawnX,
+                y: spawnPlayerTrigger.properties.spawnY
+            });
+            this.player = new Isis.Player(this.game, spawnWorldCoordinates);
             this.game.camera.follow(this.player);
         };
         InGame.prototype.initializeSubStates = function () {
             this.playerState = new Isis.PlayerState(this.game, this.view, this.map, this.player);
             this.playerState.onSwitchState.add(this.switchFromPlayerState, this);
+            this.playerState.onChangeMap.add(this.initiateMapChange, this);
             this.enemyState = new Isis.EnemyState(this.game, this.view, this.map, this.player);
             this.enemyState.onSwitchState.add(this.switchFromEnemyState, this);
             // We're not adding a onSwitchState because we switch to either Player or EnemyState depending
             // on which state came before. Therefore, we add a callback to the animating state whenever
             // the Player or EnemyState is finished.
             this.animatingState = new Isis.AnimatingState(this.game, this.view, this.map, this.player);
-            this.currentState = this.playerState;
         };
         InGame.prototype.update = function () {
-            this.currentState.update();
+            if (this.currentState)
+                this.currentState.update();
         };
         InGame.prototype.switchFromPlayerState = function () {
             this.currentState.finalize();
@@ -763,6 +778,27 @@ var Isis;
             this.currentState.finalize();
             this.currentState = this.playerState;
             this.currentState.initialize();
+        };
+        InGame.prototype.initiateMapChange = function (mapName) {
+            var _this = this;
+            this.playerState.onSwitchState.removeAll(this);
+            this.currentState.finalize();
+            this.currentState = null;
+            this.view.fadeOut();
+            this.view.onTweensFinished.addOnce(function () { return _this.onMapFadeOutComplete(mapName); }, this);
+            this.view.play();
+        };
+        InGame.prototype.onMapFadeOutComplete = function (mapName) {
+            var _this = this;
+            this.switchToMap(mapName);
+            this.view.fadeIn();
+            this.view.onTweensFinished.addOnce(function () { return _this.currentState = _this.playerState; }, this);
+            this.view.play();
+        };
+        InGame.prototype.switchToMap = function (mapName) {
+            this.initializeMap(mapName);
+            this.initializePlayer();
+            this.initializeSubStates();
         };
         return InGame;
     })(Phaser.State);
@@ -807,7 +843,9 @@ var Isis;
             this.loadAssets();
         };
         Preloader.prototype.loadAssets = function () {
+            this.load.pack("atlases", "assets/manifest.json");
             this.load.pack("maze", "assets/manifest.json");
+            this.load.pack("volcano", "assets/manifest.json");
             // Explicitly load the manifest as well! It is used later for the tilemaps to identify which tilesets they require.
             this.load.json("manifest", "assets/manifest.json");
         };
@@ -865,6 +903,27 @@ var Isis;
             this.registerTweenDeletion(tween);
             this.tweensToPlay.push(tween);
         };
+        GameView.prototype.fadeOut = function () {
+            var fadeRectangle = this.createFullScreenRectangle(-this.game.world.width, 0);
+            var tween = this.game.add.tween(fadeRectangle).to({ x: 0 }, 500, Phaser.Easing.Linear.None);
+            tween.onComplete.add(function () { return fadeRectangle.destroy(); });
+            this.registerTweenDeletion(tween);
+            this.tweensToPlay.push(tween);
+        };
+        GameView.prototype.fadeIn = function () {
+            var fadeRectangle = this.createFullScreenRectangle(0, 0);
+            var tween = this.game.add.tween(fadeRectangle).to({ x: this.game.world.width }, 500, Phaser.Easing.Linear.None);
+            tween.onComplete.add(function () { return fadeRectangle.destroy(); });
+            this.registerTweenDeletion(tween);
+            this.tweensToPlay.push(tween);
+        };
+        GameView.prototype.createFullScreenRectangle = function (x, y) {
+            var fadeRectangle = this.game.add.graphics(x, y);
+            fadeRectangle.lineStyle(1, 0x000000, 1);
+            fadeRectangle.beginFill(0x000000, 1);
+            fadeRectangle.drawRect(0, 0, this.game.world.width, this.game.world.height);
+            return fadeRectangle;
+        };
         GameView.prototype.play = function () {
             _.forEach(this.tweensToPlay, function (tween) { return tween.start(); });
             this.onTweensStarted.dispatch();
@@ -885,6 +944,18 @@ var Isis;
     })();
     Isis.GameView = GameView;
 })(Isis || (Isis = {}));
+var Isis;
+(function (Isis) {
+    var ActivatableObject = (function (_super) {
+        __extends(ActivatableObject, _super);
+        function ActivatableObject(game, x, y, key, frame) {
+            _super.call(this, game, x, y, key, frame);
+            game.add.existing(this);
+        }
+        return ActivatableObject;
+    })(Phaser.Sprite);
+    Isis.ActivatableObject = ActivatableObject;
+})(Isis || (Isis = {}));
 /// <reference path="../../libs/lodash/lodash.d.ts" />
 var Isis;
 (function (Isis) {
@@ -898,7 +969,8 @@ var Isis;
             this.CreaturesLayer = "Creatures";
             this.ItemsLayer = "Items";
             this.ObjectsLayer = "Objects";
-            this.addTilesets(manifest.maze);
+            this.TriggersLayer = "Triggers";
+            this.addTilesets(manifest[key]);
             this.wallLayer = this.createLayer(this.WallsLayer);
             this.backgroundLayer = this.createLayer(this.BackgroundLayer);
             this.shadowLayer = this.createLayer(this.ShadowsLayer);
@@ -907,6 +979,8 @@ var Isis;
             this.creatureLayer = this.createLayer(this.CreaturesLayer);
             this.separateCreaturesFromTilemap();
             this.separateItemsFromTilemap();
+            this.separateObjectsFromTilemap();
+            this.identifyTriggers();
             this.backgroundLayer.resizeWorld();
             this.setCollisionBetween(1, 2, true, "Walls");
         }
@@ -921,9 +995,19 @@ var Isis;
             var _this = this;
             this.creatures = this.extractFrom(this.creatureLayer, function (creatureTile) {
                 var creatureSprite = _this.game.add.sprite(creatureTile.worldX, creatureTile.worldY, "creature_atlas");
-                creatureSprite.animations.add("idle", [creatureTile.properties.atlas_name + "_1.png", creatureTile.properties.atlas_name + "_2.png"], 2, true);
+                creatureSprite.animations.add("idle", [
+                    creatureTile.properties.atlas_name + "_1.png",
+                    creatureTile.properties.atlas_name + "_2.png"
+                ], 2, true);
                 creatureSprite.animations.play("idle");
                 return creatureSprite;
+            });
+        };
+        Tilemap.prototype.separateObjectsFromTilemap = function () {
+            var _this = this;
+            this.activatableObjects = this.extractFrom(this.objectLayer, function (objectTile) {
+                var objectSprite = new Isis.ActivatableObject(_this.game, objectTile.worldX, objectTile.worldY, "object_atlas", objectTile.properties.atlas_name + ".png");
+                return objectSprite;
             });
         };
         Tilemap.prototype.separateItemsFromTilemap = function () {
@@ -942,6 +1026,33 @@ var Isis;
             var _this = this;
             return _.filter(layer.getTiles(0, 0, this.widthInPixels, this.heightInPixels), function (tile) { return tile.properties.atlas_name; }).map(function (tile) { return converter(_this.removeTile(tile.x, tile.y, layer)); });
         };
+        Tilemap.prototype.identifyTriggers = function () {
+            var _this = this;
+            /*
+            A typical JSON entry for an object in the object layer (our triggers), looks like this:
+
+                {
+                 "height":0,
+                 "name":"warp",
+                 "properties":
+                    {
+                     "map":"volcano"
+                    },
+                 "rotation":0,
+                 "type":"object",
+                 "visible":true,
+                 "width":0,
+                 "x":60,
+                 "y":12
+                }
+             */
+            var mixedTriggers = _.map(this.objects[this.TriggersLayer], function (json) { return new Isis.Trigger(json); });
+            _.chain(mixedTriggers).filter({ type: "object" }).forEach(function (trigger) {
+                var object = _this.objectAt(_this.toTileCoordinates(trigger));
+                object.trigger = trigger;
+            });
+            this.triggers = _.reject(mixedTriggers, { type: "object" });
+        };
         Tilemap.prototype.wallAt = function (at) {
             var tile = this.getTile(at.x, at.y, this.WallsLayer);
             return tile && tile.index != 0;
@@ -957,6 +1068,13 @@ var Isis;
         Tilemap.prototype.creatureAt = function (at) {
             var _this = this;
             return _.find(this.creatures, function (creature) { return _.isEqual(_this.toTileCoordinates(creature), at); });
+        };
+        Tilemap.prototype.triggerAt = function (at) {
+            var _this = this;
+            return _.find(this.triggers, function (trigger) { return _.isEqual(_this.toTileCoordinates(trigger), at); });
+        };
+        Tilemap.prototype.getTrigger = function (name) {
+            return _.find(this.triggers, { name: name });
         };
         Tilemap.prototype.removeItem = function (item) {
             _.remove(this.items, function (candidate) { return _.isEqual(candidate, item); });
@@ -981,6 +1099,20 @@ var Isis;
         return Tilemap;
     })(Phaser.Tilemap);
     Isis.Tilemap = Tilemap;
+})(Isis || (Isis = {}));
+var Isis;
+(function (Isis) {
+    var Trigger = (function () {
+        function Trigger(json) {
+            this.name = json.name;
+            this.type = json.type;
+            this.x = json.x;
+            this.y = json.y;
+            this.properties = json.properties;
+        }
+        return Trigger;
+    })();
+    Isis.Trigger = Trigger;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {

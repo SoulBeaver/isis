@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="12" height="8" tilewidth="24" tileheight="24">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="12" height="8" tilewidth="24" tileheight="24" backgroundcolor="#000000">
  <tileset firstgid="1" name="World_Tiles" tilewidth="24" tileheight="24">
   <image source="../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/World/World_Tiles.png" width="648" height="936"/>
  </tileset>
  <tileset firstgid="1054" name="World_Objects" tilewidth="24" tileheight="24">
   <image source="../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/World/World_Objects.png" width="336" height="261"/>
+  <tile id="42">
+   <properties>
+    <property name="atlas_name" value="closed_steel_gate"/>
+   </properties>
+  </tile>
+  <tile id="43">
+   <properties>
+    <property name="atlas_name" value="opened_steel_gate"/>
+   </properties>
+  </tile>
  </tileset>
  <tileset firstgid="1194" name="Items" tilewidth="16" tileheight="16">
   <tileoffset x="4" y="-4"/>
@@ -82,4 +92,22 @@
    eJxjYKAuUOKg3AwWdsrNGCoAAD11ADY=
   </data>
  </layer>
+ <objectgroup name="Triggers">
+  <object name="warp" type="object" x="60" y="12">
+   <properties>
+    <property name="map" value="volcano"/>
+   </properties>
+  </object>
+  <object name="warp" type="object" x="276" y="60">
+   <properties>
+    <property name="map" value="desert"/>
+   </properties>
+  </object>
+  <object name="spawn_player" x="60" y="36">
+   <properties>
+    <property name="spawnX" value="2"/>
+    <property name="spawnY" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>
