@@ -7,12 +7,12 @@ module Isis {
         private ShadowsLayer		= "Shadows";
         private CreaturesLayer		= "Creatures";
         private ItemsLayer			= "Items";
-		private ObjectsLayer			= "Objects";
+		private InteractablesLayer	= "Objects";
 		private TriggersLayer			= "Triggers";
 
         private items: Array<Phaser.Sprite>;
 		private creatures: Array<Phaser.Sprite>;
-		private activatableObjects: Array<ActivatableObject>;
+		private interactables: Array<ActivatableObject>;
 		private triggers: Array<Trigger>;
 
         private wallLayer: Phaser.TilemapLayer;
@@ -31,7 +31,7 @@ module Isis {
             this.backgroundLayer	= this.createLayer(this.BackgroundLayer);
             this.shadowLayer	= this.createLayer(this.ShadowsLayer);
             this.itemLayer	= this.createLayer(this.ItemsLayer);
-            this.objectLayer	= this.createLayer(this.ObjectsLayer);
+            this.objectLayer	= this.createLayer(this.InteractablesLayer);
             this.creatureLayer	= this.createLayer(this.CreaturesLayer);
 
             this.separateCreaturesFromTilemap();
@@ -54,11 +54,11 @@ module Isis {
 
 		destroy() {
 			_.forEach(this.items, (item: Phaser.Sprite) => item.destroy());
-			_.forEach(this.objects, (object: Phaser.Sprite) => object.destroy());
+			_.forEach(this.interactables, (object: Phaser.Sprite) => object.destroy());
 			_.forEach(this.creatures, (creature: Phaser.Sprite) => creature.destroy());
 
 			this.items = [];
-			this.objects = [];
+			this.interactables = [];
 			this.creatures = [];
 			this.triggers = [];
 
@@ -94,7 +94,7 @@ module Isis {
 		}
 
 		private separateObjectsFromTilemap() {
-			this.activatableObjects = this.extractFrom(this.objectLayer, (objectTile) => {
+			this.interactables = this.extractFrom(this.objectLayer, (objectTile) => {
 				var objectSprite = new ActivatableObject(this.game,
 																		 objectTile.worldX,
 																	     objectTile.worldY,
@@ -165,7 +165,7 @@ module Isis {
         }
 
         objectAt(at: TileCoordinates) {
-            return _.find(this.activatableObjects, (object: ActivatableObject) => _.isEqual(this.toTileCoordinates(object), at));
+            return _.find(this.interactables, (object: ActivatableObject) => _.isEqual(this.toTileCoordinates(object), at));
         }
 
         creatureAt(at: TileCoordinates) {

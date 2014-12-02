@@ -96,7 +96,7 @@
 		}
 
 		private initiateMapChange(mapName: string) {
-			this.playerState.onSwitchState.removeAll(this);
+			this.removeListeners();
 
 			this.currentState.finalize();
 			this.currentState = null;
@@ -107,6 +107,7 @@
 		}
 
 		private onMapFadeOutComplete(mapName: string) {
+			this.destroyMap();
 			this.switchToMap(mapName);
 
 			this.view.fadeIn();
@@ -114,13 +115,24 @@
 			this.view.play();
 		}
 
-		private switchToMap(mapName: string) {
+		private destroyMap() {
 			this.map.destroy();
 			this.player.destroy();
+		}
 
+		private switchToMap(mapName: string) {
 			this.initializeMap(mapName);
 			this.initializePlayer();
 			this.initializeSubStates();
+		}
+
+		private removeListeners() {
+			this.playerState.onSwitchState.removeAll(this);
+			this.playerState.onChangeMap.removeAll(this);
+
+			this.enemyState.onSwitchState.removeAll(this);
+
+			this.animatingState.onSwitchState.removeAll(this);
 		}
     }
 } 

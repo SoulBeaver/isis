@@ -781,7 +781,7 @@ var Isis;
         };
         InGame.prototype.initiateMapChange = function (mapName) {
             var _this = this;
-            this.playerState.onSwitchState.removeAll(this);
+            this.removeListeners();
             this.currentState.finalize();
             this.currentState = null;
             this.view.fadeOut();
@@ -790,17 +790,26 @@ var Isis;
         };
         InGame.prototype.onMapFadeOutComplete = function (mapName) {
             var _this = this;
+            this.destroyMap();
             this.switchToMap(mapName);
             this.view.fadeIn();
             this.view.onTweensFinished.addOnce(function () { return _this.currentState = _this.playerState; }, this);
             this.view.play();
         };
-        InGame.prototype.switchToMap = function (mapName) {
+        InGame.prototype.destroyMap = function () {
             this.map.destroy();
             this.player.destroy();
+        };
+        InGame.prototype.switchToMap = function (mapName) {
             this.initializeMap(mapName);
             this.initializePlayer();
             this.initializeSubStates();
+        };
+        InGame.prototype.removeListeners = function () {
+            this.playerState.onSwitchState.removeAll(this);
+            this.playerState.onChangeMap.removeAll(this);
+            this.enemyState.onSwitchState.removeAll(this);
+            this.animatingState.onSwitchState.removeAll(this);
         };
         return InGame;
     })(Phaser.State);
@@ -970,14 +979,14 @@ var Isis;
             this.ShadowsLayer = "Shadows";
             this.CreaturesLayer = "Creatures";
             this.ItemsLayer = "Items";
-            this.ObjectsLayer = "Objects";
+            this.InteractablesLayer = "Objects";
             this.TriggersLayer = "Triggers";
             this.addTilesets(manifest[key]);
             this.wallLayer = this.createLayer(this.WallsLayer);
             this.backgroundLayer = this.createLayer(this.BackgroundLayer);
             this.shadowLayer = this.createLayer(this.ShadowsLayer);
             this.itemLayer = this.createLayer(this.ItemsLayer);
-            this.objectLayer = this.createLayer(this.ObjectsLayer);
+            this.objectLayer = this.createLayer(this.InteractablesLayer);
             this.creatureLayer = this.createLayer(this.CreaturesLayer);
             this.separateCreaturesFromTilemap();
             this.separateItemsFromTilemap();
@@ -995,10 +1004,10 @@ var Isis;
         };
         Tilemap.prototype.destroy = function () {
             _.forEach(this.items, function (item) { return item.destroy(); });
-            _.forEach(this.objects, function (object) { return object.destroy(); });
+            _.forEach(this.interactables, function (object) { return object.destroy(); });
             _.forEach(this.creatures, function (creature) { return creature.destroy(); });
             this.items = [];
-            this.objects = [];
+            this.interactables = [];
             this.creatures = [];
             this.triggers = [];
             this.wallLayer.destroy();
@@ -1027,7 +1036,7 @@ var Isis;
         };
         Tilemap.prototype.separateObjectsFromTilemap = function () {
             var _this = this;
-            this.activatableObjects = this.extractFrom(this.objectLayer, function (objectTile) {
+            this.interactables = this.extractFrom(this.objectLayer, function (objectTile) {
                 var objectSprite = new Isis.ActivatableObject(_this.game, objectTile.worldX, objectTile.worldY, "object_atlas", objectTile.properties.atlas_name + ".png");
                 return objectSprite;
             });
@@ -1085,7 +1094,7 @@ var Isis;
         };
         Tilemap.prototype.objectAt = function (at) {
             var _this = this;
-            return _.find(this.activatableObjects, function (object) { return _.isEqual(_this.toTileCoordinates(object), at); });
+            return _.find(this.interactables, function (object) { return _.isEqual(_this.toTileCoordinates(object), at); });
         };
         Tilemap.prototype.creatureAt = function (at) {
             var _this = this;
