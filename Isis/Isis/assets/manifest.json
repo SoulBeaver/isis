@@ -1,5 +1,5 @@
 ﻿{
-    "atlases": [ 
+    "atlases": [
         {
             "type": "atlasJSONArray",
             "key": "creature_atlas",
@@ -85,6 +85,40 @@
             "type": "image",
             "key": "world_dirt_shadows_tileset",
             "url": "assets/tilemaps/tiles/World_Dirt_Shadows.png"
+        }
+    ],
+    "sewer": [ 
+        {
+            "type": "tilemap",
+            "key": "sewer",
+            "url": "assets/tilemaps/maps/Sewer.json",
+            "data": null,
+            "format": "TILED_JSON"
+        },
+        {
+            "type": "image",
+            "key": "creatures_tileset",
+            "url": "assets/tilemaps/tiles/Creatures.png"
+        },
+        {
+            "type": "image",
+            "key": "world_tileset",
+            "url": "assets/tilemaps/tiles/World_Tiles.png"
+        },
+        {
+            "type": "image",
+            "key": "world_objects_tileset",
+            "url": "assets/tilemaps/tiles/World_Objects.png"
+        },
+        {
+            "type": "image",
+            "key": "world_dirt_shadows_tileset",
+            "url": "assets/tilemaps/tiles/World_Dirt_Shadows.png"
+        },
+        {
+            "type": "image",
+            "key": "world_paths_tileset",
+            "url": "assets/tilemaps/tiles/World_Paths.png"
         }
     ]
 }

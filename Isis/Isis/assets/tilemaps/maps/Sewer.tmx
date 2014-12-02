@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="13" height="8" tilewidth="24" tileheight="24" backgroundcolor="#000000">
+ <tileset firstgid="1" name="Creatures" tilewidth="24" tileheight="24">
+  <image source="../tiles/Creatures.png" width="480" height="648"/>
+ </tileset>
+ <tileset firstgid="541" name="World_Objects" tilewidth="24" tileheight="24">
+  <image source="../tiles/World_Objects.png" width="336" height="261"/>
+ </tileset>
+ <tileset firstgid="681" name="World_Tiles" tilewidth="24" tileheight="24">
+  <image source="../tiles/World_Tiles.png" width="648" height="936"/>
+ </tileset>
+ <tileset firstgid="1734" name="World_Dirt_Shadows" tilewidth="24" tileheight="24">
+  <image source="../tiles/World_Dirt_Shadows.png" width="600" height="528"/>
+ </tileset>
+ <tileset firstgid="2284" name="World_Paths" tilewidth="24" tileheight="24">
+  <image source="../tiles/World_Paths.png" width="336" height="48"/>
+ </tileset>
+ <layer name="Collidables" width="13" height="8">
+  <data encoding="base64" compression="zlib">
+   eJxbycTAsBILBgFs4sjyxAJizKCmPYPZbaSGNQCBFCK9
+  </data>
+ </layer>
+ <layer name="Floor" width="13" height="8">
+  <data encoding="base64" compression="zlib">
+   eJx7z8HA8J4EDAIgWo0FE2MT12BB6CHHnsGsB9mf6njCQI2CMAAAlrFMoA==
+  </data>
+ </layer>
+ <layer name="Walkables" width="13" height="8">
+  <data encoding="base64" compression="zlib">
+   eJxjYCAPKDJhij1kJc2MfqD6ZjYGhol49E1gRcU+bBBxXzZMORg4xoqK06F6Mtgw5Y7hsPsoULwJqP44iX76Q6J6QgAARCwTJw==
+  </data>
+ </layer>
+ <layer name="Walls" width="13" height="8">
+  <data encoding="base64" compression="zlib">
+   eJx7z8TA8AoNvwZidyB+iUXuAxC/BWJSwGtmiB4FZgRWZEZVI8+MKv+WDHvI1fOamfZuA9nxkciwfsMMoT8BMQCtbyQx
+  </data>
+ </layer>
+ <layer name="Shadows" width="13" height="8">
+  <data encoding="base64" compression="zlib">
+   eJxjYCAPXOHAxPjEyQX4zKKmPYPVbQDoTRZZ
+  </data>
+ </layer>
+ <layer name="Pipes_Shadows" width="13" height="8">
+  <data encoding="base64" compression="zlib">
+   eJxjYBg4cIcDlabUnOEIAMaWAq0=
+  </data>
+ </layer>
+ <layer name="Creatures" width="13" height="8">
+  <data encoding="base64" compression="zlib">
+   eJxjYBiagI8RgpH52Ni49A4VAAA/PwBM
+  </data>
+ </layer>
+ <layer name="Pipes" width="13" height="8">
+  <data encoding="base64" compression="zlib">
+   eJxjYICAjawMcABjI4thA2uB8qeAeCoQn4GqPQukJ0PFpuPQvwEq/hiNhumfhsRfB2RPAeL1QHwCh3mPsYhPAoptIuCPSWjiG5D4z6Dsp0hiIPYGNLedRvInehhMgcpvwmE/MQAAkykclA==
+  </data>
+ </layer>
+ <objectgroup name="Triggers">
+  <object name="warp" x="156" y="12"/>
+  <object name="warp" x="156" y="180"/>
+ </objectgroup>
+</map>

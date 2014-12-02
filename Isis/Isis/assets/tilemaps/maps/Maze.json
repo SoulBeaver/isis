@@ -77,7 +77,9 @@
                  "name":"warp",
                  "properties":
                     {
-                     "map":"volcano"
+                     "map":"volcano",
+                     "spawnX":"6",
+                     "spawnY":"6"
                     },
                  "rotation":0,
                  "type":"object",
@@ -91,7 +93,9 @@
                  "name":"warp",
                  "properties":
                     {
-                     "map":"desert"
+                     "map":"sewer",
+                     "spawnX":"6",
+                     "spawnY":"1"
                     },
                  "rotation":0,
                  "type":"object",

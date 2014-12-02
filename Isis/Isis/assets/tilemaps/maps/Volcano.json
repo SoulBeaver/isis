@@ -74,21 +74,6 @@
          "objects":[
                 {
                  "height":0,
-                 "name":"spawn_player",
-                 "properties":
-                    {
-                     "spawnX":"6",
-                     "spawnY":"6"
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":156,
-                 "y":156
-                }, 
-                {
-                 "height":0,
                  "name":"warp",
                  "properties":
                     {
