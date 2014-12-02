@@ -115,6 +115,9 @@
 		}
 
 		private switchToMap(mapName: string) {
+			this.map.destroy();
+			this.player.destroy();
+
 			this.initializeMap(mapName);
 			this.initializePlayer();
 			this.initializeSubStates();

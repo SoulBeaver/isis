@@ -50,7 +50,32 @@ module Isis {
                  var tileset = asset.url.substring(asset.url.lastIndexOf('/') + 1, asset.url.lastIndexOf('.'));
                  this.addTilesetImage(tileset, asset.key);
              });
-        }
+		}
+
+		destroy() {
+			_.forEach(this.items, (item: Phaser.Sprite) => item.destroy());
+			_.forEach(this.objects, (object: Phaser.Sprite) => object.destroy());
+			_.forEach(this.creatures, (creature: Phaser.Sprite) => creature.destroy());
+
+			this.items = [];
+			this.objects = [];
+			this.creatures = [];
+			this.triggers = [];
+
+			this.wallLayer.destroy();
+			this.backgroundLayer.destroy();
+			this.itemLayer.destroy();
+			this.objectLayer.destroy();
+			this.creatureLayer.destroy();
+
+			this.wallLayer = null;
+			this.backgroundLayer = null;
+			this.itemLayer = null;
+			this.objectLayer = null;
+			this.creatureLayer = null;
+
+			super.destroy();
+		}
 
         private separateCreaturesFromTilemap() {
             this.creatures = this.extractFrom(this.creatureLayer, (creatureTile) => {

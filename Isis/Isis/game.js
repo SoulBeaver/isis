@@ -796,6 +796,8 @@ var Isis;
             this.view.play();
         };
         InGame.prototype.switchToMap = function (mapName) {
+            this.map.destroy();
+            this.player.destroy();
             this.initializeMap(mapName);
             this.initializePlayer();
             this.initializeSubStates();
@@ -990,6 +992,26 @@ var Isis;
                 var tileset = asset.url.substring(asset.url.lastIndexOf('/') + 1, asset.url.lastIndexOf('.'));
                 _this.addTilesetImage(tileset, asset.key);
             });
+        };
+        Tilemap.prototype.destroy = function () {
+            _.forEach(this.items, function (item) { return item.destroy(); });
+            _.forEach(this.objects, function (object) { return object.destroy(); });
+            _.forEach(this.creatures, function (creature) { return creature.destroy(); });
+            this.items = [];
+            this.objects = [];
+            this.creatures = [];
+            this.triggers = [];
+            this.wallLayer.destroy();
+            this.backgroundLayer.destroy();
+            this.itemLayer.destroy();
+            this.objectLayer.destroy();
+            this.creatureLayer.destroy();
+            this.wallLayer = null;
+            this.backgroundLayer = null;
+            this.itemLayer = null;
+            this.objectLayer = null;
+            this.creatureLayer = null;
+            _super.prototype.destroy.call(this);
         };
         Tilemap.prototype.separateCreaturesFromTilemap = function () {
             var _this = this;
