@@ -723,8 +723,8 @@ var Isis;
         }
         InGame.prototype.create = function () {
             this.game.stage.backgroundColor = "#000000";
-            this.switchToMap("maze");
             this.initializeView();
+            this.switchToMap("maze");
             this.currentState = this.playerState;
         };
         InGame.prototype.initializeView = function () {
@@ -979,7 +979,7 @@ var Isis;
             this.ShadowsLayer = "Shadows";
             this.CreaturesLayer = "Creatures";
             this.ItemsLayer = "Items";
-            this.InteractablesLayer = "Objects";
+            this.InteractablesLayer = "Interactables";
             this.TriggersLayer = "Triggers";
             this.addTilesets(manifest[key]);
             this.wallLayer = this.createLayer(this.WallsLayer);

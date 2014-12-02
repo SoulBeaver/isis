@@ -82,7 +82,7 @@
    eJxjYKAM/GXBIcGKXfg/LvUEQAmZ+qgB/hGwu5QCtwEAOiAD/Q==
   </data>
  </layer>
- <layer name="Objects" width="12" height="8">
+ <layer name="Interactables" width="12" height="8">
   <data encoding="base64" compression="zlib">
    eJxjYIAADxaGAQeeg8AN9AYAunwAmg==
   </data>

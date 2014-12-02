@@ -22,8 +22,9 @@
         create() {
             this.game.stage.backgroundColor = "#000000";
 
-			this.switchToMap("maze");
 			this.initializeView();
+			this.switchToMap("maze");
+			
 			this.currentState = this.playerState;
         }
 

@@ -7,7 +7,7 @@ module Isis {
         private ShadowsLayer		= "Shadows";
         private CreaturesLayer		= "Creatures";
         private ItemsLayer			= "Items";
-		private InteractablesLayer	= "Objects";
+		private InteractablesLayer	= "Interactables";
 		private TriggersLayer			= "Triggers";
 
         private items: Array<Phaser.Sprite>;

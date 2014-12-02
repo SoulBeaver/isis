@@ -48,7 +48,7 @@
         {
          "data":[0, 0, 1096, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1097, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          "height":8,
-         "name":"Objects",
+         "name":"Interactables",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
@@ -69,7 +69,7 @@
         }, 
         {
          "draworder":"topdown",
-         "height":8,
+         "height":0,
          "name":"Triggers",
          "objects":[
                 {
@@ -118,7 +118,7 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":12,
+         "width":0,
          "x":0,
          "y":0
         }],
