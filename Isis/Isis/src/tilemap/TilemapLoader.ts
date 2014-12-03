@@ -27,9 +27,6 @@
 			var manifestEntry = this.game.cache.getJSON("manifest")[key];
 			var mapJSON = this.game.cache.getJSON(key +".json");
 
-			var tileLayers = this.readLayers(mapJSON.layers);
-			console.log(tileLayers);
-
 			 return new Tilemap({
 				 game: this.game,
 				 key: key,

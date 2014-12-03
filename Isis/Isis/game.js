@@ -1,4 +1,7 @@
 window.onload = function () {
+    var test = new tsUnit.Test(Isis.Tests);
+    // Use the built in results display
+    test.showResults(document.getElementById("results"), test.run());
     var game = new Isis.Game();
 };
 var __extends = this.__extends || function (d, b) {
@@ -1031,7 +1034,6 @@ var Isis;
             json.tileLayers.forEach(function (layer) {
                 _this.tilemapLayers[layer] = _this.createLayer(layer);
             }, this);
-            console.log(this.tilemapLayers);
             /*
             this.separateCreaturesFromTilemap();
             this.separateItemsFromTilemap();
@@ -1184,8 +1186,6 @@ var Isis;
         TilemapLoader.prototype.load = function (key) {
             var manifestEntry = this.game.cache.getJSON("manifest")[key];
             var mapJSON = this.game.cache.getJSON(key + ".json");
-            var tileLayers = this.readLayers(mapJSON.layers);
-            console.log(tileLayers);
             return new Isis.Tilemap({
                 game: this.game,
                 key: key,
@@ -1231,5 +1231,27 @@ var Isis;
     })();
     Isis.WorldCoordinates = WorldCoordinates;
     ;
+})(Isis || (Isis = {}));
+var Isis;
+(function (Isis) {
+    var Tests;
+    (function (Tests) {
+        var SimpleMathTests = (function (_super) {
+            __extends(SimpleMathTests, _super);
+            function SimpleMathTests() {
+                _super.apply(this, arguments);
+            }
+            SimpleMathTests.prototype.addTwoNumbersWith1And2Expect3 = function () {
+                var result = 1 + 2;
+                this.areIdentical(3, result);
+            };
+            SimpleMathTests.prototype.addTwoNumbersWith3And2Expect5 = function () {
+                var result = 3 + 2;
+                this.areIdentical(4, result); // Deliberate error
+            };
+            return SimpleMathTests;
+        })(tsUnit.TestClass);
+        Tests.SimpleMathTests = SimpleMathTests;
+    })(Tests = Isis.Tests || (Isis.Tests = {}));
 })(Isis || (Isis = {}));
 //# sourceMappingURL=game.js.map

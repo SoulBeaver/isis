@@ -32,8 +32,6 @@ module Isis {
 				this.tilemapLayers[layer] = this.createLayer(layer);
 			}, this);
 
-	        console.log(this.tilemapLayers);
-
 			/*
             this.separateCreaturesFromTilemap();
 			this.separateItemsFromTilemap();

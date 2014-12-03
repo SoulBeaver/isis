@@ -63,6 +63,7 @@
     <TypeScriptCompile Include="src\tilemap\TilemapLoader.ts" />
     <TypeScriptCompile Include="src\tilemap\Trigger.ts" />
     <TypeScriptCompile Include="src\tilemap\WorldCoordinates.ts" />
+    <TypeScriptCompile Include="test\sample.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\settings.json" />
@@ -90,9 +91,7 @@
       <DependentUpon>web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="test\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
