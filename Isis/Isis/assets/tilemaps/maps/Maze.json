@@ -4,7 +4,7 @@
         {
          "data":[1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
          "height":8,
-         "name":"Walls",
+         "name":"Collidables",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
@@ -13,7 +13,7 @@
          "y":0
         }, 
         {
-         "data":[395, 391, 4, 389, 390, 400, 390, 390, 390, 405, 390, 396, 393, 301, 301, 301, 301, 393, 301, 301, 301, 301, 301, 394, 402, 390, 390, 391, 301, 393, 301, 389, 400, 391, 301, 433, 404, 301, 301, 301, 301, 393, 301, 301, 393, 301, 301, 392, 404, 301, 395, 390, 390, 403, 396, 301, 393, 301, 395, 401, 393, 301, 394, 301, 301, 301, 394, 301, 393, 301, 397, 401, 393, 301, 301, 301, 392, 301, 301, 301, 393, 301, 301, 393, 397, 390, 390, 390, 403, 390, 405, 390, 403, 390, 390, 398],
+         "data":[395, 391, 1096, 389, 390, 400, 390, 390, 390, 405, 390, 396, 393, 301, 301, 301, 301, 393, 301, 301, 301, 301, 301, 394, 402, 390, 390, 391, 301, 393, 301, 389, 400, 391, 301, 1097, 404, 301, 301, 301, 301, 393, 301, 301, 393, 301, 301, 392, 404, 301, 395, 390, 390, 403, 396, 301, 393, 301, 395, 401, 393, 301, 394, 301, 301, 301, 394, 301, 393, 301, 397, 401, 393, 301, 301, 301, 392, 301, 301, 301, 393, 301, 301, 393, 397, 390, 390, 390, 403, 390, 405, 390, 403, 390, 390, 398],
          "height":8,
          "name":"Background",
          "opacity":1,
@@ -27,39 +27,6 @@
          "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2716, 2716, 2716, 2716, 0, 2716, 2716, 2716, 2716, 2716, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2716, 2716, 2716, 0, 0, 0, 2716, 0, 2716, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2716, 2716, 2716, 0, 0, 0, 0, 0, 0, 0, 0, 2716, 0, 0, 0, 2716, 0, 0, 0, 2716, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          "height":8,
          "name":"Shadows",
-         "opacity":1,
-         "type":"tilelayer",
-         "visible":true,
-         "width":12,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1277, 0, 0, 0, 0, 0, 1280, 0, 0, 0, 0, 0, 1279, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1140, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1278, 0, 0, 0, 0, 0, 0, 0, 1141, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         "height":8,
-         "name":"Items",
-         "opacity":1,
-         "type":"tilelayer",
-         "visible":true,
-         "width":12,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "data":[0, 0, 1096, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1097, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         "height":8,
-         "name":"Interactables",
-         "opacity":1,
-         "type":"tilelayer",
-         "visible":true,
-         "width":12,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2082, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1796, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         "height":8,
-         "name":"Creatures",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
@@ -118,6 +85,137 @@
                  "width":0,
                  "x":60,
                  "y":36
+                }, 
+                {
+                 "height":0,
+                 "name":"item",
+                 "properties":
+                    {
+                     "effects":"random_diamond"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":36,
+                 "y":156
+                }, 
+                {
+                 "height":0,
+                 "name":"item",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"red_diamond",
+                 "visible":true,
+                 "width":0,
+                 "x":108,
+                 "y":60
+                }, 
+                {
+                 "height":0,
+                 "name":"item",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"blue_diamond",
+                 "visible":true,
+                 "width":0,
+                 "x":108,
+                 "y":36
+                }, 
+                {
+                 "height":0,
+                 "name":"item",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"yellow_diamond",
+                 "visible":true,
+                 "width":0,
+                 "x":252,
+                 "y":36
+                }, 
+                {
+                 "height":0,
+                 "name":"creature",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"robed_drow",
+                 "visible":true,
+                 "width":0,
+                 "x":36,
+                 "y":84
+                }, 
+                {
+                 "height":0,
+                 "name":"creature",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"blue_blob_man",
+                 "visible":true,
+                 "width":0,
+                 "x":204,
+                 "y":36
+                }, 
+                {
+                 "height":0,
+                 "name":"object",
+                 "properties":
+                    {
+                     "destination":"random",
+                     "effects":"teleport"
+                    },
+                 "rotation":0,
+                 "type":"blue_star_circle",
+                 "visible":true,
+                 "width":0,
+                 "x":156,
+                 "y":84
+                }, 
+                {
+                 "height":0,
+                 "name":"object",
+                 "properties":
+                    {
+                     "creature":"robed_drow",
+                     "effects":"summon",
+                     "spawnX":"10",
+                     "spawnY":"6"
+                    },
+                 "rotation":0,
+                 "type":"red_skull_circle",
+                 "visible":true,
+                 "width":0,
+                 "x":228,
+                 "y":156
+                }, 
+                {
+                 "height":0,
+                 "name":"object",
+                 "properties":
+                    {
+                     "destination":"random",
+                     "effects":"teleport"
+                    },
+                 "rotation":0,
+                 "type":"blue_star_circle",
+                 "visible":true,
+                 "width":0,
+                 "x":156,
+                 "y":84
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -140,7 +238,7 @@
          "imageheight":936,
          "imagewidth":648,
          "margin":0,
-         "name":"World_Tiles",
+         "name":"world_tiles",
          "properties":
             {
 
@@ -155,7 +253,7 @@
          "imageheight":261,
          "imagewidth":336,
          "margin":0,
-         "name":"World_Objects",
+         "name":"world_objects",
          "properties":
             {
 
@@ -181,7 +279,7 @@
          "imageheight":304,
          "imagewidth":384,
          "margin":0,
-         "name":"Items",
+         "name":"items",
          "properties":
             {
 
@@ -220,7 +318,7 @@
          "imageheight":648,
          "imagewidth":480,
          "margin":0,
-         "name":"Creatures",
+         "name":"creatures",
          "properties":
             {
 
@@ -255,7 +353,7 @@
          "imageheight":528,
          "imagewidth":600,
          "margin":0,
-         "name":"World_Dirt_Shadows",
+         "name":"world_dirt_shadows",
          "properties":
             {
 

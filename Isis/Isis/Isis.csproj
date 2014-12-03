@@ -18,6 +18,19 @@
   <ItemGroup>
     <Content Include="app.css" />
     <Content Include="assets\preloadBar.png" />
+    <Content Include="assets\spritesheets\creature_atlas.png" />
+    <Content Include="assets\spritesheets\item_atlas.png" />
+    <Content Include="assets\spritesheets\object_atlas.png" />
+    <Content Include="assets\tilemaps\tiles\Classes.png" />
+    <Content Include="assets\tilemaps\tiles\Creatures.png" />
+    <Content Include="assets\tilemaps\tiles\FX.png" />
+    <Content Include="assets\tilemaps\tiles\Items.png" />
+    <Content Include="assets\tilemaps\tiles\Tiles.png" />
+    <Content Include="assets\tilemaps\tiles\World_Dirt_Shadows.png" />
+    <Content Include="assets\tilemaps\tiles\World_Forests.png" />
+    <Content Include="assets\tilemaps\tiles\World_Objects.png" />
+    <Content Include="assets\tilemaps\tiles\World_Paths.png" />
+    <Content Include="assets\tilemaps\tiles\World_Tiles.png" />
     <Content Include="index.html" />
     <Content Include="libs\lodash\lodash.js" />
     <Content Include="libs\phaser\phaser.js" />
@@ -29,6 +42,7 @@
     <TypeScriptCompile Include="libs\lodash\lodash.d.ts" />
     <TypeScriptCompile Include="libs\phaser\phaser.d.ts" />
     <TypeScriptCompile Include="libs\tsUnit\tsUnit.ts" />
+    <TypeScriptCompile Include="src\FileExtensions.ts" />
     <TypeScriptCompile Include="src\JSONAsset.ts" />
     <TypeScriptCompile Include="src\KeyboardExtensions.ts" />
     <TypeScriptCompile Include="src\state\ingame\AnimatingState.ts" />
@@ -46,15 +60,29 @@
     <TypeScriptCompile Include="src\tilemap\model\ActivatableObject.ts" />
     <TypeScriptCompile Include="src\tilemap\TileCoordinates.ts" />
     <TypeScriptCompile Include="src\tilemap\Tilemap.ts" />
+    <TypeScriptCompile Include="src\tilemap\TilemapLoader.ts" />
     <TypeScriptCompile Include="src\tilemap\Trigger.ts" />
     <TypeScriptCompile Include="src\tilemap\WorldCoordinates.ts" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="assets\tilemaps\maps\oryx_test.json" />
     <Content Include="assets\settings.json" />
     <Content Include="assets\manifest.json" />
     <Content Include="libs\phaser\phaser.map" />
     <Content Include="packages.config" />
+    <Content Include="assets\spritesheets\creature_atlas.json" />
+    <Content Include="assets\spritesheets\creature_atlas.tps" />
+    <Content Include="assets\spritesheets\item_atlas.json" />
+    <Content Include="assets\spritesheets\object_atlas.json" />
+    <Content Include="assets\spritesheets\object_atlas.tps" />
+    <Content Include="assets\spritesheets\TexturePackageProjects\creature_atlas.tps" />
+    <Content Include="assets\spritesheets\TexturePackageProjects\object_atlas.tps" />
+    <Content Include="assets\spritesheets\Thumbs.db" />
+    <Content Include="assets\tilemaps\maps\Maze.json" />
+    <Content Include="assets\tilemaps\maps\Maze.tmx" />
+    <Content Include="assets\tilemaps\maps\Sewer.json" />
+    <Content Include="assets\tilemaps\maps\Sewer.tmx" />
+    <Content Include="assets\tilemaps\maps\Volcano.json" />
+    <Content Include="assets\tilemaps\maps\Volcano.tmx" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -63,7 +91,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="assets\tilemaps\tiles\" />
     <Folder Include="test\" />
   </ItemGroup>
   <PropertyGroup>

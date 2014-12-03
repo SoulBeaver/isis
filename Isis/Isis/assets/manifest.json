@@ -23,102 +23,102 @@
         {
             "type": "tilemap",
             "key": "maze",
-            "url": "assets/tilemaps/maps/Maze.json",
+            "url": "assets/tilemaps/maps/maze.json",
             "data": null,
             "format": "TILED_JSON"
         },
         {
             "type": "image",
             "key": "creatures_tileset",
-            "url": "assets/tilemaps/tiles/Creatures.png"
+            "url": "assets/tilemaps/tiles/creatures.png"
         },
         {
             "type": "image",
             "key": "items_tileset",
-            "url": "assets/tilemaps/tiles/Items.png"
+            "url": "assets/tilemaps/tiles/items.png"
         },
         {
             "type": "image",
             "key": "world_tileset",
-            "url": "assets/tilemaps/tiles/World_Tiles.png"
+            "url": "assets/tilemaps/tiles/world_tiles.png"
         },
         {
             "type": "image",
             "key": "world_objects_tileset",
-            "url": "assets/tilemaps/tiles/World_Objects.png"
+            "url": "assets/tilemaps/tiles/world_objects.png"
         },
         {
             "type": "image",
             "key": "world_dirt_shadows_tileset",
-            "url": "assets/tilemaps/tiles/World_Dirt_Shadows.png"
+            "url": "assets/tilemaps/tiles/world_dirt_shadows.png"
         }
     ],
     "volcano": [
         {
             "type": "tilemap",
             "key": "volcano",
-            "url": "assets/tilemaps/maps/Volcano.json",
+            "url": "assets/tilemaps/maps/volcano.json",
             "data": null,
             "format": "TILED_JSON"
         },
         {
             "type": "image",
             "key": "creatures_tileset",
-            "url": "assets/tilemaps/tiles/Creatures.png"
+            "url": "assets/tilemaps/tiles/creatures.png"
         },
         {
             "type": "image",
             "key": "items_tileset",
-            "url": "assets/tilemaps/tiles/Items.png"
+            "url": "assets/tilemaps/tiles/items.png"
         },
         {
             "type": "image",
             "key": "world_tileset",
-            "url": "assets/tilemaps/tiles/World_Tiles.png"
+            "url": "assets/tilemaps/tiles/world_tiles.png"
         },
         {
             "type": "image",
             "key": "world_objects_tileset",
-            "url": "assets/tilemaps/tiles/World_Objects.png"
+            "url": "assets/tilemaps/tiles/world_objects.png"
         },
         {
             "type": "image",
             "key": "world_dirt_shadows_tileset",
-            "url": "assets/tilemaps/tiles/World_Dirt_Shadows.png"
+            "url": "assets/tilemaps/tiles/world_dirt_shadows.png"
         }
     ],
     "sewer": [ 
         {
             "type": "tilemap",
             "key": "sewer",
-            "url": "assets/tilemaps/maps/Sewer.json",
+            "url": "assets/tilemaps/maps/sewer.json",
             "data": null,
             "format": "TILED_JSON"
         },
         {
             "type": "image",
             "key": "creatures_tileset",
-            "url": "assets/tilemaps/tiles/Creatures.png"
+            "url": "assets/tilemaps/tiles/creatures.png"
         },
         {
             "type": "image",
             "key": "world_tileset",
-            "url": "assets/tilemaps/tiles/World_Tiles.png"
+            "url": "assets/tilemaps/tiles/world_tiles.png"
         },
         {
             "type": "image",
             "key": "world_objects_tileset",
-            "url": "assets/tilemaps/tiles/World_Objects.png"
+            "url": "assets/tilemaps/tiles/world_objects.png"
         },
         {
             "type": "image",
             "key": "world_dirt_shadows_tileset",
-            "url": "assets/tilemaps/tiles/World_Dirt_Shadows.png"
+            "url": "assets/tilemaps/tiles/world_dirt_shadows.png"
         },
         {
             "type": "image",
             "key": "world_paths_tileset",
-            "url": "assets/tilemaps/tiles/World_Paths.png"
+            "url": "assets/tilemaps/tiles/world_paths.png"
         }
     ]
 }

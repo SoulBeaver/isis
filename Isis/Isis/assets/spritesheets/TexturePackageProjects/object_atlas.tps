@@ -190,6 +190,8 @@
         <array>
             <filename>../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/world_24x24/closed_steel_gate.png</filename>
             <filename>../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/world_24x24/opened_steel_gate.png</filename>
+            <filename>../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/world_24x24/open_cellar_door.png</filename>
+            <filename>../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/world_24x24/closed_cellar_door.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

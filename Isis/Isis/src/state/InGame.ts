@@ -3,7 +3,8 @@
      * Controlling class for all in-game logic. Has the ability to call and create popups and switch to different States.
      */
     export class InGame extends Phaser.State {
-        private view: GameView;
+		private view: GameView;
+		private mapLoader: TilemapLoader;
         private map: Tilemap;
         private player: Player;
 
@@ -22,6 +23,7 @@
         create() {
             this.game.stage.backgroundColor = "#000000";
 
+	        this.mapLoader = new TilemapLoader(this.game);
 			this.initializeView();
 			this.switchToMap("maze");
 			
@@ -32,9 +34,9 @@
             this.view = new GameView(this.game);
         }
 
-        private initializeMap(mapName: string) {
-            this.map = new Tilemap(this.game, mapName, this.game.cache.getJSON("manifest"));
-        }
+		private initializeMap(mapName: string) {
+			this.map = this.mapLoader.load(mapName);
+		}
 
 		private initializePlayer() {
 			var spawnPlayerTrigger = this.map.getTrigger("spawn_player");

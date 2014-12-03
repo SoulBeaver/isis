@@ -62,14 +62,14 @@
  <tileset firstgid="2190" name="World_Dirt_Shadows" tilewidth="24" tileheight="24">
   <image source="../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/World/World_Dirt_Shadows.png" width="600" height="528"/>
  </tileset>
- <layer name="Walls" width="12" height="8">
+ <layer name="Collidables" width="12" height="8">
   <data encoding="base64" compression="zlib">
    eJxjZGBgYGSAAEYiMTrAJobLPAYG7PbhMwuXPLqZpNiFbg8xbsOnD5cbCGEAK6gAOg==
   </data>
  </layer>
  <layer name="Background" width="12" height="8">
   <data encoding="base64" compression="zlib">
-   eJyFkOEKgCAMhBf0Oj2mWZqRWQ/SG3bChGNI/fiYbsfuWBxEPBhFxKHO4NDauLVuYAWToderBHDSHm/0Tr1a/wHXz35+L6SP5FM0K+vrPNM/dLKyPhk9e35lS+Z2xdyw0GwHL6d5JmY=
+   eJyFkIEKgCAMRPWD+kyzNKO0/rcbTDqG1OAx3Y7dWPbORSARkGdwaO7cmjewgskwqgkJVJoTjT6oV69LXD/z+b34V5/Jp+murJf+Sf802JX1xejZ82u3Ym7XzA0b9XbwAPfjJbA=
   </data>
  </layer>
  <layer name="Shadows" width="12" height="8">
@@ -77,36 +77,57 @@
    eJxjYCAdzOFCxdjEYOLkAFxmINtFDUCKW3G5BRefWAAAfq0M+Q==
   </data>
  </layer>
- <layer name="Items" width="12" height="8">
-  <data encoding="base64" compression="zlib">
-   eJxjYKAM/GXBIcGKXfg/LvUEQAmZ+qgB/hGwu5QCtwEAOiAD/Q==
-  </data>
- </layer>
- <layer name="Interactables" width="12" height="8">
-  <data encoding="base64" compression="zlib">
-   eJxjYIAADxaGAQeeg8AN9AYAunwAmg==
-  </data>
- </layer>
- <layer name="Creatures" width="12" height="8">
-  <data encoding="base64" compression="zlib">
-   eJxjYKAuUOKg3AwWdsrNGCoAAD11ADY=
-  </data>
- </layer>
  <objectgroup name="Triggers">
-  <object name="warp" type="object" x="60" y="12">
+  <object name="object" type="closed_steel_gate" x="60" y="12">
    <properties>
+    <property name="effects" value="warp"/>
     <property name="map" value="volcano"/>
+    <property name="spawnX" value="6"/>
+    <property name="spawnY" value="6"/>
    </properties>
   </object>
-  <object name="warp" type="object" x="276" y="60">
+  <object name="object" type="open_steel_gate" x="276" y="60">
    <properties>
-    <property name="map" value="desert"/>
-   </properties>
-  </object>
-  <object name="spawn_player" x="60" y="36">
-   <properties>
-    <property name="spawnX" value="2"/>
+    <property name="effects" value="warp"/>
+    <property name="map" value="sewer"/>
+    <property name="spawnX" value="6"/>
     <property name="spawnY" value="1"/>
+   </properties>
+  </object>
+  <object name="player_spawn" type="trigger_immediate" x="60" y="36"/>
+  <object name="random_diamond" type="trigger_immediate" x="36" y="156">
+   <properties>
+    <property name="effects" value="summon_random_set"/>
+    <property name="names" value="red_diamond, yellow_diamond, blue_diamond, green_diamond"/>
+    <property name="spawn_x" value="1"/>
+    <property name="spawn_y" value="6"/>
+    <property name="summon_type" value="item"/>
+   </properties>
+  </object>
+  <object name="red_diamond" type="item" x="108" y="60"/>
+  <object name="blue_diamond" type="item" x="108" y="36"/>
+  <object name="yellow_diamond" type="item" x="252" y="36"/>
+  <object name="robed_drow" type="creature" x="36" y="84"/>
+  <object name="blue_blob_man" type="creature" x="204" y="36"/>
+  <object name="object" type="blue_star_circle" x="156" y="84">
+   <properties>
+    <property name="destination" value="random"/>
+    <property name="effects" value="teleport"/>
+   </properties>
+  </object>
+  <object name="red_skull_circle" type="interactable" x="228" y="156">
+   <properties>
+    <property name="creature" value="robed_drow"/>
+    <property name="effects" value="summon"/>
+    <property name="spawnX" value="10"/>
+    <property name="spawnY" value="6"/>
+    <property name="summon_type" value="creature"/>
+   </properties>
+  </object>
+  <object name="blue_star_circle" type="interactable" x="156" y="84">
+   <properties>
+    <property name="destination" value="random"/>
+    <property name="effects" value="teleport"/>
    </properties>
   </object>
  </objectgroup>

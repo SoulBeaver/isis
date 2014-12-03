@@ -195,11 +195,11 @@
             <filename>../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/creatures_24x24/robed_drow_1.png</filename>
             <filename>../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/creatures_24x24/robed_drow_2.png</filename>
             <filename>../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/creatures_24x24/green_goblin_2.png</filename>
-            <filename>../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/creatures_24x24/green_gobline_1.png</filename>
             <filename>../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/creatures_24x24/green_orc_1.png</filename>
             <filename>../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/creatures_24x24/green_orc_2.png</filename>
             <filename>../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/creatures_24x24/red_orc_1.png</filename>
             <filename>../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/creatures_24x24/red_orc_2.png</filename>
+            <filename>../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/creatures_24x24/green_goblin_1.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

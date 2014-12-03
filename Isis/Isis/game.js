@@ -39,18 +39,19 @@ var tsUnit;
             }
             for (var i = 0; i < this.tests.length; ++i) {
                 var testClass = this.tests[i].testClass;
+                var dynamicTestClass = testClass;
                 var testsGroupName = this.tests[i].name;
-                if (!testRunLimiter.isTestsGroupActive(testsGroupName)) {
+                if (testRunLimiter && !testRunLimiter.isTestsGroupActive(testsGroupName)) {
                     continue;
                 }
                 for (var unitTestName in testClass) {
-                    if (this.isReservedFunctionName(unitTestName) || (typeof testClass[unitTestName] !== 'function') || !testRunLimiter.isTestActive(unitTestName)) {
+                    if (this.isReservedFunctionName(unitTestName) || (typeof dynamicTestClass[unitTestName] !== 'function') || (testRunLimiter && !testRunLimiter.isTestActive(unitTestName))) {
                         continue;
                     }
-                    if (typeof testClass[unitTestName].parameters !== 'undefined') {
-                        parameters = testClass[unitTestName].parameters;
+                    if (typeof dynamicTestClass[unitTestName].parameters !== 'undefined') {
+                        parameters = dynamicTestClass[unitTestName].parameters;
                         for (var parameterIndex = 0; parameterIndex < parameters.length; parameterIndex++) {
-                            if (!testRunLimiter.isParametersSetActive(parameterIndex)) {
+                            if (testRunLimiter && !testRunLimiter.isParametersSetActive(parameterIndex)) {
                                 continue;
                             }
                             this.runSingleTest(testResult, testClass, unitTestName, testsGroupName, parameters, parameterIndex);
@@ -95,22 +96,23 @@ var tsUnit;
             }
             return false;
         };
-        Test.prototype.runSingleTest = function (testResult, testsClass, unitTestName, testsGroupName, parameters, parameterSetIndex) {
+        Test.prototype.runSingleTest = function (testResult, testClass, unitTestName, testsGroupName, parameters, parameterSetIndex) {
             if (parameters === void 0) { parameters = null; }
             if (parameterSetIndex === void 0) { parameterSetIndex = null; }
-            if (typeof testsClass['setUp'] === 'function') {
-                testsClass['setUp']();
+            if (typeof testClass['setUp'] === 'function') {
+                testClass['setUp']();
             }
             try {
+                var dynamicTestClass = testClass;
                 var args = (parameterSetIndex !== null) ? parameters[parameterSetIndex] : null;
-                testsClass[unitTestName].apply(testsClass, args);
+                dynamicTestClass[unitTestName].apply(testClass, args);
                 testResult.passes.push(new TestDescription(testsGroupName, unitTestName, parameterSetIndex, 'OK'));
             }
             catch (err) {
                 testResult.errors.push(new TestDescription(testsGroupName, unitTestName, parameterSetIndex, err.toString()));
             }
-            if (typeof testsClass['tearDown'] === 'function') {
-                testsClass['tearDown']();
+            if (typeof testClass['tearDown'] === 'function') {
+                testClass['tearDown']();
             }
         };
         Test.prototype.getTestResult = function (result) {
@@ -147,21 +149,20 @@ var tsUnit;
         return Test;
     })();
     tsUnit.Test = Test;
-    var RunAllTests = (function () {
-        function RunAllTests() {
+    var TestRunLimiterRunAll = (function () {
+        function TestRunLimiterRunAll() {
         }
-        RunAllTests.prototype.isTestsGroupActive = function (groupName) {
+        TestRunLimiterRunAll.prototype.isTestsGroupActive = function (groupName) {
             return true;
         };
-        RunAllTests.prototype.isTestActive = function (testName) {
+        TestRunLimiterRunAll.prototype.isTestActive = function (testName) {
             return true;
         };
-        RunAllTests.prototype.isParametersSetActive = function (paramatersSetNumber) {
+        TestRunLimiterRunAll.prototype.isParametersSetActive = function (paramatersSetNumber) {
             return true;
         };
-        return RunAllTests;
+        return TestRunLimiterRunAll;
     })();
-    tsUnit.RunAllTests = RunAllTests;
     var TestRunLimiter = (function () {
         function TestRunLimiter() {
             this.groupName = null;
@@ -409,38 +410,48 @@ var tsUnit;
         return TestClass;
     })(TestContext);
     tsUnit.TestClass = TestClass;
-    var FakeFunction = (function () {
-        function FakeFunction(name, delgate) {
-            this.name = name;
-            this.delgate = delgate;
+    var FakeFactory = (function () {
+        function FakeFactory() {
         }
-        return FakeFunction;
-    })();
-    tsUnit.FakeFunction = FakeFunction;
-    var Fake = (function () {
-        function Fake(obj) {
-            for (var prop in obj) {
-                if (typeof obj[prop] === 'function') {
-                    this[prop] = function () {
+        FakeFactory.getFake = function (obj) {
+            var implementations = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                implementations[_i - 1] = arguments[_i];
+            }
+            var fakeType = function () {
+            };
+            this.populateFakeType(fakeType, obj);
+            var fake = new fakeType();
+            for (var member in fake) {
+                if (typeof fake[member] === 'function') {
+                    fake[member] = function () {
+                        console.log('Default fake called.');
                     };
                 }
-                else {
-                    this[prop] = null;
+            }
+            var memberNameIndex = 0;
+            var memberValueIndex = 1;
+            for (var i = 0; i < implementations.length; i++) {
+                var impl = implementations[i];
+                fake[impl[memberNameIndex]] = impl[memberValueIndex];
+            }
+            return fake;
+        };
+        FakeFactory.populateFakeType = function (fake, toCopy) {
+            for (var property in toCopy) {
+                if (toCopy.hasOwnProperty(property)) {
+                    fake[property] = toCopy[property];
                 }
             }
-        }
-        Fake.prototype.create = function () {
-            return this;
+            var __ = function () {
+                this.constructor = fake;
+            };
+            __.prototype = toCopy.prototype;
+            fake.prototype = new __();
         };
-        Fake.prototype.addFunction = function (name, delegate) {
-            this[name] = delegate;
-        };
-        Fake.prototype.addProperty = function (name, value) {
-            this[name] = value;
-        };
-        return Fake;
+        return FakeFactory;
     })();
-    tsUnit.Fake = Fake;
+    tsUnit.FakeFactory = FakeFactory;
     var TestDefintion = (function () {
         function TestDefintion(testClass, name) {
             this.testClass = testClass;
@@ -467,6 +478,16 @@ var tsUnit;
     })();
     tsUnit.TestResult = TestResult;
 })(tsUnit || (tsUnit = {}));
+var Isis;
+(function (Isis) {
+    function fileExists(path) {
+        var request = new XMLHttpRequest();
+        request.open("HEAD", path, false);
+        request.send();
+        return request.status != 404;
+    }
+    Isis.fileExists = fileExists;
+})(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {
     /**
@@ -723,6 +744,7 @@ var Isis;
         }
         InGame.prototype.create = function () {
             this.game.stage.backgroundColor = "#000000";
+            this.mapLoader = new Isis.TilemapLoader(this.game);
             this.initializeView();
             this.switchToMap("maze");
             this.currentState = this.playerState;
@@ -731,7 +753,7 @@ var Isis;
             this.view = new Isis.GameView(this.game);
         };
         InGame.prototype.initializeMap = function (mapName) {
-            this.map = new Isis.Tilemap(this.game, mapName, this.game.cache.getJSON("manifest"));
+            this.map = this.mapLoader.load(mapName);
         };
         InGame.prototype.initializePlayer = function () {
             var spawnPlayerTrigger = this.map.getTrigger("spawn_player");
@@ -865,8 +887,15 @@ var Isis;
             var manifest = this.game.cache.getJSON("manifest");
             var manualLoader = new Phaser.Loader(this.game);
             for (var key in manifest) {
-                console.log("Loading asset with key '" + key + "'");
+                console.log("Loading asset pack with key '" + key + "'");
                 manualLoader.pack(key, "assets/manifest.json");
+                if (Isis.fileExists("assets/tilemaps/maps/" + key + ".json")) {
+                    console.log("Loading 'assets/tilemaps/maps/" + key + ".json");
+                    manualLoader.json(key + ".json", "assets/tilemaps/maps/" + key + ".json");
+                }
+                else {
+                    console.warn("The file 'assets/tilemaps/maps/" + key + ".json' does not exist!");
+                }
             }
             manualLoader.onLoadComplete.add(this.createPreloadBar, this);
             manualLoader.setPreloadSprite(this.preloadBar);
@@ -984,36 +1013,34 @@ var Isis;
 (function (Isis) {
     var Tilemap = (function (_super) {
         __extends(Tilemap, _super);
-        function Tilemap(game, key, manifest) {
-            _super.call(this, game, key);
-            this.WallsLayer = "Walls";
-            this.BackgroundLayer = "Background";
-            this.ShadowsLayer = "Shadows";
-            this.CreaturesLayer = "Creatures";
-            this.ItemsLayer = "Items";
-            this.InteractablesLayer = "Interactables";
+        function Tilemap(json) {
+            var _this = this;
+            _super.call(this, json.game, json.key);
+            // layers is already defined in Phaser.Tilemap, so we use tilemapLayers instead.
+            this.tilemapLayers = {};
+            // A TileMap can have any number of layers, but
+            // we're only concerned about the existence of two.
+            // The collidables layer has the information about where
+            // a Player or Enemy can move to, and where he cannot.
+            this.CollidablesLayer = "Collidables";
+            // Triggers are map events, anything from loading
+            // an item, enemy, or object, to triggers that are activated
+            // when the player moves toward it.
             this.TriggersLayer = "Triggers";
-            this.addTilesets(manifest[key]);
-            this.wallLayer = this.createLayer(this.WallsLayer);
-            this.backgroundLayer = this.createLayer(this.BackgroundLayer);
-            this.shadowLayer = this.createLayer(this.ShadowsLayer);
-            this.itemLayer = this.createLayer(this.ItemsLayer);
-            this.objectLayer = this.createLayer(this.InteractablesLayer);
-            this.creatureLayer = this.createLayer(this.CreaturesLayer);
+            json.tilesets.forEach(function (tileset) { return _this.addTilesetImage(tileset.name, tileset.key); }, this);
+            json.tileLayers.forEach(function (layer) {
+                _this.tilemapLayers[layer] = _this.createLayer(layer);
+            }, this);
+            console.log(this.tilemapLayers);
+            /*
             this.separateCreaturesFromTilemap();
             this.separateItemsFromTilemap();
             this.separateObjectsFromTilemap();
+            */
             this.identifyTriggers();
-            this.backgroundLayer.resizeWorld();
-            this.setCollisionBetween(1, 2, true, "Walls");
+            this.tilemapLayers[this.CollidablesLayer].resizeWorld();
+            this.setCollisionBetween(1, 2, true, this.CollidablesLayer);
         }
-        Tilemap.prototype.addTilesets = function (manifestTilemap) {
-            var _this = this;
-            _.filter(manifestTilemap, function (asset) { return asset.type == "image"; }).forEach(function (asset) {
-                var tileset = asset.url.substring(asset.url.lastIndexOf('/') + 1, asset.url.lastIndexOf('.'));
-                _this.addTilesetImage(tileset, asset.key);
-            });
-        };
         Tilemap.prototype.destroy = function () {
             _.forEach(this.items, function (item) { return item.destroy(); });
             _.forEach(this.interactables, function (object) { return object.destroy(); });
@@ -1022,53 +1049,58 @@ var Isis;
             this.interactables = [];
             this.creatures = [];
             this.triggers = [];
-            this.wallLayer.destroy();
-            this.backgroundLayer.destroy();
-            this.itemLayer.destroy();
-            this.objectLayer.destroy();
-            this.creatureLayer.destroy();
-            this.wallLayer = null;
-            this.backgroundLayer = null;
-            this.itemLayer = null;
-            this.objectLayer = null;
-            this.creatureLayer = null;
+            this.layers.forEach(function (layer) { return layer.destroy(); }, this);
+            this.layers = [];
             _super.prototype.destroy.call(this);
         };
-        Tilemap.prototype.separateCreaturesFromTilemap = function () {
-            var _this = this;
-            this.creatures = this.extractFrom(this.creatureLayer, function (creatureTile) {
-                var creatureSprite = _this.game.add.sprite(creatureTile.worldX, creatureTile.worldY, "creature_atlas");
-                creatureSprite.animations.add("idle", [
-                    creatureTile.properties.atlas_name + "_1.png",
-                    creatureTile.properties.atlas_name + "_2.png"
-                ], 2, true);
+        /*
+        private separateCreaturesFromTilemap() {
+            this.creatures = this.extractFrom(this.creatureLayer, (creatureTile) => {
+                var creatureSprite = this.game.add.sprite(creatureTile.worldX, creatureTile.worldY, "creature_atlas");
+                creatureSprite.animations.add("idle",
+                                           [
+                                               creatureTile.properties.atlas_name + "_1.png",
+                                               creatureTile.properties.atlas_name + "_2.png"
+                                           ],
+                                           2,
+                                           true);
                 creatureSprite.animations.play("idle");
+
                 return creatureSprite;
             });
-        };
-        Tilemap.prototype.separateObjectsFromTilemap = function () {
-            var _this = this;
-            this.interactables = this.extractFrom(this.objectLayer, function (objectTile) {
-                var objectSprite = new Isis.ActivatableObject(_this.game, objectTile.worldX, objectTile.worldY, "object_atlas", objectTile.properties.atlas_name + ".png");
+        }
+
+        private separateObjectsFromTilemap() {
+            this.interactables = this.extractFrom(this.objectLayer, (objectTile) => {
+                var objectSprite = new ActivatableObject(this.game,
+                                                                         objectTile.worldX,
+                                                                         objectTile.worldY,
+                                                                         "object_atlas",
+                                                                         objectTile.properties.atlas_name + ".png");
+
                 return objectSprite;
             });
-        };
-        Tilemap.prototype.separateItemsFromTilemap = function () {
-            var _this = this;
-            var centerItem = function (item) {
-                item.x += _this.tileWidth / 6;
-                item.y += _this.tileHeight / 6;
-            };
-            this.items = this.extractFrom(this.itemLayer, function (itemTile) {
-                var itemSprite = _this.game.add.sprite(itemTile.worldX, itemTile.worldY, "item_atlas", itemTile.properties.atlas_name + ".png");
+        }
+
+        private separateItemsFromTilemap() {
+            var centerItem = (item: Phaser.Sprite) => { item.x += this.tileWidth / 6; item.y += this.tileHeight / 6; }
+
+            this.items = this.extractFrom(this.itemLayer, (itemTile) => {
+                var itemSprite = this.game.add.sprite(itemTile.worldX,
+                                                                   itemTile.worldY,
+                                                                   "item_atlas",
+                                                                   itemTile.properties.atlas_name + ".png");
                 centerItem(itemSprite);
+
                 return itemSprite;
             });
-        };
-        Tilemap.prototype.extractFrom = function (layer, converter) {
-            var _this = this;
-            return _.filter(layer.getTiles(0, 0, this.widthInPixels, this.heightInPixels), function (tile) { return tile.properties.atlas_name; }).map(function (tile) { return converter(_this.removeTile(tile.x, tile.y, layer)); });
-        };
+        }
+
+        private extractFrom<T>(layer: Phaser.TilemapLayer, converter: (tile: Phaser.Tile) => T) {
+            return _.filter(layer.getTiles(0, 0, this.widthInPixels, this.heightInPixels), (tile) => tile.properties.atlas_name)
+                       .map((tile) => converter(this.removeTile(tile.x, tile.y, layer)));
+        }
+        */
         Tilemap.prototype.identifyTriggers = function () {
             var _this = this;
             /*
@@ -1097,7 +1129,7 @@ var Isis;
             this.triggers = _.reject(mixedTriggers, { type: "object" });
         };
         Tilemap.prototype.wallAt = function (at) {
-            var tile = this.getTile(at.x, at.y, this.WallsLayer);
+            var tile = this.getTile(at.x, at.y, this.CollidablesLayer);
             return tile && tile.index != 0;
         };
         Tilemap.prototype.itemAt = function (at) {
@@ -1142,6 +1174,40 @@ var Isis;
         return Tilemap;
     })(Phaser.Tilemap);
     Isis.Tilemap = Tilemap;
+})(Isis || (Isis = {}));
+var Isis;
+(function (Isis) {
+    var TilemapLoader = (function () {
+        function TilemapLoader(game) {
+            this.game = game;
+        }
+        TilemapLoader.prototype.load = function (key) {
+            var manifestEntry = this.game.cache.getJSON("manifest")[key];
+            var mapJSON = this.game.cache.getJSON(key + ".json");
+            var tileLayers = this.readLayers(mapJSON.layers);
+            console.log(tileLayers);
+            return new Isis.Tilemap({
+                game: this.game,
+                key: key,
+                tilesets: this.readTilesets(manifestEntry),
+                tileLayers: this.readLayers(mapJSON.layers)
+            });
+        };
+        TilemapLoader.prototype.readTilesets = function (manifestEntry) {
+            return _.chain(manifestEntry).filter({ type: "image" }).map(function (asset) {
+                var tileset = asset.url.substring(asset.url.lastIndexOf('/') + 1, asset.url.lastIndexOf('.'));
+                return {
+                    key: asset.key,
+                    name: tileset
+                };
+            }).value();
+        };
+        TilemapLoader.prototype.readLayers = function (layers) {
+            return _.chain(layers).filter({ type: "tilelayer" }).map(function (layer) { return layer.name; }).value();
+        };
+        return TilemapLoader;
+    })();
+    Isis.TilemapLoader = TilemapLoader;
 })(Isis || (Isis = {}));
 var Isis;
 (function (Isis) {

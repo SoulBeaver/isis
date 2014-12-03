@@ -27,8 +27,15 @@
 
 			var manualLoader = new Phaser.Loader(this.game);
 			for (var key in manifest) {
-				console.log("Loading asset with key '" + key + "'");
+				console.log("Loading asset pack with key '" + key + "'");
 				manualLoader.pack(key, "assets/manifest.json");
+
+				if (fileExists("assets/tilemaps/maps/" + key + ".json")) {
+					console.log("Loading 'assets/tilemaps/maps/" + key + ".json");
+					manualLoader.json(key + ".json", "assets/tilemaps/maps/" + key + ".json");
+				} else {
+					console.warn("The file 'assets/tilemaps/maps/" + key + ".json' does not exist!");
+				}
 			}
 
 			manualLoader.onLoadComplete.add(this.createPreloadBar, this);
