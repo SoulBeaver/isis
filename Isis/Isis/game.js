@@ -1,6 +1,5 @@
 window.onload = function () {
     var test = new tsUnit.Test(Isis.Tests);
-    // Use the built in results display
     test.showResults(document.getElementById("results"), test.run());
     var game = new Isis.Game();
 };
@@ -1032,7 +1031,7 @@ var Isis;
             this.TriggersLayer = "Triggers";
             json.tilesets.forEach(function (tileset) { return _this.addTilesetImage(tileset.name, tileset.key); }, this);
             json.tileLayers.forEach(function (layer) {
-                _this.tilemapLayers[layer] = _this.createLayer(layer);
+                _this.tilemapLayers[layer.name] = _this.createLayer(layer.name);
             }, this);
             /*
             this.separateCreaturesFromTilemap();
@@ -1184,26 +1183,26 @@ var Isis;
             this.game = game;
         }
         TilemapLoader.prototype.load = function (key) {
-            var manifestEntry = this.game.cache.getJSON("manifest")[key];
+            var manifestEntries = this.game.cache.getJSON("manifest")[key];
             var mapJSON = this.game.cache.getJSON(key + ".json");
             return new Isis.Tilemap({
                 game: this.game,
                 key: key,
-                tilesets: this.readTilesets(manifestEntry),
+                tilesets: this.readTilesets(manifestEntries),
                 tileLayers: this.readLayers(mapJSON.layers)
             });
         };
-        TilemapLoader.prototype.readTilesets = function (manifestEntry) {
-            return _.chain(manifestEntry).filter({ type: "image" }).map(function (asset) {
-                var tileset = asset.url.substring(asset.url.lastIndexOf('/') + 1, asset.url.lastIndexOf('.'));
+        TilemapLoader.prototype.readTilesets = function (manifestEntries) {
+            return _.chain(manifestEntries).filter({ type: "image" }).map(function (entry) {
+                var tileset = entry.url.substring(entry.url.lastIndexOf('/') + 1, entry.url.lastIndexOf('.'));
                 return {
-                    key: asset.key,
+                    key: entry.key,
                     name: tileset
                 };
             }).value();
         };
         TilemapLoader.prototype.readLayers = function (layers) {
-            return _.chain(layers).filter({ type: "tilelayer" }).map(function (layer) { return layer.name; }).value();
+            return _.chain(layers).filter({ type: "tilelayer" }).value();
         };
         return TilemapLoader;
     })();
@@ -1236,22 +1235,508 @@ var Isis;
 (function (Isis) {
     var Tests;
     (function (Tests) {
-        var SimpleMathTests = (function (_super) {
-            __extends(SimpleMathTests, _super);
-            function SimpleMathTests() {
+        var ManifestTest = (function (_super) {
+            __extends(ManifestTest, _super);
+            function ManifestTest() {
                 _super.apply(this, arguments);
+                this.manifest = {
+                    "atlases": [
+                        {
+                            "type": "atlasJSONArray",
+                            "key": "creature_atlas",
+                            "textureURL": "assets/spritesheets/creature_atlas.png",
+                            "atlasURL": "assets/spritesheets/creature_atlas.json"
+                        },
+                        {
+                            "type": "atlasJSONArray",
+                            "key": "item_atlas",
+                            "textureURL": "assets/spritesheets/item_atlas.png",
+                            "atlasURL": "assets/spritesheets/item_atlas.json"
+                        },
+                        {
+                            "type": "atlasJSONArray",
+                            "key": "object_atlas",
+                            "textureURL": "assets/spritesheets/object_atlas.png",
+                            "atlasURL": "assets/spritesheets/object_atlas.json"
+                        }
+                    ],
+                    "maze": [
+                        {
+                            "type": "tilemap",
+                            "key": "maze",
+                            "url": "assets/tilemaps/maps/maze.json",
+                            "data": null,
+                            "format": "TILED_JSON"
+                        },
+                        {
+                            "type": "image",
+                            "key": "creatures_tileset",
+                            "url": "assets/tilemaps/tiles/creatures.png"
+                        },
+                        {
+                            "type": "image",
+                            "key": "items_tileset",
+                            "url": "assets/tilemaps/tiles/items.png"
+                        },
+                        {
+                            "type": "image",
+                            "key": "world_tileset",
+                            "url": "assets/tilemaps/tiles/world_tiles.png"
+                        },
+                        {
+                            "type": "image",
+                            "key": "world_objects_tileset",
+                            "url": "assets/tilemaps/tiles/world_objects.png"
+                        },
+                        {
+                            "type": "image",
+                            "key": "world_dirt_shadows_tileset",
+                            "url": "assets/tilemaps/tiles/world_dirt_shadows.png"
+                        }
+                    ],
+                    "volcano": [
+                        {
+                            "type": "tilemap",
+                            "key": "volcano",
+                            "url": "assets/tilemaps/maps/volcano.json",
+                            "data": null,
+                            "format": "TILED_JSON"
+                        },
+                        {
+                            "type": "image",
+                            "key": "creatures_tileset",
+                            "url": "assets/tilemaps/tiles/creatures.png"
+                        },
+                        {
+                            "type": "image",
+                            "key": "items_tileset",
+                            "url": "assets/tilemaps/tiles/items.png"
+                        },
+                        {
+                            "type": "image",
+                            "key": "world_tileset",
+                            "url": "assets/tilemaps/tiles/world_tiles.png"
+                        },
+                        {
+                            "type": "image",
+                            "key": "world_objects_tileset",
+                            "url": "assets/tilemaps/tiles/world_objects.png"
+                        },
+                        {
+                            "type": "image",
+                            "key": "world_dirt_shadows_tileset",
+                            "url": "assets/tilemaps/tiles/world_dirt_shadows.png"
+                        }
+                    ],
+                    "sewer": [
+                        {
+                            "type": "tilemap",
+                            "key": "sewer",
+                            "url": "assets/tilemaps/maps/sewer.json",
+                            "data": null,
+                            "format": "TILED_JSON"
+                        },
+                        {
+                            "type": "image",
+                            "key": "creatures_tileset",
+                            "url": "assets/tilemaps/tiles/creatures.png"
+                        },
+                        {
+                            "type": "image",
+                            "key": "world_tileset",
+                            "url": "assets/tilemaps/tiles/world_tiles.png"
+                        },
+                        {
+                            "type": "image",
+                            "key": "world_objects_tileset",
+                            "url": "assets/tilemaps/tiles/world_objects.png"
+                        },
+                        {
+                            "type": "image",
+                            "key": "world_dirt_shadows_tileset",
+                            "url": "assets/tilemaps/tiles/world_dirt_shadows.png"
+                        },
+                        {
+                            "type": "image",
+                            "key": "world_paths_tileset",
+                            "url": "assets/tilemaps/tiles/world_paths.png"
+                        }
+                    ]
+                };
             }
-            SimpleMathTests.prototype.addTwoNumbersWith1And2Expect3 = function () {
-                var result = 1 + 2;
-                this.areIdentical(3, result);
+            ManifestTest.prototype.manifest_containsFourManifestEntries = function () {
+                this.areIdentical(_.values(this.manifest).length, 4);
             };
-            SimpleMathTests.prototype.addTwoNumbersWith3And2Expect5 = function () {
-                var result = 3 + 2;
-                this.areIdentical(4, result); // Deliberate error
+            ManifestTest.prototype.manifestEntries_total21ManifestEntry = function () {
+                var manifestEntries = _.values(this.manifest).reduce(function (prev, curr) {
+                    return prev + curr.length;
+                }, 0);
+                this.areIdentical(manifestEntries, 21);
             };
-            return SimpleMathTests;
+            ManifestTest.prototype.atlases_doesNotContainUrl = function () {
+                var _this = this;
+                var atlasesEntry = this.manifest["atlases"];
+                _.forEach(atlasesEntry, function (entry) {
+                    _this.isFalsey(entry.url);
+                }, this);
+            };
+            ManifestTest.prototype.maze_containsUrls = function () {
+                var _this = this;
+                var mazeEntry = this.manifest["maze"];
+                _.forEach(mazeEntry, function (entry) {
+                    _this.isTruthy(entry.url);
+                });
+            };
+            ManifestTest.prototype.sewer_firstEntry_hasCorrectProperties = function () {
+                var sewerEntry = this.manifest["sewer"][0];
+                this.areIdentical(sewerEntry.type, "tilemap");
+                this.areIdentical(sewerEntry.key, "sewer");
+                this.areIdentical(sewerEntry.url, "assets/tilemaps/maps/sewer.json");
+            };
+            return ManifestTest;
         })(tsUnit.TestClass);
-        Tests.SimpleMathTests = SimpleMathTests;
+        Tests.ManifestTest = ManifestTest;
+    })(Tests = Isis.Tests || (Isis.Tests = {}));
+})(Isis || (Isis = {}));
+var Isis;
+(function (Isis) {
+    var Tests;
+    (function (Tests) {
+        var TilemapDefinitionTest = (function (_super) {
+            __extends(TilemapDefinitionTest, _super);
+            function TilemapDefinitionTest() {
+                _super.apply(this, arguments);
+                this.json = {
+                    "backgroundcolor": "#000000",
+                    "height": 8,
+                    "layers": [
+                        {
+                            "data": [1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                            "height": 8,
+                            "name": "Collidables",
+                            "opacity": 1,
+                            "type": "tilelayer",
+                            "visible": true,
+                            "width": 12,
+                            "x": 0,
+                            "y": 0
+                        },
+                        {
+                            "data": [395, 391, 1096, 389, 390, 400, 390, 390, 390, 405, 390, 396, 393, 301, 301, 301, 301, 393, 301, 301, 301, 301, 301, 394, 402, 390, 390, 391, 301, 393, 301, 389, 400, 391, 301, 1097, 404, 301, 301, 301, 301, 393, 301, 301, 393, 301, 301, 392, 404, 301, 395, 390, 390, 403, 396, 301, 393, 301, 395, 401, 393, 301, 394, 301, 301, 301, 394, 301, 393, 301, 397, 401, 393, 301, 301, 301, 392, 301, 301, 301, 393, 301, 301, 393, 397, 390, 390, 390, 403, 390, 405, 390, 403, 390, 390, 398],
+                            "height": 8,
+                            "name": "Background",
+                            "opacity": 1,
+                            "type": "tilelayer",
+                            "visible": true,
+                            "width": 12,
+                            "x": 0,
+                            "y": 0
+                        },
+                        {
+                            "data": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2716, 2716, 2716, 2716, 0, 2716, 2716, 2716, 2716, 2716, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2716, 2716, 2716, 0, 0, 0, 2716, 0, 2716, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2716, 2716, 2716, 0, 0, 0, 0, 0, 0, 0, 0, 2716, 0, 0, 0, 2716, 0, 0, 0, 2716, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            "height": 8,
+                            "name": "Shadows",
+                            "opacity": 1,
+                            "type": "tilelayer",
+                            "visible": true,
+                            "width": 12,
+                            "x": 0,
+                            "y": 0
+                        },
+                        {
+                            "draworder": "topdown",
+                            "height": 0,
+                            "name": "Triggers",
+                            "objects": [
+                                {
+                                    "height": 0,
+                                    "name": "warp",
+                                    "properties": {
+                                        "map": "volcano",
+                                        "spawnX": "6",
+                                        "spawnY": "6"
+                                    },
+                                    "rotation": 0,
+                                    "type": "object",
+                                    "visible": true,
+                                    "width": 0,
+                                    "x": 60,
+                                    "y": 12
+                                },
+                                {
+                                    "height": 0,
+                                    "name": "warp",
+                                    "properties": {
+                                        "map": "sewer",
+                                        "spawnX": "6",
+                                        "spawnY": "1"
+                                    },
+                                    "rotation": 0,
+                                    "type": "object",
+                                    "visible": true,
+                                    "width": 0,
+                                    "x": 276,
+                                    "y": 60
+                                },
+                                {
+                                    "height": 0,
+                                    "name": "spawn_player",
+                                    "properties": {
+                                        "spawnX": "2",
+                                        "spawnY": "1"
+                                    },
+                                    "rotation": 0,
+                                    "type": "",
+                                    "visible": true,
+                                    "width": 0,
+                                    "x": 60,
+                                    "y": 36
+                                },
+                                {
+                                    "height": 0,
+                                    "name": "item",
+                                    "properties": {
+                                        "effects": "random_diamond"
+                                    },
+                                    "rotation": 0,
+                                    "type": "",
+                                    "visible": true,
+                                    "width": 0,
+                                    "x": 36,
+                                    "y": 156
+                                },
+                                {
+                                    "height": 0,
+                                    "name": "item",
+                                    "properties": {},
+                                    "rotation": 0,
+                                    "type": "red_diamond",
+                                    "visible": true,
+                                    "width": 0,
+                                    "x": 108,
+                                    "y": 60
+                                },
+                                {
+                                    "height": 0,
+                                    "name": "item",
+                                    "properties": {},
+                                    "rotation": 0,
+                                    "type": "blue_diamond",
+                                    "visible": true,
+                                    "width": 0,
+                                    "x": 108,
+                                    "y": 36
+                                },
+                                {
+                                    "height": 0,
+                                    "name": "item",
+                                    "properties": {},
+                                    "rotation": 0,
+                                    "type": "yellow_diamond",
+                                    "visible": true,
+                                    "width": 0,
+                                    "x": 252,
+                                    "y": 36
+                                },
+                                {
+                                    "height": 0,
+                                    "name": "creature",
+                                    "properties": {},
+                                    "rotation": 0,
+                                    "type": "robed_drow",
+                                    "visible": true,
+                                    "width": 0,
+                                    "x": 36,
+                                    "y": 84
+                                },
+                                {
+                                    "height": 0,
+                                    "name": "creature",
+                                    "properties": {},
+                                    "rotation": 0,
+                                    "type": "blue_blob_man",
+                                    "visible": true,
+                                    "width": 0,
+                                    "x": 204,
+                                    "y": 36
+                                },
+                                {
+                                    "height": 0,
+                                    "name": "object",
+                                    "properties": {
+                                        "destination": "random",
+                                        "effects": "teleport"
+                                    },
+                                    "rotation": 0,
+                                    "type": "blue_star_circle",
+                                    "visible": true,
+                                    "width": 0,
+                                    "x": 156,
+                                    "y": 84
+                                },
+                                {
+                                    "height": 0,
+                                    "name": "object",
+                                    "properties": {
+                                        "creature": "robed_drow",
+                                        "effects": "summon",
+                                        "spawnX": "10",
+                                        "spawnY": "6"
+                                    },
+                                    "rotation": 0,
+                                    "type": "red_skull_circle",
+                                    "visible": true,
+                                    "width": 0,
+                                    "x": 228,
+                                    "y": 156
+                                },
+                                {
+                                    "height": 0,
+                                    "name": "object",
+                                    "properties": {
+                                        "destination": "random",
+                                        "effects": "teleport"
+                                    },
+                                    "rotation": 0,
+                                    "type": "blue_star_circle",
+                                    "visible": true,
+                                    "width": 0,
+                                    "x": 156,
+                                    "y": 84
+                                }
+                            ],
+                            "opacity": 1,
+                            "type": "objectgroup",
+                            "visible": true,
+                            "width": 0,
+                            "x": 0,
+                            "y": 0
+                        }
+                    ],
+                    "orientation": "orthogonal",
+                    "properties": {},
+                    "renderorder": "right-down",
+                    "tileheight": 24,
+                    "tilesets": [
+                        {
+                            "firstgid": 1,
+                            "image": "..\/..\/..\/..\/..\/..\/..\/..\/Downloads\/oryx_16-bit_fantasy_1.1\/World\/World_Tiles.png",
+                            "imageheight": 936,
+                            "imagewidth": 648,
+                            "margin": 0,
+                            "name": "world_tiles",
+                            "properties": {},
+                            "spacing": 0,
+                            "tileheight": 24,
+                            "tilewidth": 24
+                        },
+                        {
+                            "firstgid": 1054,
+                            "image": "..\/..\/..\/..\/..\/..\/..\/..\/Downloads\/oryx_16-bit_fantasy_1.1\/World\/World_Objects.png",
+                            "imageheight": 261,
+                            "imagewidth": 336,
+                            "margin": 0,
+                            "name": "world_objects",
+                            "properties": {},
+                            "spacing": 0,
+                            "tileheight": 24,
+                            "tileproperties": {
+                                "42": {
+                                    "atlas_name": "closed_steel_gate"
+                                },
+                                "43": {
+                                    "atlas_name": "opened_steel_gate"
+                                }
+                            },
+                            "tilewidth": 24
+                        },
+                        {
+                            "firstgid": 1194,
+                            "image": "..\/..\/..\/..\/..\/..\/..\/..\/Downloads\/oryx_16-bit_fantasy_1.1\/oryx_16bit_fantasy_items_trans.png",
+                            "imageheight": 304,
+                            "imagewidth": 384,
+                            "margin": 0,
+                            "name": "items",
+                            "properties": {},
+                            "spacing": 0,
+                            "tileheight": 16,
+                            "tileoffset": {
+                                "x": 4,
+                                "y": -4
+                            },
+                            "tileproperties": {
+                                "83": {
+                                    "atlas_name": "green_diamond"
+                                },
+                                "84": {
+                                    "atlas_name": "blue_diamond"
+                                },
+                                "85": {
+                                    "atlas_name": "red_diamond"
+                                },
+                                "86": {
+                                    "atlas_name": "yellow_diamond"
+                                }
+                            },
+                            "tilewidth": 16
+                        },
+                        {
+                            "firstgid": 1650,
+                            "image": "..\/..\/..\/..\/..\/..\/..\/..\/Downloads\/oryx_16-bit_fantasy_1.1\/oryx_16bit_fantasy_creatures_trans.png",
+                            "imageheight": 648,
+                            "imagewidth": 480,
+                            "margin": 0,
+                            "name": "creatures",
+                            "properties": {},
+                            "spacing": 0,
+                            "tileheight": 24,
+                            "tileoffset": {
+                                "x": 0,
+                                "y": -4
+                            },
+                            "tileproperties": {
+                                "146": {
+                                    "atlas_name": "robed_drow"
+                                },
+                                "21": {
+                                    "atlas_name": "blue_knight"
+                                },
+                                "432": {
+                                    "atlas_name": "blue_blob_man"
+                                }
+                            },
+                            "tilewidth": 24
+                        },
+                        {
+                            "firstgid": 2190,
+                            "image": "..\/..\/..\/..\/..\/..\/..\/..\/Downloads\/oryx_16-bit_fantasy_1.1\/World\/World_Dirt_Shadows.png",
+                            "imageheight": 528,
+                            "imagewidth": 600,
+                            "margin": 0,
+                            "name": "world_dirt_shadows",
+                            "properties": {},
+                            "spacing": 0,
+                            "tileheight": 24,
+                            "tilewidth": 24
+                        }
+                    ],
+                    "tilewidth": 24,
+                    "version": 1,
+                    "width": 12
+                };
+            }
+            TilemapDefinitionTest.prototype.json_hasFourLayers = function () {
+                this.areIdentical(this.json.layers.length, 4);
+            };
+            TilemapDefinitionTest.prototype.json_hasThreeTileLayers = function () {
+                this.areIdentical(_.filter(this.json.layers, { type: "tilelayer" }).length, 3);
+            };
+            TilemapDefinitionTest.prototype.json_hasOneObjectLayer = function () {
+                this.areIdentical(_.filter(this.json.layers, { type: "objectgroup" }).length, 1);
+            };
+            return TilemapDefinitionTest;
+        })(tsUnit.TestClass);
+        Tests.TilemapDefinitionTest = TilemapDefinitionTest;
     })(Tests = Isis.Tests || (Isis.Tests = {}));
 })(Isis || (Isis = {}));
 //# sourceMappingURL=game.js.map

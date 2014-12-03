@@ -1,19 +1,9 @@
 ﻿module Isis {
-	export interface Tileset {
-		key: string;
-		name: string;
-	}
-
-	export interface TilemapLayer {
-		name: string;
-		type: string;
-	}
-
 	export interface TilemapData {
 		game: Phaser.Game;
 		key: string;
-		tilesets: Array<Tileset>;
-		tileLayers: Array<string>;
+		tilesets: Array<{ name: string; key: string }>;
+		tileLayers: Array<TilemapLayer>;
 	}
 
 	export class TilemapLoader {
@@ -24,33 +14,33 @@
 		}
 
 		load(key: string) {
-			var manifestEntry = this.game.cache.getJSON("manifest")[key];
+			var manifestEntries: Array<ManifestEntry> = this.game.cache.getJSON("manifest")[key];
 			var mapJSON = this.game.cache.getJSON(key +".json");
 
 			 return new Tilemap({
 				 game: this.game,
 				 key: key,
-				 tilesets: this.readTilesets(manifestEntry),
+				 tilesets: this.readTilesets(manifestEntries),
 				 tileLayers: this.readLayers(mapJSON.layers)
 			 });
 		 }
 
-		 private readTilesets(manifestEntry: Array<JSONAsset>) {
-			 return _.chain(manifestEntry)
+		private readTilesets(manifestEntries: Array<ManifestEntry>) {
+			 return _.chain(manifestEntries)
 				 .filter({ type: "image" })
-				 .map((asset: JSONAsset) => {
-					 var tileset = asset.url.substring(asset.url.lastIndexOf('/') + 1, asset.url.lastIndexOf('.'));
+				 .map((entry: ManifestEntry) => {
+					 var tileset = entry.url.substring(entry.url.lastIndexOf('/') + 1, entry.url.lastIndexOf('.'));
 					 return {
-						 key: asset.key,
+						 key: entry.key,
 						 name: tileset
 					 };
-				 }).value();
+				 })
+				 .value();
 		 }
 
 		private readLayers(layers: Array<TilemapLayer>) {
 			 return _.chain(layers)
 				 .filter({ type: "tilelayer" })
-				 .map((layer) => layer.name)
 				 .value();
 		 }
 	 }
