@@ -760,10 +760,7 @@ var Isis;
         };
         InGame.prototype.initializePlayer = function () {
             var spawnPlayerTrigger = this.map.getTrigger("spawn_player");
-            var spawnWorldCoordinates = this.map.toWorldCoordinates({
-                x: spawnPlayerTrigger.properties.spawnX,
-                y: spawnPlayerTrigger.properties.spawnY
-            });
+            var spawnWorldCoordinates = this.map.toWorldCoordinates(this.map.toTileCoordinates({ x: spawnPlayerTrigger.x, y: spawnPlayerTrigger.y }));
             this.player = new Isis.Player(this.game, spawnWorldCoordinates);
             this.game.camera.follow(this.player);
         };
@@ -1057,11 +1054,6 @@ var Isis;
             json.tileLayers.forEach(function (layer) {
                 _this.tilemapLayers[layer.name] = _this.createLayer(layer.name);
             }, this);
-            /*
-            this.separateCreaturesFromTilemap();
-            this.separateItemsFromTilemap();
-            this.separateObjectsFromTilemap();
-            */
             this.identifyTriggers();
             this.tilemapLayers[this.CollidablesLayer].resizeWorld();
             this.setCollisionBetween(1, 2, true, this.CollidablesLayer);
@@ -1083,6 +1075,7 @@ var Isis;
             this.spawnInteractables();
             this.spawnCreatures();
             this.activateImmediateTriggers();
+            this.saveDelayedTriggers();
         };
         Tilemap.prototype.spawnItems = function () {
             var triggers = this.objects[this.TriggersLayer];
@@ -1128,6 +1121,10 @@ var Isis;
         Tilemap.prototype.activateImmediateTriggers = function () {
             var triggers = this.objects[this.TriggersLayer];
             _.chain(triggers).filter({ type: "trigger_immediate" }).forEach(this.activateTrigger, this);
+        };
+        Tilemap.prototype.saveDelayedTriggers = function () {
+            var mixedTriggers = this.objects[this.TriggersLayer];
+            this.triggers = _.filter(mixedTriggers, { type: "trigger_delayed" });
         };
         Tilemap.prototype.activateTrigger = function (trigger) {
             switch (trigger.properties.effects) {
@@ -2275,8 +2272,6 @@ var Isis;
             };
             TilemapTest.prototype.maze_hasOneObjectLayer = function () {
                 this.isTruthy(this.map.objects["Triggers"]);
-            };
-            TilemapTest.prototype.creature_at = function () {
             };
             return TilemapTest;
         })(tsUnit.TestClass);

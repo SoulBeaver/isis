@@ -78,11 +78,10 @@
                  "name":"spawn_player",
                  "properties":
                     {
-                     "spawnX":"2",
-                     "spawnY":"1"
+
                     },
                  "rotation":0,
-                 "type":"trigger_immediate",
+                 "type":"trigger_delayed",
                  "visible":true,
                  "width":0,
                  "x":60,

@@ -43,10 +43,7 @@
 
 		private initializePlayer() {
 			var spawnPlayerTrigger = this.map.getTrigger("spawn_player");
-			var spawnWorldCoordinates = this.map.toWorldCoordinates({
-				x: spawnPlayerTrigger.properties.spawnX,
-				y: spawnPlayerTrigger.properties.spawnY
-			});
+			var spawnWorldCoordinates = this.map.toWorldCoordinates(this.map.toTileCoordinates({ x: spawnPlayerTrigger.x, y: spawnPlayerTrigger.y }));
 
 			this.player = new Player(this.game, spawnWorldCoordinates);
             this.game.camera.follow(this.player);

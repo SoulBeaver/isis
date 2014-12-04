@@ -32,12 +32,6 @@ module Isis {
 				this.tilemapLayers[layer.name] = this.createLayer(layer.name);
 			}, this);
 
-			/*
-            this.separateCreaturesFromTilemap();
-			this.separateItemsFromTilemap();
-	        this.separateObjectsFromTilemap();
-			*/
-
 			this.identifyTriggers();
 
             this.tilemapLayers[this.CollidablesLayer].resizeWorld();
@@ -65,6 +59,7 @@ module Isis {
 			this.spawnInteractables();
 			this.spawnCreatures();
 			this.activateImmediateTriggers();
+			this.saveDelayedTriggers();
 		}
 
 		private spawnItems() {
@@ -139,6 +134,12 @@ module Isis {
 			_.chain(triggers)
 				.filter({ type: "trigger_immediate" })
 				.forEach(this.activateTrigger, this);
+		}
+
+		private saveDelayedTriggers() {
+			var mixedTriggers: Array<Trigger> = this.objects[this.TriggersLayer];
+
+			this.triggers = _.filter(mixedTriggers, { type: "trigger_delayed" });
 		}
 
 		private activateTrigger(trigger: Trigger) {

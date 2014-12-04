@@ -66,17 +66,12 @@
 			this.areIdentical(expected, !!this.map.interactableAt(input));
 		}
 
-
 		maze_hasThreeTileLayers() {
 			this.areIdentical(this.map.layers.length, 3);
 		}
 
 		maze_hasOneObjectLayer() {
 			this.isTruthy(this.map.objects["Triggers"]);
-		}
-
-		creature_at() {
-
 		}
 
 		map: Tilemap = null;
