@@ -60,8 +60,8 @@ module Isis {
 
             if (this.map.creatureAt(destination)) {
                 this.attack(this.player, this.map.creatureAt(destination));
-            } else if (this.map.objectAt(destination)) {
-                this.activate(this.player, this.map.objectAt(destination));
+            } else if (this.map.interactableAt(destination)) {
+                this.activate(this.player, this.map.interactableAt(destination));
             } else {
                 if (this.map.itemAt(destination))
                     this.pickUp(this.player, this.map.itemAt(destination));

@@ -1,0 +1,14 @@
+﻿{
+    "closed_steel_gate": {
+        "atlas_name": "closed_steel_gate"
+    },
+    "open_steel_gate": { 
+        "atlas_name":  "open_steel_gate"
+    },
+    "red_skull_circle": {
+        "atlas_name": "red_skull_circle"
+    },
+    "blue_star_circle": {
+        "atlas_name": "blue_star_circle"
+    }
+}

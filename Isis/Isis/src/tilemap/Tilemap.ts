@@ -19,17 +19,17 @@ module Isis {
 		// when the player moves toward it.
 		private TriggersLayer	 = "Triggers";
 
-        private items: Array<Phaser.Sprite>;
-		private creatures: Array<Phaser.Sprite>;
-		private interactables: Array<ActivatableObject>;
-		private triggers: Array<Trigger>;
+        private items: Array<Phaser.Sprite> = [];
+		private creatures: Array<Phaser.Sprite> = [];
+		private interactables: Array<ActivatableObject> = [];
+		private triggers: Array<Trigger> = [];
 
         constructor(json: TilemapData) {
 	        super(json.game, json.key);
 
 			json.tilesets.forEach((tileset) => this.addTilesetImage(tileset.name, tileset.key), this);
 			json.tileLayers.forEach((layer) => {
-				this.tilemapLayers[layer] = this.createLayer(layer);
+				this.tilemapLayers[layer.name] = this.createLayer(layer.name);
 			}, this);
 
 			/*
@@ -60,84 +60,107 @@ module Isis {
 			super.destroy();
 		}
 
-		/*
-        private separateCreaturesFromTilemap() {
-            this.creatures = this.extractFrom(this.creatureLayer, (creatureTile) => {
-                var creatureSprite = this.game.add.sprite(creatureTile.worldX, creatureTile.worldY, "creature_atlas");
-				creatureSprite.animations.add("idle",
-										   [
-											   creatureTile.properties.atlas_name + "_1.png",
-											   creatureTile.properties.atlas_name + "_2.png"
-										   ],
-										   2,
-										   true);
-                creatureSprite.animations.play("idle");
-
-                return creatureSprite;
-            });
-		}
-
-		private separateObjectsFromTilemap() {
-			this.interactables = this.extractFrom(this.objectLayer, (objectTile) => {
-				var objectSprite = new ActivatableObject(this.game,
-																		 objectTile.worldX,
-																	     objectTile.worldY,
-																	     "object_atlas",
-																		 objectTile.properties.atlas_name + ".png");
-
-				return objectSprite;
-			});
-		}
-
-        private separateItemsFromTilemap() {
-            var centerItem = (item: Phaser.Sprite) => { item.x += this.tileWidth / 6; item.y += this.tileHeight / 6; }
-
-            this.items = this.extractFrom(this.itemLayer, (itemTile) => {
-				var itemSprite = this.game.add.sprite(itemTile.worldX,
-																   itemTile.worldY,
-																   "item_atlas",
-																   itemTile.properties.atlas_name + ".png");
-                centerItem(itemSprite);
-
-                return itemSprite;
-            });
-        }
-
-        private extractFrom<T>(layer: Phaser.TilemapLayer, converter: (tile: Phaser.Tile) => T) {
-            return _.filter(layer.getTiles(0, 0, this.widthInPixels, this.heightInPixels), (tile) => tile.properties.atlas_name)
-                       .map((tile) => converter(this.removeTile(tile.x, tile.y, layer)));
-		}
-		*/
-
 		private identifyTriggers() {
-			/*
-			A typical JSON entry for an object in the object layer (our triggers), looks like this:
+			this.spawnItems();
+			this.spawnInteractables();
+			this.spawnCreatures();
+			this.activateImmediateTriggers();
+		}
 
-			    {
-                 "height":0,
-                 "name":"warp",
-                 "properties":
-                    {
-                     "map":"volcano"
-                    },
-                 "rotation":0,
-                 "type":"object",
-                 "visible":true,
-                 "width":0,
-                 "x":60,
-                 "y":12
-                }
-			 */
-			var mixedTriggers = _.map(this.objects[this.TriggersLayer], (json: any) => new Trigger(json));
+		private spawnItems() {
+			var triggers: Array<Trigger> = this.objects[this.TriggersLayer];
 
-			_.chain(mixedTriggers)
-				.filter({ type: "object" })
-				.forEach((trigger: Trigger) => {
-					var object = this.objectAt(this.toTileCoordinates(trigger));
-					object.trigger = trigger;
-				});
+			this.items = _.chain(triggers)
+				.filter({ type: "item" })
+				.map(this.toItem, this)
+				.value();
+		}
 
-			this.triggers = _.reject(mixedTriggers, { type: "object" });
+		private toItem(trigger: Trigger) {
+			var creatureDefinitions = this.game.cache.getJSON("item_definitions");
+			var atlasName = creatureDefinitions[trigger.name].atlas_name;
+			var coordinates = this.toWorldCoordinates(this.toTileCoordinates(trigger));
+
+			var centerItem = (item: Phaser.Sprite) => { item.x += this.tileWidth / 6; item.y += this.tileHeight / 6; }
+
+			var item = this.game.add.sprite(coordinates.x, coordinates.y, "item_atlas", atlasName + ".png");
+			centerItem(item);
+
+			return item;
+		}
+
+		private spawnInteractables() {
+			var triggers: Array<Trigger> = this.objects[this.TriggersLayer];
+
+			this.interactables = _.chain(triggers)
+				.filter({ type: "interactable" })
+				.map(this.toInteractable, this)
+				.value();
+		}
+
+		private toInteractable(trigger: Trigger) {
+			var creatureDefinitions = this.game.cache.getJSON("interactable_definitions");
+			var atlasName = creatureDefinitions[trigger.name].atlas_name;
+			var coordinates = this.toWorldCoordinates(this.toTileCoordinates(trigger));
+
+			var interactable = new ActivatableObject(this.game,
+													 coordinates.x,
+													 coordinates.y,
+													 "interactable_atlas",
+													 atlasName + ".png");
+
+			return interactable;
+		}
+
+		private spawnCreatures() {
+			var triggers: Array<Trigger> = this.objects[this.TriggersLayer];
+
+			this.creatures = _.chain(triggers)
+				.filter({ type: "creature" })
+				.map(this.toCreature, this)
+				.value();
+		}
+
+		private toCreature(trigger: Trigger) {
+			var creatureDefinitions = this.game.cache.getJSON("creature_definitions");
+			var atlasName = creatureDefinitions[trigger.name].atlas_name;
+			var coordinates = this.toWorldCoordinates(this.toTileCoordinates(trigger));
+
+			var creature = this.game.add.sprite(coordinates.x, coordinates.y, "creature_atlas");
+			creature.animations.add("idle", [atlasName + "_1.png", atlasName + "_2.png"], 2, true);
+			creature.animations.play("idle");
+
+			return creature;
+		}
+
+		private activateImmediateTriggers() {
+			var triggers: Array<Trigger> = this.objects[this.TriggersLayer];
+
+			_.chain(triggers)
+				.filter({ type: "trigger_immediate" })
+				.forEach(this.activateTrigger, this);
+		}
+
+		private activateTrigger(trigger: Trigger) {
+			switch (trigger.properties.effects) {
+				case "summon_random_set":
+					var names: Array<string> = trigger.properties.names.split(", ");
+					var chosenName: string = names[Math.floor(Math.random() * names.length)];
+					var spawnCoordinates = this.toWorldCoordinates({
+						x: trigger.properties.spawn_x,
+						y: trigger.properties.spawn_y
+					});
+
+					var itemTrigger = new Trigger({
+						name: chosenName,
+						x: spawnCoordinates.x,
+						y: spawnCoordinates.y,
+						type: "item",
+						properties: {}
+					});
+
+					this.items.push(this.toItem(itemTrigger));
+			}
 		}
 
         wallAt(at: TileCoordinates) {
@@ -149,7 +172,7 @@ module Isis {
             return _.find(this.items, (item: Phaser.Sprite) => _.isEqual(this.toTileCoordinates(item), at));
         }
 
-        objectAt(at: TileCoordinates) {
+        interactableAt(at: TileCoordinates) {
             return _.find(this.interactables, (object: ActivatableObject) => _.isEqual(this.toTileCoordinates(object), at));
         }
 

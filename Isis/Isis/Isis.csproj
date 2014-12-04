@@ -54,6 +54,7 @@
     <TypeScriptCompile Include="src\state\InGame.ts" />
     <TypeScriptCompile Include="src\state\ingame\InGameSubState.ts" />
     <TypeScriptCompile Include="src\state\ingame\PlayerState.ts" />
+    <TypeScriptCompile Include="src\state\Tester.ts" />
     <TypeScriptCompile Include="src\state\view\GameView.ts" />
     <TypeScriptCompile Include="src\state\MainMenu.ts" />
     <TypeScriptCompile Include="src\state\Preloader.ts" />
@@ -65,7 +66,9 @@
     <TypeScriptCompile Include="src\tilemap\Trigger.ts" />
     <TypeScriptCompile Include="src\tilemap\WorldCoordinates.ts" />
     <TypeScriptCompile Include="test\ManifestTest.ts" />
+    <TypeScriptCompile Include="test\TestHarness.ts" />
     <TypeScriptCompile Include="test\TilemapDefinitionTest.ts" />
+    <TypeScriptCompile Include="test\TilemapTest.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\settings.json" />
@@ -73,16 +76,16 @@
     <Content Include="libs\phaser\phaser.map" />
     <Content Include="packages.config" />
     <Content Include="assets\spritesheets\creature_atlas.json" />
-    <Content Include="assets\spritesheets\creature_atlas.tps" />
     <Content Include="assets\spritesheets\item_atlas.json" />
     <Content Include="assets\spritesheets\object_atlas.json" />
-    <Content Include="assets\spritesheets\object_atlas.tps" />
     <Content Include="assets\spritesheets\TexturePackageProjects\creature_atlas.tps" />
     <Content Include="assets\spritesheets\TexturePackageProjects\object_atlas.tps" />
-    <Content Include="assets\spritesheets\Thumbs.db" />
     <Content Include="assets\tilemaps\maps\Maze.json" />
     <Content Include="assets\tilemaps\maps\Sewer.json" />
     <Content Include="assets\tilemaps\maps\Volcano.json" />
+    <Content Include="assets\creature_definitions.json" />
+    <Content Include="assets\item_definitions.json" />
+    <Content Include="assets\interactable_definitions.json" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

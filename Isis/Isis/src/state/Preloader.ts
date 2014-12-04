@@ -2,10 +2,10 @@
     /**
      * Preloader loads all assets required by every state in the game.
      */ 
-    export class Preloader extends Phaser.State {
+	export class Preloader extends Phaser.State {
         preloadBar: Phaser.Sprite;
 
-        preload() {
+		preload() {
 			this.preloadBar = this.add.sprite(this.game.world.centerX, this.game.world.centerY, "preloadBar");
 	        this.preloadBar.anchor.setTo(0.5, 0.5);
 
@@ -13,6 +13,10 @@
         }
 
 		private startAssetLoad() {
+			this.load.json("settings", "assets/settings.json");
+			this.load.json("creature_definitions", "assets/creature_definitions.json");
+			this.load.json("item_definitions", "assets/item_definitions.json");
+			this.load.json("interactable_definitions", "assets/interactable_definitions.json");
 			this.load.json("manifest", "assets/manifest.json").onLoadComplete.add(this.loadManifestEntries, this);
 		}
 
@@ -26,32 +30,30 @@
 			var manifest = this.game.cache.getJSON("manifest");
 
 			var manualLoader = new Phaser.Loader(this.game);
+			manualLoader.pack("atlases", "assets/manifest.json");
+
 			for (var key in manifest) {
-				console.log("Loading asset pack with key '" + key + "'");
 				manualLoader.pack(key, "assets/manifest.json");
 
-				if (fileExists("assets/tilemaps/maps/" + key + ".json")) {
-					console.log("Loading 'assets/tilemaps/maps/" + key + ".json");
+				if (fileExists("assets/tilemaps/maps/" + key + ".json"))
 					manualLoader.json(key + ".json", "assets/tilemaps/maps/" + key + ".json");
-				} else {
+				else
 					console.warn("The file 'assets/tilemaps/maps/" + key + ".json' does not exist!");
-				}
 			}
 
-			manualLoader.onLoadComplete.add(this.createPreloadBar, this);
+			manualLoader.onLoadComplete.add(this.fadeOut, this);
 			manualLoader.setPreloadSprite(this.preloadBar);
 			manualLoader.start();
 		}
 
-        private createPreloadBar() {
+        private fadeOut() {
             this.add.tween(this.preloadBar)
                 .to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true)
-                .onComplete.add(this.startMainMenu, this);
+                .onComplete.add(this.startTesting, this);
         }
 
-        private startMainMenu() {
-            // We're skipping the main menu to ease testing of gameplay- no need to click through the menu.
-            this.game.state.start(State.InGame, true, false);
+        private startTesting() {
+            this.game.state.start(State.Tester, true, false);
         }
     }
 }  

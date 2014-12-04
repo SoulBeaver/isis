@@ -7,7 +7,8 @@
             super(640, 480, Phaser.AUTO, "content", null);
 
             this.state.add(State.Boot, Boot, false);
-            this.state.add(State.Preloader, Preloader, false);
+			this.state.add(State.Preloader, Preloader, false);
+	        this.state.add(State.Tester, Tester, false);
             this.state.add(State.MainMenu, MainMenu, false);
             this.state.add(State.InGame, InGame, false);
 

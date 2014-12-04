@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>3.5.3</string>
         <key>fileName</key>
-        <string>C:/Users/Christian/Documents/GitHub/isis/Isis/Isis/assets/spritesheets/object_atlas.tps</string>
+        <string>C:/Users/Christian/Documents/GitHub/isis/Isis/Isis/assets/spritesheets/TexturePackageProjects/interactable_atlas.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -188,10 +188,12 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/world_24x24/closed_steel_gate.png</filename>
-            <filename>../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/world_24x24/opened_steel_gate.png</filename>
-            <filename>../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/world_24x24/open_cellar_door.png</filename>
-            <filename>../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/world_24x24/closed_cellar_door.png</filename>
+            <filename>../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/world_24x24/closed_cellar_door.png</filename>
+            <filename>../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/world_24x24/closed_steel_gate.png</filename>
+            <filename>../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/world_24x24/open_cellar_door.png</filename>
+            <filename>../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/world_24x24/opened_steel_gate.png</filename>
+            <filename>../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/world_24x24/red_skull_circle.png</filename>
+            <filename>../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/world_24x24/blue_star_circle.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

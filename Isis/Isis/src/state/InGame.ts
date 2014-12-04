@@ -35,7 +35,10 @@
         }
 
 		private initializeMap(mapName: string) {
-			this.map = this.mapLoader.load(mapName);
+			var manifest = this.game.cache.getJSON("manifest");
+			var mapDefinition = this.game.cache.getJSON(mapName + ".json");
+
+			this.map = this.mapLoader.load(mapName, manifest, mapDefinition);
 		}
 
 		private initializePlayer() {

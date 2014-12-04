@@ -13,15 +13,12 @@
 			this.game = game;
 		}
 
-		load(key: string) {
-			var manifestEntries: Array<ManifestEntry> = this.game.cache.getJSON("manifest")[key];
-			var mapJSON = this.game.cache.getJSON(key +".json");
-
+		load(key: string, manifest: Manifest, mapDefinition: TilemapDefinition) {
 			 return new Tilemap({
 				 game: this.game,
 				 key: key,
-				 tilesets: this.readTilesets(manifestEntries),
-				 tileLayers: this.readLayers(mapJSON.layers)
+				 tilesets: this.readTilesets(manifest[key]),
+				 tileLayers: this.readLayers(mapDefinition.layers)
 			 });
 		 }
 

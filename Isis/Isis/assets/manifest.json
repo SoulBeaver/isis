@@ -14,9 +14,9 @@
         },
         {
             "type": "atlasJSONArray",
-            "key": "object_atlas",
-            "textureURL": "assets/spritesheets/object_atlas.png",
-            "atlasURL": "assets/spritesheets/object_atlas.json"
+            "key": "interactable_atlas",
+            "textureURL": "assets/spritesheets/interactable_atlas.png",
+            "atlasURL": "assets/spritesheets/interactable_atlas.json"
         }
     ],
     "maze": [
