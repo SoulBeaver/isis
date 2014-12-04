@@ -1131,10 +1131,10 @@ var Isis;
                 case "summon_random_set":
                     var names = trigger.properties.names.split(", ");
                     var chosenName = names[Math.floor(Math.random() * names.length)];
-                    var spawnCoordinates = this.toWorldCoordinates({
+                    var spawnCoordinates = trigger.properties.hasOwnProperty("spawn_x") ? this.toWorldCoordinates({
                         x: trigger.properties.spawn_x,
                         y: trigger.properties.spawn_y
-                    });
+                    }) : this.toWorldCoordinates(this.toTileCoordinates(trigger));
                     var itemTrigger = new Isis.Trigger({
                         name: chosenName,
                         x: spawnCoordinates.x,

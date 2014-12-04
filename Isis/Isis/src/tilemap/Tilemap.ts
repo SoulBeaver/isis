@@ -147,10 +147,11 @@ module Isis {
 				case "summon_random_set":
 					var names: Array<string> = trigger.properties.names.split(", ");
 					var chosenName: string = names[Math.floor(Math.random() * names.length)];
-					var spawnCoordinates = this.toWorldCoordinates({
-						x: trigger.properties.spawn_x,
-						y: trigger.properties.spawn_y
-					});
+					var spawnCoordinates = trigger.properties.hasOwnProperty("spawn_x") ?
+						this.toWorldCoordinates({
+							x: trigger.properties.spawn_x,
+							y: trigger.properties.spawn_y
+						}) : this.toWorldCoordinates(this.toTileCoordinates(trigger));
 
 					var itemTrigger = new Trigger({
 						name: chosenName,

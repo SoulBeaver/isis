@@ -94,8 +94,6 @@
                     {
                      "effects":"summon_random_set",
                      "names":"red_diamond, blue_diamond, green_diamond, yellow_diamond",
-                     "spawn_x":"1",
-                     "spawn_y":"6",
                      "summon_type":"item"
                     },
                  "rotation":0,
@@ -107,44 +105,18 @@
                 }, 
                 {
                  "height":0,
-                 "name":"red_diamond",
+                 "name":"random_diamond",
                  "properties":
                     {
-
+                     "effects":"summon_random_set",
+                     "names":"red_diamond, blue_diamond, green_diamond, yellow_diamond",
+                     "summon_type":"item"
                     },
                  "rotation":0,
-                 "type":"item",
+                 "type":"trigger_immediate",
                  "visible":true,
                  "width":0,
                  "x":108,
-                 "y":60
-                }, 
-                {
-                 "height":0,
-                 "name":"blue_diamond",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"item",
-                 "visible":true,
-                 "width":0,
-                 "x":108,
-                 "y":36
-                }, 
-                {
-                 "height":0,
-                 "name":"yellow_diamond",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"item",
-                 "visible":true,
-                 "width":0,
-                 "x":252,
                  "y":36
                 }, 
                 {
@@ -207,6 +179,38 @@
                  "width":0,
                  "x":156,
                  "y":84
+                }, 
+                {
+                 "height":0,
+                 "name":"random_diamond",
+                 "properties":
+                    {
+                     "effects":"summon_random_set",
+                     "names":"red_diamond, blue_diamond, green_diamond, yellow_diamond",
+                     "summon_type":"item"
+                    },
+                 "rotation":0,
+                 "type":"trigger_immediate",
+                 "visible":true,
+                 "width":0,
+                 "x":108,
+                 "y":60
+                }, 
+                {
+                 "height":0,
+                 "name":"random_diamond",
+                 "properties":
+                    {
+                     "effects":"summon_random_set",
+                     "names":"red_diamond, blue_diamond, green_diamond, yellow_diamond",
+                     "summon_type":"item"
+                    },
+                 "rotation":0,
+                 "type":"trigger_immediate",
+                 "visible":true,
+                 "width":0,
+                 "x":252,
+                 "y":36
                 }],
          "opacity":1,
          "type":"objectgroup",
