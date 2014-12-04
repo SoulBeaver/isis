@@ -10,5 +10,8 @@
     },
     "yellow_diamond": {
         "atlas_name":  "yellow_diamond"
+    },
+    "heart_necklace": {
+        "atlas_name": "heart_necklace"
     }
 }

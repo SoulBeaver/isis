@@ -711,8 +711,11 @@ var Isis;
             if (!object.trigger)
                 return;
             var trigger = object.trigger;
-            if (trigger.name == "warp")
-                this.onChangeMap.dispatch(trigger.properties.map);
+            if (trigger.properties.effects == "warp")
+                this.onChangeMap.dispatch(trigger.properties.map, {
+                    x: trigger.properties.spawnX,
+                    y: trigger.properties.spawnY
+                });
         };
         // For now, the item is destroyed. In future versions, the player will have an inventory.
         PlayerState.prototype.pickUp = function (player, item) {
@@ -746,8 +749,12 @@ var Isis;
         InGame.prototype.create = function () {
             this.game.stage.backgroundColor = "#000000";
             this.mapLoader = new Isis.TilemapLoader(this.game);
+            this.initializeMap("maze");
             this.initializeView();
-            this.switchToMap("maze");
+            var spawnPlayerTrigger = this.map.getTrigger("spawn_player");
+            var spawnWorldCoordinates = this.map.toWorldCoordinates(this.map.toTileCoordinates({ x: spawnPlayerTrigger.x, y: spawnPlayerTrigger.y }));
+            this.initializePlayer(spawnWorldCoordinates);
+            this.initializeSubStates();
             this.currentState = this.playerState;
         };
         InGame.prototype.initializeView = function () {
@@ -758,10 +765,8 @@ var Isis;
             var mapDefinition = this.game.cache.getJSON(mapName + ".json");
             this.map = this.mapLoader.load(mapName, manifest, mapDefinition);
         };
-        InGame.prototype.initializePlayer = function () {
-            var spawnPlayerTrigger = this.map.getTrigger("spawn_player");
-            var spawnWorldCoordinates = this.map.toWorldCoordinates(this.map.toTileCoordinates({ x: spawnPlayerTrigger.x, y: spawnPlayerTrigger.y }));
-            this.player = new Isis.Player(this.game, spawnWorldCoordinates);
+        InGame.prototype.initializePlayer = function (spawnCoordinates) {
+            this.player = new Isis.Player(this.game, spawnCoordinates);
             this.game.camera.follow(this.player);
         };
         InGame.prototype.initializeSubStates = function () {
@@ -801,19 +806,19 @@ var Isis;
             this.currentState = this.playerState;
             this.currentState.initialize();
         };
-        InGame.prototype.initiateMapChange = function (mapName) {
+        InGame.prototype.initiateMapChange = function (mapName, spawnCoordinates) {
             var _this = this;
             this.removeListeners();
             this.currentState.finalize();
             this.currentState = null;
             this.view.fadeOut();
-            this.view.onTweensFinished.addOnce(function () { return _this.onMapFadeOutComplete(mapName); }, this);
+            this.view.onTweensFinished.addOnce(function () { return _this.onMapFadeOutComplete(mapName, spawnCoordinates); }, this);
             this.view.play();
         };
-        InGame.prototype.onMapFadeOutComplete = function (mapName) {
+        InGame.prototype.onMapFadeOutComplete = function (mapName, spawnCoordinates) {
             var _this = this;
             this.destroyMap();
-            this.switchToMap(mapName);
+            this.switchToMap(mapName, spawnCoordinates);
             this.view.fadeIn();
             this.view.onTweensFinished.addOnce(function () { return _this.currentState = _this.playerState; }, this);
             this.view.play();
@@ -822,9 +827,9 @@ var Isis;
             this.map.destroy();
             this.player.destroy();
         };
-        InGame.prototype.switchToMap = function (mapName) {
+        InGame.prototype.switchToMap = function (mapName, spawnCoordinates) {
             this.initializeMap(mapName);
-            this.initializePlayer();
+            this.initializePlayer(this.map.toWorldCoordinates(spawnCoordinates));
             this.initializeSubStates();
         };
         InGame.prototype.removeListeners = function () {
@@ -1066,8 +1071,8 @@ var Isis;
             this.interactables = [];
             this.creatures = [];
             this.triggers = [];
-            this.layers.forEach(function (layer) { return layer.destroy(); }, this);
-            this.layers = [];
+            _.forEach(this.tilemapLayers, function (layer) { return layer.destroy(); }, this);
+            this.tilemapLayers = {};
             _super.prototype.destroy.call(this);
         };
         Tilemap.prototype.identifyTriggers = function () {
@@ -1103,6 +1108,8 @@ var Isis;
             var atlasName = creatureDefinitions[trigger.name].atlas_name;
             var coordinates = this.toWorldCoordinates(this.toTileCoordinates(trigger));
             var interactable = new Isis.ActivatableObject(this.game, coordinates.x, coordinates.y, "interactable_atlas", atlasName + ".png");
+            if (trigger.properties.hasOwnProperty("effects"))
+                interactable.trigger = trigger;
             return interactable;
         };
         Tilemap.prototype.spawnCreatures = function () {
@@ -2272,6 +2279,10 @@ var Isis;
             };
             TilemapTest.prototype.maze_hasOneObjectLayer = function () {
                 this.isTruthy(this.map.objects["Triggers"]);
+            };
+            TilemapTest.prototype.closedSteelGate_hasWarpTrigger = function () {
+                var closedSteelGate = this.map.interactableAt({ x: 2, y: 0 });
+                this.isTruthy(closedSteelGate.trigger);
             };
             return TilemapTest;
         })(tsUnit.TestClass);

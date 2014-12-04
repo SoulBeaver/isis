@@ -48,8 +48,8 @@ module Isis {
 			this.creatures = [];
 			this.triggers = [];
 
-			this.layers.forEach((layer) => layer.destroy(), this);
-			this.layers = [];
+			_.forEach(this.tilemapLayers, (layer) => layer.destroy(), this);
+			this.tilemapLayers = {};
 
 			super.destroy();
 		}
@@ -103,6 +103,8 @@ module Isis {
 													 coordinates.y,
 													 "interactable_atlas",
 													 atlasName + ".png");
+			if (trigger.properties.hasOwnProperty("effects"))
+				interactable.trigger = trigger;
 
 			return interactable;
 		}

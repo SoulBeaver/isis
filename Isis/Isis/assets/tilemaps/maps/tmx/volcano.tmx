@@ -1,47 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="12" height="8" tilewidth="24" tileheight="24" backgroundcolor="#000000">
- <tileset firstgid="1" name="Creatures" tilewidth="24" tileheight="24">
-  <image source="../tiles/Creatures.png" width="480" height="648"/>
-  <tile id="301">
-   <properties>
-    <property name="atlas_name" value="green_goblin"/>
-   </properties>
-  </tile>
-  <tile id="309">
-   <properties>
-    <property name="atlas_name" value="green_orc"/>
-   </properties>
-  </tile>
-  <tile id="310">
-   <properties>
-    <property name="atlas_name" value="red_orc"/>
-   </properties>
-  </tile>
+ <tileset firstgid="1" name="creatures" tilewidth="24" tileheight="24">
+  <image source="../../tiles/Creatures.png" width="480" height="648"/>
  </tileset>
- <tileset firstgid="541" name="World_Dirt_Shadows" tilewidth="24" tileheight="24">
-  <image source="../tiles/World_Dirt_Shadows.png" width="600" height="528"/>
+ <tileset firstgid="541" name="world_dirt_shadows" tilewidth="24" tileheight="24">
+  <image source="../../tiles/World_Dirt_Shadows.png" width="600" height="528"/>
  </tileset>
- <tileset firstgid="1091" name="World_Tiles" tilewidth="24" tileheight="24">
-  <image source="../tiles/World_Tiles.png" width="648" height="936"/>
+ <tileset firstgid="1091" name="world_tiles" tilewidth="24" tileheight="24">
+  <image source="../../tiles/World_Tiles.png" width="648" height="936"/>
  </tileset>
- <tileset firstgid="2144" name="World_Objects" tilewidth="24" tileheight="24">
-  <image source="../tiles/World_Objects.png" width="336" height="261"/>
-  <tile id="56">
-   <properties>
-    <property name="atlas_name" value="closed_cellar_door"/>
-   </properties>
-  </tile>
-  <tile id="57">
-   <properties>
-    <property name="atlas_name" value="open_cellar_door"/>
-   </properties>
-  </tile>
+ <tileset firstgid="2144" name="world_objects" tilewidth="24" tileheight="24">
+  <image source="../../tiles/World_Objects.png" width="336" height="261"/>
  </tileset>
- <tileset firstgid="2284" name="Items" tilewidth="16" tileheight="16">
+ <tileset firstgid="2284" name="items" tilewidth="16" tileheight="16">
   <tileoffset x="4" y="-4"/>
-  <image source="../tiles/Items.png" width="384" height="304"/>
+  <image source="../../tiles/Items.png" width="384" height="304"/>
  </tileset>
- <layer name="Walls" width="12" height="8">
+ <layer name="Collidables" width="12" height="8">
   <data encoding="base64" compression="zlib">
    eJxzZmFgcCYRIwN0ProcPvXY5Eixnxj3EFKPDxCjHpv5pGAA2hIN3w==
   </data>
@@ -51,37 +26,43 @@
    eJzbxMrAsBYJb0fjg/AeKL0ZiDcA8QEoPgzEu4F4KRa8lQ0itxtJ/SGofpia9Ujso2wQuZ1odm9DYu+CugFm/gY080B4Iw7+BRzqceGjRKqH+QHmni1oYYaOdyHJbQViAGWbQ3M=
   </data>
  </layer>
+ <layer name="GoundObjects" width="12" height="8">
+  <data encoding="base64" compression="zlib">
+   eJxjYBj6IIWDtuan0tB8AHfsANo=
+  </data>
+ </layer>
  <layer name="Shadows" width="12" height="8">
   <data encoding="base64" compression="zlib">
    eJxjYCAdaLMgMDofXY4eAJ97iNGLj09rAAD1BgMg
   </data>
  </layer>
- <layer name="Items" width="12" height="8">
-  <data encoding="base64" compression="zlib">
-   eJxjYCAPyHKSqXEUoAAAMicAJw==
-  </data>
- </layer>
- <layer name="Interactables" width="12" height="8">
-  <data encoding="base64" compression="zlib">
-   eJxjYCAdTOHALp6FQ3wqDnEQyMYjRyxIIcOMGWh6ZkL5W7CYlYokhs29uPxNDAAAHeQF2g==
-  </data>
- </layer>
- <layer name="Creatures" width="12" height="8">
-  <data encoding="base64" compression="zlib">
-   eJxjYKAuMGMkXY8eGXrwAXMqm0dLAACWsQCf
-  </data>
- </layer>
  <objectgroup name="Triggers">
-  <object name="spawn_player" x="156" y="156">
+  <object name="open_cellar_door" type="interactable" x="156" y="132">
    <properties>
-    <property name="spawnX" value="6"/>
-    <property name="spawnY" value="6"/>
-   </properties>
-  </object>
-  <object name="warp" type="object" x="156" y="132">
-   <properties>
+    <property name="effects" value="warp"/>
     <property name="map" value="maze"/>
+    <property name="spawnX" value="2"/>
+    <property name="spawnY" value="1"/>
    </properties>
   </object>
+  <object name="green_orc" type="creature" x="204" y="36"/>
+  <object name="green_goblin" type="creature" x="228" y="60"/>
+  <object name="red_orc" type="creature" x="132" y="108"/>
+  <object name="closed_cellar_door" type="interactable" x="60" y="132">
+   <properties>
+    <property name="effects" value="warp"/>
+    <property name="map" value="maze"/>
+    <property name="spawnX" value="2"/>
+    <property name="spawnY" value="1"/>
+   </properties>
+  </object>
+  <object name="spike_trap" type="interactable" x="204" y="132"/>
+  <object name="large_flame" type="interactable" x="228" y="156"/>
+  <object name="large_flame" type="interactable" x="108" y="156"/>
+  <object name="large_flame" type="interactable" x="204" y="60"/>
+  <object name="large_flame" type="interactable" x="180" y="36"/>
+  <object name="barrel" type="interactable" x="36" y="36"/>
+  <object name="cracked_barrel" type="interactable" x="36" y="60"/>
+  <object name="heart_necklace" type="item" x="60" y="36"/>
  </objectgroup>
 </map>

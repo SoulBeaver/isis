@@ -1,7 +1,7 @@
 {"frames": [
 
 {
-	"filename": "blue_star_circle.png",
+	"filename": "barrel.png",
 	"frame": {"x":0,"y":0,"w":24,"h":24},
 	"rotated": false,
 	"trimmed": false,
@@ -10,7 +10,7 @@
 	"pivot": {"x":0.5,"y":0.5}
 },
 {
-	"filename": "closed_cellar_door.png",
+	"filename": "blue_star_circle.png",
 	"frame": {"x":24,"y":0,"w":24,"h":24},
 	"rotated": false,
 	"trimmed": false,
@@ -19,7 +19,7 @@
 	"pivot": {"x":0.5,"y":0.5}
 },
 {
-	"filename": "closed_steel_gate.png",
+	"filename": "closed_cellar_door.png",
 	"frame": {"x":48,"y":0,"w":24,"h":24},
 	"rotated": false,
 	"trimmed": false,
@@ -28,7 +28,7 @@
 	"pivot": {"x":0.5,"y":0.5}
 },
 {
-	"filename": "open_cellar_door.png",
+	"filename": "closed_steel_gate.png",
 	"frame": {"x":72,"y":0,"w":24,"h":24},
 	"rotated": false,
 	"trimmed": false,
@@ -37,7 +37,7 @@
 	"pivot": {"x":0.5,"y":0.5}
 },
 {
-	"filename": "open_steel_gate.png",
+	"filename": "cracked_barrel.png",
 	"frame": {"x":96,"y":0,"w":24,"h":24},
 	"rotated": false,
 	"trimmed": false,
@@ -46,8 +46,53 @@
 	"pivot": {"x":0.5,"y":0.5}
 },
 {
-	"filename": "red_skull_circle.png",
+	"filename": "large_flame_1.png",
 	"frame": {"x":120,"y":0,"w":24,"h":24},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":24,"h":24},
+	"sourceSize": {"w":24,"h":24},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "large_flame.png",
+	"frame": {"x":144,"y":0,"w":24,"h":24},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":24,"h":24},
+	"sourceSize": {"w":24,"h":24},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "open_cellar_door.png",
+	"frame": {"x":168,"y":0,"w":24,"h":24},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":24,"h":24},
+	"sourceSize": {"w":24,"h":24},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "open_steel_gate.png",
+	"frame": {"x":192,"y":0,"w":24,"h":24},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":24,"h":24},
+	"sourceSize": {"w":24,"h":24},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "red_skull_circle.png",
+	"frame": {"x":216,"y":0,"w":24,"h":24},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":24,"h":24},
+	"sourceSize": {"w":24,"h":24},
+	"pivot": {"x":0.5,"y":0.5}
+},
+{
+	"filename": "spike_trap.png",
+	"frame": {"x":240,"y":0,"w":24,"h":24},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":24,"h":24},
@@ -59,8 +104,8 @@
 	"version": "1.0",
 	"image": "interactable_atlas.png",
 	"format": "RGBA8888",
-	"size": {"w":144,"h":24},
+	"size": {"w":264,"h":24},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:4dacdfb837e83287757ff5b9bb1c7a80:4d82fcee9370bae1da894b0656e240b2:9a42e19723ce96ec1313be4b4a3fd9bd$"
+	"smartupdate": "$TexturePacker:SmartUpdate:76670f9b57de67b5eb4bb7aead5d0670:216136ef5345897a2e2a2475d623bfd5:9a42e19723ce96ec1313be4b4a3fd9bd$"
 }
 }

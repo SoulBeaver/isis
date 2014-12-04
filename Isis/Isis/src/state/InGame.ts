@@ -24,8 +24,14 @@
             this.game.stage.backgroundColor = "#000000";
 
 	        this.mapLoader = new TilemapLoader(this.game);
+			
+			this.initializeMap("maze");
 			this.initializeView();
-			this.switchToMap("maze");
+
+			var spawnPlayerTrigger = this.map.getTrigger("spawn_player");
+			var spawnWorldCoordinates = this.map.toWorldCoordinates(this.map.toTileCoordinates({ x: spawnPlayerTrigger.x, y: spawnPlayerTrigger.y }));
+			this.initializePlayer(spawnWorldCoordinates);
+			this.initializeSubStates();
 			
 			this.currentState = this.playerState;
         }
@@ -41,11 +47,8 @@
 			this.map = this.mapLoader.load(mapName, manifest, mapDefinition);
 		}
 
-		private initializePlayer() {
-			var spawnPlayerTrigger = this.map.getTrigger("spawn_player");
-			var spawnWorldCoordinates = this.map.toWorldCoordinates(this.map.toTileCoordinates({ x: spawnPlayerTrigger.x, y: spawnPlayerTrigger.y }));
-
-			this.player = new Player(this.game, spawnWorldCoordinates);
+		private initializePlayer(spawnCoordinates: WorldCoordinates) {
+			this.player = new Player(this.game, spawnCoordinates);
             this.game.camera.follow(this.player);
         }
 
@@ -98,20 +101,20 @@
             this.currentState.initialize();
 		}
 
-		private initiateMapChange(mapName: string) {
+		private initiateMapChange(mapName: string, spawnCoordinates: TileCoordinates) {
 			this.removeListeners();
 
 			this.currentState.finalize();
 			this.currentState = null;
 
 			this.view.fadeOut();
-			this.view.onTweensFinished.addOnce(() => this.onMapFadeOutComplete(mapName), this);
+			this.view.onTweensFinished.addOnce(() => this.onMapFadeOutComplete(mapName, spawnCoordinates), this);
 			this.view.play();
 		}
 
-		private onMapFadeOutComplete(mapName: string) {
+		private onMapFadeOutComplete(mapName: string, spawnCoordinates: TileCoordinates) {
 			this.destroyMap();
-			this.switchToMap(mapName);
+			this.switchToMap(mapName, spawnCoordinates);
 
 			this.view.fadeIn();
 			this.view.onTweensFinished.addOnce(() => this.currentState = this.playerState, this);
@@ -123,9 +126,9 @@
 			this.player.destroy();
 		}
 
-		private switchToMap(mapName: string) {
+		private switchToMap(mapName: string, spawnCoordinates: TileCoordinates) {
 			this.initializeMap(mapName);
-			this.initializePlayer();
+			this.initializePlayer(this.map.toWorldCoordinates(spawnCoordinates));
 			this.initializeSubStates();
 		}
 

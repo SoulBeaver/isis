@@ -74,6 +74,12 @@
 			this.isTruthy(this.map.objects["Triggers"]);
 		}
 
+		closedSteelGate_hasWarpTrigger() {
+			var closedSteelGate = this.map.interactableAt({ x: 2, y: 0 });
+
+			this.isTruthy(closedSteelGate.trigger);
+		}
+		
 		map: Tilemap = null;
 
 		mapLoader = new TilemapLoader(TestHarness.game);

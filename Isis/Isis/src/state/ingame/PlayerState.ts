@@ -81,8 +81,11 @@ module Isis {
 				return;
 
 			var trigger = object.trigger;
-			if (trigger.name == "warp")
-				this.onChangeMap.dispatch(trigger.properties.map);
+			if (trigger.properties.effects == "warp")
+				this.onChangeMap.dispatch(trigger.properties.map, {
+					x: trigger.properties.spawnX,
+					y: trigger.properties.spawnY
+				});
         }
 
         // For now, the item is destroyed. In future versions, the player will have an inventory.

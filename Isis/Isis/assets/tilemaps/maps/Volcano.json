@@ -4,7 +4,7 @@
         {
          "data":[1091, 1091, 1091, 1091, 1091, 1091, 1091, 1091, 1091, 1091, 1091, 1091, 1091, 0, 0, 0, 1091, 0, 0, 0, 0, 0, 0, 1091, 1091, 0, 0, 0, 1091, 0, 0, 1091, 0, 0, 0, 1091, 1091, 1091, 1091, 1091, 1091, 1091, 1091, 1091, 1091, 0, 0, 1091, 1091, 0, 0, 0, 1091, 0, 0, 0, 1091, 0, 0, 1091, 1091, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1091, 1091, 0, 0, 0, 0, 0, 0, 0, 1091, 0, 0, 1091, 1091, 1091, 1091, 1091, 1091, 1091, 1091, 1091, 1091, 1091, 1091, 1091],
          "height":8,
-         "name":"Walls",
+         "name":"Collidables",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
@@ -24,42 +24,20 @@
          "y":0
         }, 
         {
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2148, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2149, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "height":8,
+         "name":"GoundObjects",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":12,
+         "x":0,
+         "y":0
+        }, 
+        {
          "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1067, 1067, 1067, 0, 1067, 1067, 1067, 1067, 1067, 1067, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1067, 1067, 1067, 0, 1067, 1067, 1067, 0, 0, 0, 0, 0, 0, 0, 0, 1067, 0, 0, 0, 1067, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          "height":8,
          "name":"Shadows",
-         "opacity":1,
-         "type":"tilelayer",
-         "visible":true,
-         "width":12,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2333, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         "height":8,
-         "name":"Items",
-         "opacity":1,
-         "type":"tilelayer",
-         "visible":true,
-         "width":12,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2196, 0, 0, 0, 0, 0, 2154, 0, 0, 0, 0, 0, 2197, 0, 0, 0, 0, 0, 0, 2155, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2148, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2200, 0, 0, 0, 2201, 0, 2228, 0, 0, 0, 0, 2149, 0, 0, 2155, 0, 0, 0, 0, 2154, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         "height":8,
-         "name":"Interactables",
-         "opacity":1,
-         "type":"tilelayer",
-         "visible":true,
-         "width":12,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 310, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 302, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 311, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         "height":8,
-         "name":"Creatures",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
@@ -74,17 +52,191 @@
          "objects":[
                 {
                  "height":0,
-                 "name":"warp",
+                 "name":"open_cellar_door",
                  "properties":
                     {
-                     "map":"maze"
+                     "effects":"warp",
+                     "map":"maze",
+                     "spawnX":"2",
+                     "spawnY":"1"
                     },
                  "rotation":0,
-                 "type":"object",
+                 "type":"interactable",
                  "visible":true,
                  "width":0,
                  "x":156,
                  "y":132
+                }, 
+                {
+                 "height":0,
+                 "name":"green_orc",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"creature",
+                 "visible":true,
+                 "width":0,
+                 "x":204,
+                 "y":36
+                }, 
+                {
+                 "height":0,
+                 "name":"green_goblin",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"creature",
+                 "visible":true,
+                 "width":0,
+                 "x":228,
+                 "y":60
+                }, 
+                {
+                 "height":0,
+                 "name":"red_orc",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"creature",
+                 "visible":true,
+                 "width":0,
+                 "x":132,
+                 "y":108
+                }, 
+                {
+                 "height":0,
+                 "name":"closed_cellar_door",
+                 "properties":
+                    {
+                     "effects":"warp",
+                     "map":"maze",
+                     "spawnX":"2",
+                     "spawnY":"1"
+                    },
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":0,
+                 "x":60,
+                 "y":132
+                }, 
+                {
+                 "height":0,
+                 "name":"spike_trap",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":0,
+                 "x":204,
+                 "y":132
+                }, 
+                {
+                 "height":0,
+                 "name":"large_flame",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":0,
+                 "x":228,
+                 "y":156
+                }, 
+                {
+                 "height":0,
+                 "name":"large_flame",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":0,
+                 "x":108,
+                 "y":156
+                }, 
+                {
+                 "height":0,
+                 "name":"large_flame",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":0,
+                 "x":204,
+                 "y":60
+                }, 
+                {
+                 "height":0,
+                 "name":"large_flame",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":0,
+                 "x":180,
+                 "y":36
+                }, 
+                {
+                 "height":0,
+                 "name":"barrel",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":0,
+                 "x":36,
+                 "y":36
+                }, 
+                {
+                 "height":0,
+                 "name":"cracked_barrel",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":0,
+                 "x":36,
+                 "y":60
+                }, 
+                {
+                 "height":0,
+                 "name":"heart_necklace",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"item",
+                 "visible":true,
+                 "width":0,
+                 "x":60,
+                 "y":36
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -107,28 +259,13 @@
          "imageheight":648,
          "imagewidth":480,
          "margin":0,
-         "name":"Creatures",
+         "name":"creatures",
          "properties":
             {
 
             },
          "spacing":0,
          "tileheight":24,
-         "tileproperties":
-            {
-             "301":
-                {
-                 "atlas_name":"green_goblin"
-                },
-             "309":
-                {
-                 "atlas_name":"green_orc"
-                },
-             "310":
-                {
-                 "atlas_name":"red_orc"
-                }
-            },
          "tilewidth":24
         }, 
         {
@@ -137,7 +274,7 @@
          "imageheight":528,
          "imagewidth":600,
          "margin":0,
-         "name":"World_Dirt_Shadows",
+         "name":"world_dirt_shadows",
          "properties":
             {
 
@@ -152,7 +289,7 @@
          "imageheight":936,
          "imagewidth":648,
          "margin":0,
-         "name":"World_Tiles",
+         "name":"world_tiles",
          "properties":
             {
 
@@ -167,24 +304,13 @@
          "imageheight":261,
          "imagewidth":336,
          "margin":0,
-         "name":"World_Objects",
+         "name":"world_objects",
          "properties":
             {
 
             },
          "spacing":0,
          "tileheight":24,
-         "tileproperties":
-            {
-             "56":
-                {
-                 "atlas_name":"closed_cellar_door"
-                },
-             "57":
-                {
-                 "atlas_name":"open_cellar_door"
-                }
-            },
          "tilewidth":24
         }, 
         {
@@ -193,7 +319,7 @@
          "imageheight":304,
          "imagewidth":384,
          "margin":0,
-         "name":"Items",
+         "name":"items",
          "properties":
             {
 
