@@ -3,7 +3,8 @@
      * Controlling class for all in-game logic. Has the ability to call and create popups and switch to different States.
      */
     export class InGame extends Phaser.State {
-        private view: GameView;
+		private view: GameView;
+		private mapLoader: TilemapLoader;
         private map: Tilemap;
         private player: Player;
 
@@ -22,8 +23,15 @@
         create() {
             this.game.stage.backgroundColor = "#000000";
 
+	        this.mapLoader = new TilemapLoader(this.game);
+			
+			this.initializeMap("maze");
 			this.initializeView();
-			this.switchToMap("maze");
+
+			var spawnPlayerTrigger = this.map.getTrigger("spawn_player");
+			var spawnWorldCoordinates = this.map.toWorldCoordinates(this.map.toTileCoordinates({ x: spawnPlayerTrigger.x, y: spawnPlayerTrigger.y }));
+			this.initializePlayer(spawnWorldCoordinates);
+			this.initializeSubStates();
 			
 			this.currentState = this.playerState;
         }
@@ -32,18 +40,15 @@
             this.view = new GameView(this.game);
         }
 
-        private initializeMap(mapName: string) {
-            this.map = new Tilemap(this.game, mapName, this.game.cache.getJSON("manifest"));
-        }
+		private initializeMap(mapName: string) {
+			var manifest = this.game.cache.getJSON("manifest");
+			var mapDefinition = this.game.cache.getJSON(mapName + ".json");
 
-		private initializePlayer() {
-			var spawnPlayerTrigger = this.map.getTrigger("spawn_player");
-			var spawnWorldCoordinates = this.map.toWorldCoordinates({
-				x: spawnPlayerTrigger.properties.spawnX,
-				y: spawnPlayerTrigger.properties.spawnY
-			});
+			this.map = this.mapLoader.load(mapName, manifest, mapDefinition);
+		}
 
-			this.player = new Player(this.game, spawnWorldCoordinates);
+		private initializePlayer(spawnCoordinates: WorldCoordinates) {
+			this.player = new Player(this.game, spawnCoordinates);
             this.game.camera.follow(this.player);
         }
 
@@ -96,20 +101,20 @@
             this.currentState.initialize();
 		}
 
-		private initiateMapChange(mapName: string) {
+		private initiateMapChange(mapName: string, spawnCoordinates: TileCoordinates) {
 			this.removeListeners();
 
 			this.currentState.finalize();
 			this.currentState = null;
 
 			this.view.fadeOut();
-			this.view.onTweensFinished.addOnce(() => this.onMapFadeOutComplete(mapName), this);
+			this.view.onTweensFinished.addOnce(() => this.onMapFadeOutComplete(mapName, spawnCoordinates), this);
 			this.view.play();
 		}
 
-		private onMapFadeOutComplete(mapName: string) {
+		private onMapFadeOutComplete(mapName: string, spawnCoordinates: TileCoordinates) {
 			this.destroyMap();
-			this.switchToMap(mapName);
+			this.switchToMap(mapName, spawnCoordinates);
 
 			this.view.fadeIn();
 			this.view.onTweensFinished.addOnce(() => this.currentState = this.playerState, this);
@@ -121,9 +126,9 @@
 			this.player.destroy();
 		}
 
-		private switchToMap(mapName: string) {
+		private switchToMap(mapName: string, spawnCoordinates: TileCoordinates) {
 			this.initializeMap(mapName);
-			this.initializePlayer();
+			this.initializePlayer(this.map.toWorldCoordinates(spawnCoordinates));
 			this.initializeSubStates();
 		}
 

@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>3.5.3</string>
         <key>fileName</key>
-        <string>C:/Users/Christian/Documents/GitHub/isis/Isis/Isis/assets/spritesheets/object_atlas.tps</string>
+        <string>C:/Users/Christian/Documents/GitHub/isis/Isis/Isis/assets/spritesheets/TexturePackageProjects/item_atlas.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -38,7 +38,7 @@
         <key>dataFormat</key>
         <string>json-array</string>
         <key>textureFileName</key>
-        <filename>object_atlas.png</filename>
+        <filename>../item_atlas.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -145,7 +145,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>object_atlas.json</filename>
+                <filename>../item_atlas.json</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -188,8 +188,11 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/world_24x24/closed_steel_gate.png</filename>
-            <filename>../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/world_24x24/opened_steel_gate.png</filename>
+            <filename>../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/items_16x16/blue_diamond.png</filename>
+            <filename>../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/items_16x16/green_diamond.png</filename>
+            <filename>../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/items_16x16/heart_necklace.png</filename>
+            <filename>../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/items_16x16/red_diamond.png</filename>
+            <filename>../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/Sliced/items_16x16/yellow_diamond.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

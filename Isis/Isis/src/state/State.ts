@@ -5,7 +5,8 @@
     // This is not an enum because TypeScript enums do not support string values.
     export class State {
         static Boot = "Boot";
-        static Preloader = "Preloader";
+		static Preloader = "Preloader";
+		static Tester = "Tester";
         static MainMenu = "MainMenu";
         static InGame = "InGame";
     }

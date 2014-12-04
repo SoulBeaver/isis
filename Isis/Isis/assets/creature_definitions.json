@@ -1,0 +1,17 @@
+﻿{
+    "robed_drow": {
+        "atlas_name":  "robed_drow"
+    },
+    "blue_blob_man": { 
+        "atlas_name": "blue_blob_man"
+    },
+    "red_orc": {
+        "atlas_name": "red_orc"
+    },
+    "green_orc": {
+        "atlas_name": "green_orc"
+    },
+    "green_goblin": {
+        "atlas_name": "green_goblin"
+    }
+}

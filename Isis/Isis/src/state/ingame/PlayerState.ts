@@ -60,8 +60,8 @@ module Isis {
 
             if (this.map.creatureAt(destination)) {
                 this.attack(this.player, this.map.creatureAt(destination));
-            } else if (this.map.objectAt(destination)) {
-                this.activate(this.player, this.map.objectAt(destination));
+            } else if (this.map.interactableAt(destination)) {
+                this.activate(this.player, this.map.interactableAt(destination));
             } else {
                 if (this.map.itemAt(destination))
                     this.pickUp(this.player, this.map.itemAt(destination));
@@ -81,8 +81,11 @@ module Isis {
 				return;
 
 			var trigger = object.trigger;
-			if (trigger.name == "warp")
-				this.onChangeMap.dispatch(trigger.properties.map);
+			if (trigger.properties.effects == "warp")
+				this.onChangeMap.dispatch(trigger.properties.map, {
+					x: trigger.properties.spawnX,
+					y: trigger.properties.spawnY
+				});
         }
 
         // For now, the item is destroyed. In future versions, the player will have an inventory.

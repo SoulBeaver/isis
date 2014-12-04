@@ -1,0 +1,17 @@
+﻿{
+    "green_diamond": {
+        "atlas_name":  "green_diamond"
+    },
+    "red_diamond": {
+        "atlas_name": "red_diamond"
+    },
+    "blue_diamond": {
+        "atlas_name": "blue_diamond"
+    },
+    "yellow_diamond": {
+        "atlas_name":  "yellow_diamond"
+    },
+    "heart_necklace": {
+        "atlas_name": "heart_necklace"
+    }
+}

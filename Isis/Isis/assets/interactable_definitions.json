@@ -1,0 +1,32 @@
+﻿{
+    "barrel": {
+        "atlas_name": "barrel"
+    },
+    "cracked_barrel": {
+        "atlas_name": "cracked_barrel"
+    },
+    "open_cellar_door": {
+        "atlas_name": "open_cellar_door"
+    },
+    "closed_cellar_door": {
+        "atlas_name": "closed_cellar_door"
+    },
+    "large_flame": {
+        "atlas_name": "large_flame"
+    },
+    "spike_trap": {
+        "atlas_name": "spike_trap"
+    },
+    "closed_steel_gate": {
+        "atlas_name": "closed_steel_gate"
+    },
+    "open_steel_gate": { 
+        "atlas_name":  "open_steel_gate"
+    },
+    "red_skull_circle": {
+        "atlas_name": "red_skull_circle"
+    },
+    "blue_star_circle": {
+        "atlas_name": "blue_star_circle"
+    }
+}
