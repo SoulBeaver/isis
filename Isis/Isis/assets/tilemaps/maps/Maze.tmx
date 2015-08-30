@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="12" height="8" tilewidth="24" tileheight="24">
  <tileset firstgid="1" name="World_Tiles" tilewidth="24" tileheight="24">
-  <image source="../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/World/World_Tiles.png" width="648" height="936"/>
+  <image source="../tiles/World_Tiles.png" width="648" height="936"/>
  </tileset>
  <tileset firstgid="1054" name="World_Objects" tilewidth="24" tileheight="24">
-  <image source="../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/World/World_Objects.png" width="336" height="261"/>
+  <image source="../tiles/World_Objects.png" width="336" height="261"/>
  </tileset>
  <tileset firstgid="1194" name="Items" tilewidth="16" tileheight="16">
   <tileoffset x="4" y="-4"/>
-  <image source="../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/oryx_16bit_fantasy_items_trans.png" width="384" height="304"/>
+  <image source="../tiles/Items.png" width="384" height="304"/>
   <tile id="83">
    <properties>
     <property name="atlas_name" value="green_diamond"/>
@@ -32,7 +32,7 @@
  </tileset>
  <tileset firstgid="1650" name="Creatures" tilewidth="24" tileheight="24">
   <tileoffset x="0" y="-4"/>
-  <image source="../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/oryx_16bit_fantasy_creatures_trans.png" width="480" height="648"/>
+  <image source="../tiles/Creatures.png" width="480" height="648"/>
   <tile id="21">
    <properties>
     <property name="atlas_name" value="blue_knight"/>
@@ -50,7 +50,7 @@
   </tile>
  </tileset>
  <tileset firstgid="2190" name="World_Dirt_Shadows" tilewidth="24" tileheight="24">
-  <image source="../../../../../../../../Downloads/oryx_16-bit_fantasy_1.1/World/World_Dirt_Shadows.png" width="600" height="528"/>
+  <image source="../tiles/World_Dirt_Shadows.png" width="600" height="528"/>
  </tileset>
  <layer name="Walls" width="12" height="8">
   <data encoding="base64" compression="zlib">
