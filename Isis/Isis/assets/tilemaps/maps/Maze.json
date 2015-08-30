@@ -76,7 +76,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "image":"..\/..\/..\/..\/..\/..\/..\/..\/Downloads\/oryx_16-bit_fantasy_1.1\/World\/World_Tiles.png",
+         "image":"..\/tiles\/World_Tiles.png",
          "imageheight":936,
          "imagewidth":648,
          "margin":0,
@@ -91,7 +91,7 @@
         }, 
         {
          "firstgid":1054,
-         "image":"..\/..\/..\/..\/..\/..\/..\/..\/Downloads\/oryx_16-bit_fantasy_1.1\/World\/World_Objects.png",
+         "image":"..\/tiles\/World_Objects.png",
          "imageheight":261,
          "imagewidth":336,
          "margin":0,
@@ -106,7 +106,7 @@
         }, 
         {
          "firstgid":1194,
-         "image":"..\/..\/..\/..\/..\/..\/..\/..\/Downloads\/oryx_16-bit_fantasy_1.1\/oryx_16bit_fantasy_items_trans.png",
+         "image":"..\/tiles\/Items.png",
          "imageheight":304,
          "imagewidth":384,
          "margin":0,
@@ -145,7 +145,7 @@
         }, 
         {
          "firstgid":1650,
-         "image":"..\/..\/..\/..\/..\/..\/..\/..\/Downloads\/oryx_16-bit_fantasy_1.1\/oryx_16bit_fantasy_creatures_trans.png",
+         "image":"..\/tiles\/Creatures.png",
          "imageheight":648,
          "imagewidth":480,
          "margin":0,
@@ -180,7 +180,7 @@
         }, 
         {
          "firstgid":2190,
-         "image":"..\/..\/..\/..\/..\/..\/..\/..\/Downloads\/oryx_16-bit_fantasy_1.1\/World\/World_Dirt_Shadows.png",
+         "image":"..\/tiles\/World_Dirt_Shadows.png",
          "imageheight":528,
          "imagewidth":600,
          "margin":0,
