@@ -18,15 +18,10 @@ module Isis {
             var settings = this.game.cache.getJSON("settings");
 
             var setActionMap = (collection: string[]| string, action: () => void) => {
-                console.log("Collection:  ", collection);
-
                 if (typeof collection === "string") {
-                    console.log("We are a string.");
                     this.actionMap[collection] = action;
                 } else {
-                    console.log("We are an array of strings.");
                     _.forEach(collection, (key) => {
-                        console.log("Setting ${key} to ${action}");
                         this.actionMap[key] = action;
                     });
                 }
