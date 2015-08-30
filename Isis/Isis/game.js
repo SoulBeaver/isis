@@ -39,13 +39,8 @@ var Isis;
         __extends(Player, _super);
         function Player(game, x, y) {
             _super.call(this, game, x, y, "creature_atlas");
-            this._acceleration = 150;
-            this.LIGHT_RADIUS = 50;
             this.addAnimations();
             this.addPhysics();
-            this.shadowTexture = this.game.add.bitmapData(this.game.width, this.game.height);
-            this.lightSprite = this.game.add.image(0, 0, this.shadowTexture);
-            this.lightSprite.blendMode = PIXI.blendModes.MULTIPLY;
             this.game.add.existing(this);
         }
         Player.prototype.addAnimations = function () {
@@ -54,18 +49,6 @@ var Isis;
         };
         Player.prototype.addPhysics = function () {
             this.game.physics.enable(this, Phaser.Physics.ARCADE);
-        };
-        Player.prototype.update = function () {
-            // Draw shadow
-            this.shadowTexture.context.fillStyle = 'rgb(10, 10, 10)';
-            this.shadowTexture.context.fillRect(0, 0, this.game.width, this.game.height);
-            // Draw circle of light
-            this.shadowTexture.context.beginPath();
-            this.shadowTexture.context.fillStyle = 'rgb(255, 255, 255)';
-            this.shadowTexture.context.arc(this.x + this.width / 2, this.y + this.height / 2, this.LIGHT_RADIUS, 0, Math.PI * 2);
-            this.shadowTexture.context.fill();
-            // This just tells the engine it should update the texture cache
-            this.shadowTexture.dirty = true;
         };
         return Player;
     })(Phaser.Sprite);
@@ -289,6 +272,7 @@ var Isis;
         };
         InGame.prototype.initializeMap = function () {
             this.map = new Isis.Tilemap(this.game, "maze", this.game.cache.getJSON("manifest"));
+            this.mapLighting = new Isis.MapLighting(this.game, this.map);
         };
         InGame.prototype.initializePlayer = function () {
             this.player = new Isis.Player(this.game, 48, 24);
@@ -307,7 +291,11 @@ var Isis;
         };
         InGame.prototype.update = function () {
             this.currentState.update();
-            this.player.update();
+            // this.player.update();
+            this.mapLighting.illuminate({
+                x: this.player.x + this.player.width / 2,
+                y: this.player.y + this.player.height / 2
+            });
         };
         InGame.prototype.switchFromPlayerState = function () {
             this.currentState.finalize();
@@ -456,6 +444,33 @@ var Isis;
         return GameView;
     })();
     Isis.GameView = GameView;
+})(Isis || (Isis = {}));
+var Isis;
+(function (Isis) {
+    var MapLighting = (function () {
+        function MapLighting(game, map) {
+            this.lightRadius = 50;
+            this.game = game;
+            this.map = map;
+            this.shadowTexture = this.game.add.bitmapData(this.game.width, this.game.height);
+            this.lightSprite = this.game.add.image(0, 0, this.shadowTexture);
+            this.lightSprite.blendMode = PIXI.blendModes.MULTIPLY;
+        }
+        MapLighting.prototype.illuminate = function (where) {
+            // Draw shadow
+            this.shadowTexture.context.fillStyle = 'rgb(10, 10, 10)';
+            this.shadowTexture.context.fillRect(0, 0, this.game.width, this.game.height);
+            // Draw circle of light
+            this.shadowTexture.context.beginPath();
+            this.shadowTexture.context.fillStyle = 'rgb(255, 255, 255)';
+            this.shadowTexture.context.arc(where.x, where.y, this.lightRadius, 0, Math.PI * 2);
+            this.shadowTexture.context.fill();
+            // This just tells the engine it should update the texture cache
+            this.shadowTexture.dirty = true;
+        };
+        return MapLighting;
+    })();
+    Isis.MapLighting = MapLighting;
 })(Isis || (Isis = {}));
 /// <reference path="../../libs/lodash/lodash.d.ts" />
 var Isis;

@@ -46,6 +46,7 @@
     <TypeScriptCompile Include="src\state\MainMenu.ts" />
     <TypeScriptCompile Include="src\state\Preloader.ts" />
     <TypeScriptCompile Include="src\state\State.ts" />
+    <TypeScriptCompile Include="src\state\view\MapLighting.ts" />
     <TypeScriptCompile Include="src\tilemap\TileCoordinates.ts" />
     <TypeScriptCompile Include="src\tilemap\Tilemap.ts" />
     <TypeScriptCompile Include="src\tilemap\WorldCoordinates.ts" />

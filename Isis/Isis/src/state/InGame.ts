@@ -5,6 +5,7 @@
     export class InGame extends Phaser.State {
         private view: GameView;
         private map: Tilemap;
+        private mapLighting: MapLighting;
         private player: Player;
 
         // In a roguelike, there is a clear separation between the player and everything else.
@@ -34,6 +35,7 @@
 
         private initializeMap() {
             this.map = new Tilemap(this.game, "maze", this.game.cache.getJSON("manifest"));
+            this.mapLighting = new MapLighting(this.game, this.map);
         }
 
         private initializePlayer() {
@@ -58,7 +60,11 @@
 
         update() {
             this.currentState.update();
-            this.player.update();
+            // this.player.update();
+            this.mapLighting.illuminate({
+                x: this.player.x + this.player.width / 2,
+                y: this.player.y + this.player.height / 2
+            });
         }
 
         private switchFromPlayerState() {
