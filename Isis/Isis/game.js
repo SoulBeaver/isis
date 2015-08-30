@@ -456,10 +456,14 @@ var Isis;
             // Draw shadow
             this.shadowTexture.context.fillStyle = 'rgb(10, 10, 10)';
             this.shadowTexture.context.fillRect(0, 0, this.game.width, this.game.height);
+            var radius = 50 + this.game.rnd.integerInRange(1, 3), heroX = where.x, heroY = where.y;
+            var gradient = this.shadowTexture.context.createRadialGradient(heroX, heroY, radius * 0.75, heroX, heroY, radius);
+            gradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
+            gradient.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
             // Draw circle of light
             this.shadowTexture.context.beginPath();
-            this.shadowTexture.context.fillStyle = 'rgb(255, 255, 255)';
-            this.shadowTexture.context.arc(where.x, where.y, this.lightRadius, 0, Math.PI * 2);
+            this.shadowTexture.context.fillStyle = gradient;
+            this.shadowTexture.context.arc(where.x, where.y, radius, 0, Math.PI * 2, false);
             this.shadowTexture.context.fill();
             // This just tells the engine it should update the texture cache
             this.shadowTexture.dirty = true;
