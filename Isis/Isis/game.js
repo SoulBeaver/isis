@@ -75,11 +75,6 @@ var Isis;
         };
         Boot.prototype.configureGame = function () {
             this.game.physics.startSystem(Phaser.Physics.ARCADE);
-            //scaling options
-            // this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-            // this.scale.setShowAll();
-            // this.scale.
-            this.scale.refresh();
             //have the game centered horizontally
             this.scale.pageAlignHorizontally = true;
             this.scale.pageAlignVertically = true;
@@ -266,6 +261,7 @@ var Isis;
             this.initializeMap();
             this.initializePlayer();
             this.initializeSubStates();
+            this.game.world.scale.setTo(2, 2);
         };
         InGame.prototype.initializeView = function () {
             this.view = new Isis.GameView(this.game);

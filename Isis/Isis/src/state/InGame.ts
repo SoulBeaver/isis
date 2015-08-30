@@ -27,6 +27,8 @@
             this.initializeMap();
             this.initializePlayer();
             this.initializeSubStates();
+
+            this.game.world.scale.setTo(2, 2);
         }
 
         private initializeView() {
