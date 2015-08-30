@@ -19,8 +19,9 @@
             this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
             //scaling options
-            this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-            this.scale.setShowAll();
+            // this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+            // this.scale.setShowAll();
+            // this.scale.
             this.scale.refresh();
 
             //have the game centered horizontally

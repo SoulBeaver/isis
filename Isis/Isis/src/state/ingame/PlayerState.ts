@@ -17,14 +17,26 @@ module Isis {
         private initializeInputBindings() {
             var settings = this.game.cache.getJSON("settings");
 
+            console.log("Settings:  ", settings);
+            console.log("move_left:  ", settings.move_left);
+
             // I'd like to keep the keys separate from the actions, so we read from the assets/settings.json to see which key is bound to which
             // action. We can then construct a decoupled associative array for every action. Currently, the player can only move via keyboard
             // but I'm hoping to allow for mouse input as well.
             // Caveat:  the settings.json input MUST be a string value of Phaser.Keyboard.<Key>. Otherwise an exception will be thrown.
-            this.actionMap[settings.move_left]  = () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x - 24, y: this.player.y }));
-            this.actionMap[settings.move_right] = () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x + 24, y: this.player.y }));
-            this.actionMap[settings.move_up]    = () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x, y: this.player.y - 24 }));
-            this.actionMap[settings.move_down]  = () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x, y: this.player.y + 24 }));
+
+            _.forEach(settings.move_left, (key) => {
+                this.actionMap[key] = () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x - 24, y: this.player.y }));
+            });
+            _.forEach(settings.move_right, (key) => {
+                this.actionMap[key] = () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x + 24, y: this.player.y }));
+            });
+            _.forEach(settings.move_up, (key) => {
+                this.actionMap[key] = () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x, y: this.player.y - 24 }));
+            });
+            _.forEach(settings.move_down, (key) => {
+                this.actionMap[key] = () => this.tryMoveTo(this.map.toTileCoordinates({ x: this.player.x, y: this.player.y + 24 }));
+            });
         }
 
         update() {

@@ -14,7 +14,7 @@ module Isis {
         }
 
         move(entity: Phaser.Sprite, to: WorldCoordinates) {
-            var tween = this.game.add.tween(entity).to(to, 300, Phaser.Easing.Linear.None);
+            var tween = this.game.add.tween(entity).to(to, 100, Phaser.Easing.Linear.None);
             this.registerTweenDeletion(tween);
 
             this.tweensToPlay.push(tween);

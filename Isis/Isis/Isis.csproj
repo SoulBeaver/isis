@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <ProjectGuid>{F700D895-C700-4ACB-A74A-F12BF819797B}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <OutputPath>bin</OutputPath>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <UseIISExpress>true</UseIISExpress>
@@ -14,6 +14,8 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <TargetFrameworkProfile />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <ItemGroup>
     <Content Include="app.css" />
@@ -27,8 +29,9 @@
   <ItemGroup>
     <TypeScriptCompile Include="app.ts" />
     <TypeScriptCompile Include="libs\lodash\lodash.d.ts" />
+    <TypeScriptCompile Include="libs\phaser\p2.d.ts" />
     <TypeScriptCompile Include="libs\phaser\phaser.d.ts" />
-    <TypeScriptCompile Include="libs\tsUnit\tsUnit.ts" />
+    <TypeScriptCompile Include="libs\phaser\pixi.d.ts" />
     <TypeScriptCompile Include="src\JSONAsset.ts" />
     <TypeScriptCompile Include="src\KeyboardExtensions.ts" />
     <TypeScriptCompile Include="src\state\ingame\AnimatingState.ts" />
@@ -52,7 +55,9 @@
     <Content Include="assets\settings.json" />
     <Content Include="assets\manifest.json" />
     <Content Include="libs\phaser\phaser.map" />
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -64,6 +69,14 @@
     <Folder Include="assets\tilemaps\tiles\" />
     <Folder Include="src\input\" />
     <Folder Include="test\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
