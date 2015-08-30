@@ -58,6 +58,7 @@
 
         update() {
             this.currentState.update();
+            this.player.update();
         }
 
         private switchFromPlayerState() {
