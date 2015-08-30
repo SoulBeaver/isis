@@ -106,11 +106,18 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptTarget>ES6</TypeScriptTarget>
     <TypeScriptRemoveComments>false</TypeScriptRemoveComments>
     <TypeScriptSourceMap>true</TypeScriptSourceMap>
     <TypeScriptModuleKind>none</TypeScriptModuleKind>
     <TypeScriptOutFile>game.js</TypeScriptOutFile>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <TypeScriptTarget>ES5</TypeScriptTarget>

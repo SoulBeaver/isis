@@ -169,24 +169,27 @@ var Isis;
         PlayerState.prototype.initializeInputBindings = function () {
             var _this = this;
             var settings = this.game.cache.getJSON("settings");
-            console.log("Settings:  ", settings);
-            console.log("move_left:  ", settings.move_left);
+            var setActionMap = function (collection, action) {
+                console.log("Collection:  ", collection);
+                if (typeof collection === "string") {
+                    console.log("We are a string.");
+                    _this.actionMap[collection] = action;
+                }
+                else {
+                    console.log("We are an array of strings.");
+                    _.forEach(collection, function (key) {
+                        console.log("Setting ${key} to ${action}");
+                        _this.actionMap[key] = action;
+                    });
+                }
+            };
             // I'd like to keep the keys separate from the actions, so we read from the assets/settings.json to see which key is bound to which
             // action. We can then construct a decoupled associative array for every action. Currently, the player can only move via keyboard
             // but I'm hoping to allow for mouse input as well.
-            // Caveat:  the settings.json input MUST be a string value of Phaser.Keyboard.<Key>. Otherwise an exception will be thrown.
-            _.forEach(settings.move_left, function (key) {
-                _this.actionMap[key] = function () { return _this.tryMoveTo(_this.map.toTileCoordinates({ x: _this.player.x - 24, y: _this.player.y })); };
-            });
-            _.forEach(settings.move_right, function (key) {
-                _this.actionMap[key] = function () { return _this.tryMoveTo(_this.map.toTileCoordinates({ x: _this.player.x + 24, y: _this.player.y })); };
-            });
-            _.forEach(settings.move_up, function (key) {
-                _this.actionMap[key] = function () { return _this.tryMoveTo(_this.map.toTileCoordinates({ x: _this.player.x, y: _this.player.y - 24 })); };
-            });
-            _.forEach(settings.move_down, function (key) {
-                _this.actionMap[key] = function () { return _this.tryMoveTo(_this.map.toTileCoordinates({ x: _this.player.x, y: _this.player.y + 24 })); };
-            });
+            setActionMap(settings.move_left, function () { return _this.tryMoveTo(_this.map.toTileCoordinates({ x: _this.player.x - 24, y: _this.player.y })); });
+            setActionMap(settings.move_right, function () { return _this.tryMoveTo(_this.map.toTileCoordinates({ x: _this.player.x + 24, y: _this.player.y })); });
+            setActionMap(settings.move_up, function () { return _this.tryMoveTo(_this.map.toTileCoordinates({ x: _this.player.x, y: _this.player.y - 24 })); });
+            setActionMap(settings.move_down, function () { return _this.tryMoveTo(_this.map.toTileCoordinates({ x: _this.player.x, y: _this.player.y + 24 })); });
         };
         PlayerState.prototype.update = function () {
             var keyboard = this.game.input.keyboard;
