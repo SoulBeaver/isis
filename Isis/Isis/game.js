@@ -137,6 +137,19 @@ var Isis;
             _super.apply(this, arguments);
         }
         EnemyState.prototype.update = function () {
+            var _this = this;
+            _.forEach(this.map.creatures, function (creature) {
+                var moveLeft = _this.map.toTileCoordinates({ x: creature.x - 24, y: creature.y });
+                var moveRight = _this.map.toTileCoordinates({ x: creature.x + 24, y: creature.y });
+                var moveUp = _this.map.toTileCoordinates({ x: creature.x, y: creature.y - 24 });
+                var moveDown = _this.map.toTileCoordinates({ x: creature.x, y: creature.y + 24 });
+                var moveActions = [moveLeft, moveRight, moveUp, moveDown];
+                var rand = Math.random();
+                var index = Math.floor(rand * moveActions.length);
+                var moveAction = moveActions[index];
+                if (!_this.map.wallAt(moveAction) && !_this.map.creatureAt(moveAction) && _this.map.toTileCoordinates(_this.player) != moveAction)
+                    _this.view.move(creature, _this.map.toWorldCoordinates(moveAction));
+            });
             this.switchToAnimatingState();
         };
         EnemyState.prototype.switchToAnimatingState = function () {
@@ -445,7 +458,7 @@ var Isis;
 (function (Isis) {
     var MapLighting = (function () {
         function MapLighting(game, map) {
-            this.lightRadius = 50;
+            this.lightRadius = 100;
             this.game = game;
             this.map = map;
             this.shadowTexture = this.game.add.bitmapData(this.game.width, this.game.height);
@@ -456,7 +469,7 @@ var Isis;
             // Draw shadow
             this.shadowTexture.context.fillStyle = 'rgb(10, 10, 10)';
             this.shadowTexture.context.fillRect(0, 0, this.game.width, this.game.height);
-            var radius = 50 + this.game.rnd.integerInRange(1, 3), heroX = where.x, heroY = where.y;
+            var radius = this.lightRadius + this.game.rnd.integerInRange(1, 3), heroX = where.x, heroY = where.y;
             var gradient = this.shadowTexture.context.createRadialGradient(heroX, heroY, radius * 0.75, heroX, heroY, radius);
             gradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
             gradient.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
@@ -543,6 +556,9 @@ var Isis;
         Tilemap.prototype.creatureAt = function (at) {
             var _this = this;
             return _.find(this.creatures, function (creature) { return _.isEqual(_this.toTileCoordinates(creature), at); });
+        };
+        Tilemap.prototype.leftOf = function (entity) {
+            this.toTileCoordinates({ x: entity.x - 24, y: entity.y });
         };
         Tilemap.prototype.removeItem = function (item) {
             _.remove(this.items, function (candidate) { return _.isEqual(candidate, item); });

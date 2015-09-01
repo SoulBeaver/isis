@@ -4,7 +4,7 @@
         private map: Tilemap;
 
         private lightSprite: Phaser.Image;
-        private lightRadius = 50;
+        private lightRadius = 100;
         private shadowTexture: Phaser.BitmapData;
 
         constructor(game: Phaser.Game, map: Tilemap) {
@@ -21,7 +21,7 @@
             this.shadowTexture.context.fillStyle = 'rgb(10, 10, 10)';
             this.shadowTexture.context.fillRect(0, 0, this.game.width, this.game.height);
 
-            var radius = 50 + this.game.rnd.integerInRange(1, 3),
+            var radius = this.lightRadius + this.game.rnd.integerInRange(1, 3),
                 heroX = where.x,
                 heroY = where.y;
 

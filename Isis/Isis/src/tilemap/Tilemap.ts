@@ -8,17 +8,17 @@ module Isis {
         private CreaturesLayer  = "Creatures";
         private ItemsLayer      = "Items";
         private ObjectsLayer    = "Objects";
-
-        private items: Array<Phaser.Sprite>;
-        private activatableObjects: Array<Phaser.Sprite>;
-        private creatures: Array<Phaser.Sprite>;
-
+        
         private wallLayer: Phaser.TilemapLayer;
         private backgroundLayer: Phaser.TilemapLayer;
         private shadowLayer: Phaser.TilemapLayer;
         private itemLayer: Phaser.TilemapLayer;
         private objectLayer: Phaser.TilemapLayer;
         private creatureLayer: Phaser.TilemapLayer;
+
+        items: Array<Phaser.Sprite>;
+        activatableObjects: Array<Phaser.Sprite>;
+        creatures: Array<Phaser.Sprite>;
 
         constructor(game: Phaser.Game, key: string, manifest: any) {
             super(game, key);
@@ -88,6 +88,10 @@ module Isis {
 
         creatureAt(at: TileCoordinates) {
             return _.find(this.creatures, (creature: Phaser.Sprite) => _.isEqual(this.toTileCoordinates(creature), at));
+        }
+
+        leftOf(entity: Phaser.Sprite) {
+            this.toTileCoordinates({ x: entity.x - 24, y: entity.y });
         }
 
         removeItem(item: Phaser.Sprite) {

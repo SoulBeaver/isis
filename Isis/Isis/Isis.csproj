@@ -49,6 +49,7 @@
     <TypeScriptCompile Include="src\state\view\MapLighting.ts" />
     <TypeScriptCompile Include="src\tilemap\TileCoordinates.ts" />
     <TypeScriptCompile Include="src\tilemap\Tilemap.ts" />
+    <TypeScriptCompile Include="src\tilemap\TilemapExtensions.ts" />
     <TypeScriptCompile Include="src\tilemap\WorldCoordinates.ts" />
   </ItemGroup>
   <ItemGroup>
